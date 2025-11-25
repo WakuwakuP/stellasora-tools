@@ -5,8 +5,8 @@
  * /build/{encodedBuild}
  *
  * エンコード形式（Base64URL対応の短縮形式）:
- * - キャラクターID: 2桁16進数 (00-FF)
- * - 素質: コアIDとレベル、サブIDとレベルをパック
+ * - キャラクターID: 2文字のBase64URL (AA-__)
+ * - 素質: IDとレベルを2文字でエンコード
  * - ロスレコ: メイン3つ、サブ3つのIDをパック
  */
 
@@ -33,6 +33,7 @@ const MIN_CHAR_PART_LENGTH = 3 // char ID (2) + at least empty core talents indi
 const TOTAL_CHARACTERS = 3
 const MIN_TALENT_LEVEL = 1
 const MAX_TALENT_LEVEL = 6
+const SUPPORT_COUNT = 2
 
 /**
  * Base64URL文字セット（RFC 4648）
@@ -273,8 +274,6 @@ function decodeCharacterWithDots(encoded: string): Character {
     },
   }
 }
-
-const SUPPORT_COUNT = 2
 
 /**
  * ビルドのバリデーション

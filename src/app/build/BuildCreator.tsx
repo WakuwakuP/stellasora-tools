@@ -8,6 +8,12 @@ import Image from 'next/image'
 import { type FC, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
 
+/** スコア計算時の1レベルあたりのポイント */
+const POINTS_PER_LEVEL = 100
+
+/** デフォルトのビルドレベル（表示用） */
+const DEFAULT_BUILD_LEVEL = 25
+
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
 }
@@ -192,7 +198,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
   }
 
   const calculateTotalScore = () => {
-    return selectedTalents.reduce((sum, t) => sum + t.level * 100, 0)
+    return selectedTalents.reduce((sum, t) => sum + t.level * POINTS_PER_LEVEL, 0)
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
@@ -214,7 +220,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
           <div className="mb-4 rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 p-4 text-white">
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-bold text-lg">
-                25
+                {DEFAULT_BUILD_LEVEL}
               </div>
               <div>
                 <input

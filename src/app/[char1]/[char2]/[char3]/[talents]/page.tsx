@@ -1,28 +1,36 @@
+import { buildFromPath, validateBuild } from 'lib/build-encoder-v2'
 import { type Metadata } from 'next'
 import { type FC } from 'react'
-
-import { decodeBuild, validateBuild } from 'lib/build-encoder'
 import { BuildParseError } from 'types/build'
 
 import { BuildView } from './BuildView'
 
 interface Props {
-  params: Promise<{ code: string }>
+  params: Promise<{
+    char1: string
+    char2: string
+    char3: string
+    talents: string
+  }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { code } = await params
+  const { char1, char2, char3 } = await params
+  const decodedChar1 = decodeURIComponent(char1)
+  const decodedChar2 = decodeURIComponent(char2)
+  const decodedChar3 = decodeURIComponent(char3)
+
   return {
-    title: `ビルド詳細 - ${code}`,
     description: 'ステラソラ編成共有',
+    title: `${decodedChar1} / ${decodedChar2} / ${decodedChar3} - ビルド詳細`,
   }
 }
 
 const BuildPage: FC<Props> = async ({ params }) => {
-  const { code } = await params
+  const { char1, char2, char3, talents } = await params
 
   try {
-    const build = decodeBuild(code)
+    const build = buildFromPath(char1, char2, char3, talents)
     const validation = validateBuild(build)
 
     if (!validation.valid) {
@@ -42,7 +50,8 @@ const BuildPage: FC<Props> = async ({ params }) => {
       )
     }
 
-    return <BuildView build={build} code={code} />
+    const url = `/${char1}/${char2}/${char3}/${talents}`
+    return <BuildView build={build} url={url} />
   } catch (error) {
     const message =
       error instanceof BuildParseError
@@ -56,9 +65,6 @@ const BuildPage: FC<Props> = async ({ params }) => {
             ビルド解析エラー
           </h1>
           <p className="text-red-600 text-sm dark:text-red-400">{message}</p>
-          <p className="mt-4 text-gray-600 text-xs dark:text-gray-400">
-            コード: {code}
-          </p>
         </div>
       </div>
     )

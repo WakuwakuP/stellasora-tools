@@ -28,8 +28,8 @@ export interface CharacterTalents {
 
 /** キャラクター情報 */
 export interface Character {
-  /** キャラクターID */
-  id: number
+  /** キャラクター名 */
+  name: string
   /** 素質 */
   talents: CharacterTalents
 }

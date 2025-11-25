@@ -1,0 +1,67 @@
+name: Neon DB Branch Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-neon-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete Neon database branch
+        run: |
+          # Extract branch name from the PR head ref
+          BRANCH_NAME="${{ github.head_ref }}"
+          # Construct the preview branch name by prepending "preview/" to the original branch name
+          PREVIEW_BRANCH_NAME="preview/$BRANCH_NAME"
+
+          echo "Original branch name: $BRANCH_NAME"
+          echo "Looking for preview branch: $PREVIEW_BRANCH_NAME"
+
+          # First, get the list of all branches to find the matching branch ID
+          echo "Fetching branch list from Neon API..."
+          LIST_RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/branches.json \
+            -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches")
+
+          LIST_HTTP_CODE="${LIST_RESPONSE: -3}"
+
+          if [ "$LIST_HTTP_CODE" != "200" ]; then
+            echo "⚠️ Failed to fetch branch list (HTTP $LIST_HTTP_CODE)"
+            echo "Response:"
+            cat /tmp/branches.json
+            exit 0
+          fi
+
+          # Extract the branch ID that matches our preview branch name
+          BRANCH_ID=$(cat /tmp/branches.json | jq -r --arg name "$PREVIEW_BRANCH_NAME" '.branches[] | select(.name == $name) | .id')
+
+          if [ -z "$BRANCH_ID" ] || [ "$BRANCH_ID" = "null" ]; then
+            echo "ℹ️ Preview branch '$PREVIEW_BRANCH_NAME' not found in Neon project (may have been already deleted or never created)"
+            exit 0
+          fi
+
+          echo "Found branch ID: $BRANCH_ID"
+
+          # Call Neon API to delete the branch using the actual branch ID
+          RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/response.json \
+            -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches/$BRANCH_ID")
+
+          HTTP_CODE="${RESPONSE: -3}"
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Successfully deleted Neon branch '$PREVIEW_BRANCH_NAME' (ID: $BRANCH_ID)"
+          elif [ "$HTTP_CODE" = "404" ]; then
+            echo "ℹ️ Neon branch with ID $BRANCH_ID not found (may have been already deleted)"
+          else
+            echo "⚠️ Failed to delete Neon branch '$PREVIEW_BRANCH_NAME' (ID: $BRANCH_ID, HTTP $HTTP_CODE)"
+            echo "Response:"
+            cat /tmp/response.json
+            # Don't fail the workflow for cleanup issues
+            exit 0
+          fi

@@ -1,0 +1,31 @@
+name: Lint & Format
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request_target:
+    branches: [main, master, develop]
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - run: corepack enable yarn
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Run check lint and format
+        run: yarn check

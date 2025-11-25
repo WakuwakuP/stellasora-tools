@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request_target:
+    branches: [main, master, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - run: corepack enable yarn
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Run tests with coverage
+        run: yarn test:run --coverage
+
+      - name: Comment test coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: github.event_name == 'pull_request_target'
+        with:
+          json-summary-path: "./coverage/coverage-summary.json"
+          json-final-path: "./coverage/coverage-final.json"

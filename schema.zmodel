@@ -1,0 +1,70 @@
+// ZenStack schema for authentication and gallery
+// This will generate Prisma schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String    @unique @allow('read', auth() == this) // Only user can read their own email
+    emailVerified DateTime? @allow('read', auth() == this) // Only user can read their own email verification status
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+
+
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    // Access control rules
+    @@allow('create', true) // Allow user registration
+    @@allow('read', auth() != null) // Authenticated users can read basic user info (id, name, image)
+    @@allow('update', auth() == this) // Users can only update their own profile
+    @@deny('delete', true) // Prevent direct user deletion
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@allow('all', true)
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@allow('all', true)
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@allow('all', true)
+}

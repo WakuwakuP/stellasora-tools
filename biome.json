@@ -1,0 +1,147 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "useSortedAttributes": "on",
+        "useSortedKeys": "on",
+        "useSortedProperties": "on"
+      }
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": false
+    },
+    "parser": {
+      "cssModules": false,
+      "tailwindDirectives": true
+    }
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/out",
+      "!**/build",
+      "!**/next-env.d.ts",
+      "!**/src/components/ui/**/*",
+      "!**/v0/**/*",
+      "!**/tests/**/*",
+      "!**/.storybook/MockAuth.tsx"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "includes": [
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.json",
+      "**/*.jsonc",
+      "**/*.css"
+    ],
+    "useEditorconfig": true
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "attributePosition": "auto",
+      "bracketSameLine": false,
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "linter": {
+    "domains": {
+      "next": "all",
+      "project": "recommended",
+      "react": "all"
+    },
+    "enabled": true,
+    "rules": {
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noImplicitCoercions": "warn",
+        "useSimplifiedLogicExpression": "warn"
+      },
+      "correctness": {
+        "noNestedComponentDefinitions": "error",
+        "noReactPropAssignments": "error",
+        "noRenderReturnValue": "error",
+        "noUnusedImports": "error",
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error",
+        "useSingleJsDocAsterisk": "error"
+      },
+      "nursery": {
+        "noDeprecatedImports": "warn",
+        "noImportCycles": "warn",
+        "noReactForwardRef": "error",
+        "noShadow": "warn",
+        "noUnnecessaryConditions": "warn",
+        "noUnusedExpressions": "warn",
+        "noUselessCatchBinding": "info",
+        "noUselessUndefined": "on",
+        "useConsistentArrowReturn": "on",
+        "useExhaustiveSwitchCases": "error",
+        "useMaxParams": "on",
+        "useSortedClasses": {
+          "fix": "safe",
+          "level": "error",
+          "options": {}
+        }
+      },
+      "performance": {
+        "noAwaitInLoops": "on",
+        "noBarrelFile": "on",
+        "noDelete": "on",
+        "noDynamicNamespaceImportAccess": "on",
+        "noReExportAll": "on",
+        "useTopLevelRegex": "on"
+      },
+      "recommended": true,
+      "style": {
+        "noImplicitBoolean": "on",
+        "noInferrableTypes": "on",
+        "noMagicNumbers": "on",
+        "useComponentExportOnlyModules": "off",
+        "useConsistentArrayType": "error",
+        "useConsistentTypeDefinitions": "on",
+        "useImportType": {
+          "level": "error",
+          "options": {
+            "style": "inlineType"
+          }
+        },
+        "useReactFunctionComponents": "error"
+      },
+      "suspicious": {
+        "noNonNullAssertedOptionalChain": "error"
+      }
+    }
+  },
+  "vcs": {
+    "clientKind": "git",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
+}

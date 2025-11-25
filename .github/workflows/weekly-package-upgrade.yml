@@ -1,0 +1,157 @@
+name: (Weekly) Package Update Issue
+
+on:
+  schedule:
+    # JST 07:00 on Monday (UTC 22:00 on Sunday)
+    - cron: "0 22 * * SUN"
+  workflow_dispatch: {} # Allow manual triggering for testing
+
+jobs:
+  create-upgrade-issue:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create package upgrade issue and assign to Copilot
+        id: create_issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueBody = [
+              '# 📦 パッケージアップグレード自動化タスク',
+              '',
+              '## 実行手順',
+              '',
+              '### 0. 作業ブランチの作成',
+              '',
+              '- ブランチ名は `*-yyyymmdd` の形式で作成してください',
+              '- 例: `weekly-package-upgrade-20250106`',
+              '',
+              '### 1. アップグレード可能なパッケージの確認',
+              '',
+              '```bash',
+              'yarn outdated',
+              '```',
+              '',
+              '### 2. パッケージのアップグレード戦略',
+              '',
+              '- **パッケージとそのタイプパッケージ（@types/*）をセットとして扱う**',
+              '- **1つずつアップグレードして、各回で動作確認を行う**',
+              '- **メジャーバージョンアップは慎重に行い、Breaking Changesを確認する**',
+              '- 関連するパッケージ（例: react, react-dom, @types/react）は同時にアップグレード',
+              '',
+              '### 3. 各パッケージのアップグレード手順',
+              '',
+              '#### **3-1. パッケージのアップグレード**',
+              '',
+              '```bash',
+              'yarn upgrade [package-name]@latest',
+              '# タイプパッケージも存在する場合',
+              'yarn upgrade @types/[package-name]@latest',
+              '```',
+              '',
+              '#### **3-2. DBスキーマ更新（zenstack/prisma関連パッケージの場合のみ）**',
+              '',
+              '```bash',
+              'yarn db:generate',
+              '```',
+              '',
+              '#### **3-3. 【重要】フォーマット＆Lint実行（必須）**',
+              '',
+              '任意のファイルを変更した後は、**必ず**以下のコマンドを実行してください：',
+              '',
+              '```bash',
+              'yarn check:fix',
+              '```',
+              '',
+              '#### **3-4. 動作確認**',
+              '',
+              '以下のコマンドを**必ずこの順序で**実行してください：',
+              '',
+              '```bash',
+              '# 1. Formatter & Linter チェック',
+              'yarn check',
+              '',
+              '# 2. ビルド',
+              'yarn build',
+              '',
+              '# 3. テスト',
+              'yarn test:run',
+              '',
+              '# 4. Storybookビルド',
+              'yarn build-storybook',
+              '```',
+              '',
+              '#### **3-5. 問題がなければコミット**',
+              '',
+              '```bash',
+              'git add .',
+              'git commit -m "chore: upgrade [package-name] to [new-version]"',
+              '```',
+              '',
+              '### 4. すべてのパッケージをアップグレード後',
+              '',
+              '```bash',
+              '# PRの作成',
+              'git push origin HEAD',
+              '```',
+              '',
+              '---',
+              '',
+              '## 注意事項',
+              '',
+              '### ⚠️ 必須事項',
+              '',
+              '1. **フォーマット・Lintの徹底**: どんな小さな変更でも、変更後は必ず `yarn check:fix` を実行',
+              '2. **ビルド・テストの確認**: すべてのコマンドが成功することを確認',
+              '3. **1パッケージずつ**: 複数パッケージを一度にアップグレードしない（関連パッケージは除く）',
+              '',
+              '### 💡 各ステップでの対処',
+              '',
+              '- 問題が発生した場合は、その時点で作業を停止し原因を調査',
+              '- メジャーバージョンアップの場合は、公式ドキュメントで変更点を確認',
+              '- Breaking Changesがある場合は、必要なコード修正を実施',
+              '',
+              '### 🔍 特に注意が必要なパッケージ',
+              '',
+              '- Next.js: React のバージョン互換性を確認',
+              '- React/React DOM: 関連パッケージ（@types/react, @types/react-dom）も同時更新',
+              '- Prisma/ZenStack: DB スキーマの再生成が必要',
+              '- TypeScript: 型定義の互換性を確認',
+              '- Storybook関連: 設定ファイルの更新が必要な場合あり',
+              '',
+              '---',
+              '',
+              '## 参考リンク',
+              '',
+              '- [プロジェクト README](https://github.com/WakuwakuP/my-template-nextjs/blob/master/README.md)',
+              '- [Copilot Instructions](https://github.com/WakuwakuP/my-template-nextjs/blob/master/.github/copilot-instructions.md)',
+              ''
+            ].join('\n');
+
+            const issueDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+
+            // Create issue
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📦 Weekly Package Upgrade (${issueDate})`,
+              body: issueBody,
+              labels: ['dependencies', 'maintenance', 'automated', 'copilot'],
+            });
+
+            console.log('Created issue #' + issue.data.number + ': ' + issue.data.html_url);
+            console.log('Assigned to @copilot');
+            return issue.data.number;
+
+      - name: assignees issue to Copilot
+        env:
+          GITHUB_TOKEN: ${{ secrets.ISSUE_ASSIGN_TO_COPILOT_PAT }} # NOTE: copilotの課金確認のためにPATを利用
+        run: |
+          gh issue edit ${{ steps.create_issue.outputs.result }} --add-assignee @copilot --repo ${{ github.repository }}

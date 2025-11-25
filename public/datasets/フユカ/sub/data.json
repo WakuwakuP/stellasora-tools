@@ -1,0 +1,98 @@
+[
+  {
+    "description": "支援スキルが重撃に変化する。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "ヘビーアタック"
+  },
+  {
+    "description": "支援スキル終了時、フカの周囲の敵に追加のダメージを与えるようになる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "爆裂火花"
+  },
+  {
+    "description": "支援スキルで踏み込んだ時、追加のダメージを与えるようになる。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "アサルトフレイム"
+  },
+  {
+    "description": "支援スキル発動時、フカの火属性ダメージが増加する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "熱烈エール"
+  },
+  {
+    "description": "フカがフィールドから離れた後、一定時間ごとに、次に発動する支援スキルのスキルダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "スキルウォーマー"
+  },
+  {
+    "description": "支援スキルのダメージが増加し、ダメージ範囲が拡大し、持続時間が延長される。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "バーストフレア"
+  },
+  {
+    "description": "支援スキルの火属性ダメージが時間経過とともに増加する。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "閃火の心"
+  },
+  {
+    "description": "フユカの支援スキルのダメージを与えるたびに、追加のダメージを与えるようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "サポートコンボ"
+  },
+  {
+    "description": "支援スキル持続中、時間経過とともにフカの火属性ダメージが増加する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "ヒートアップ"
+  },
+  {
+    "description": "支援スキルのダメージ間隔が短縮され、ダメージが増加する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "ナックルラッシュ"
+  },
+  {
+    "description": "火属性巡遊者の会心ダメージが増加する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "仲間の力"
+  },
+  {
+    "description": "フカがエリート以上の敵に与える火属性ダメージが増加する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "勇者の闘志"
+  },
+  {
+    "description": "支援スキルで敵撃破時、フカの攻撃力が上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "才焔の証"
+  },
+  {
+    "description": "必殺技で火属性の印🔥を発動させた時、その必殺技のダメージが増加する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "灼熱ハート"
+  },
+  {
+    "description": "フカの必殺技の打撃回数と必殺技ダメージ増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "業火の鉄拳"
+  },
+  {
+    "description": "必殺技発動時、フカの必殺技ダメージが増加する。この効果は時間経過とともに減少する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "レイジングソウル"
+  }
+]

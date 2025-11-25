@@ -1,0 +1,98 @@
+[
+  {
+    "description": "サージシールドの持続時間が延長される。\nサージシールド持続中、水属性の主力巡遊者の攻撃力が上昇する。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "絶流・無限"
+  },
+  {
+    "description": "サージシールド持続中、主力巡遊者がダメージを与えた時、波を発生させるようになる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "絶流・波紋"
+  },
+  {
+    "description": "サージシールドの持続中、水属性の主力巡遊者の攻撃速度が上昇し、攻撃力が上昇する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "どうにゃ！"
+  },
+  {
+    "description": "サージシールドの持続中、主力巡遊者の攻撃力が上昇する。\n主力巡遊者がダメージを受けた時、支援スキルのクールタイムが短縮される。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": true,
+    "title": "まだまだにゃ！"
+  },
+  {
+    "description": "サージシールドのダメージ吸収量と中断耐性が強化される。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "ウチが守るよ！"
+  },
+  {
+    "description": "波エリアの持続時間が延長される。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "絶流・悠久"
+  },
+  {
+    "description": "波エリアのダメージが増加し、敵をノックバックさせ続けるようになる。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "絶流・重圧"
+  },
+  {
+    "description": "波エリア内にいる水属性巡遊者の通常攻撃ダメージが、1秒ごとに増加する。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "強化するにゃ！"
+  },
+  {
+    "description": "レベル 1\n波エリアのダメージ間隔が短縮される。\n波エリアのダメージを与えた時、主力巡遊者の攻撃力が上昇する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "近づくにゃ！"
+  },
+  {
+    "description": "レベル 1 波エリア内にいる水属性の主力巡遊者のダメージを与えた時、一定確率でその敵の位置に噴水を生成し、水属性のスキルダメージを与え、水属性の印:水流を付与するようになる。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "決めるにゃ！"
+  },
+  {
+    "description": "水属性巡遊者の攻撃力が上昇する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "激流鼓舞"
+  },
+  {
+    "description": "テレサがフィールドにいる時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "絆創膏集め"
+  },
+  {
+    "description": "テレサの攻撃力が上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "縁の下の力持ち"
+  },
+  {
+    "description": "必殺技のダメージを与えた時、その敵の移動速度を低下させ、水属性被ダメージを増加させる。味方に命中時、中断耐性を上昇させる。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "絶水渦流"
+  },
+  {
+    "description": "必殺技発動時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "限界超越"
+  },
+  {
+    "description": "必殺技の、水属性の印：水流⬇か寒冷か凍結が付与されている敵へのダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "潮流魔剣"
+  }
+]

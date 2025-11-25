@@ -1,0 +1,98 @@
+[
+  {
+    "description": "主力スキル発動後、装弾数と通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "超火力"
+  },
+  {
+    "description": "主力スキル発動後、通常攻撃が範囲攻撃になる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "降雨弾"
+  },
+  {
+    "description": "主力スキル発動後、スーパーアーマーを獲得し、攻撃速度と通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "自信満々"
+  },
+  {
+    "description": "コハクの会心が一定回数発生時、通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "貪欲銃火"
+  },
+  {
+    "description": "コハクの通常攻撃でダメージを与えた時、通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "情熱射撃"
+  },
+  {
+    "description": "主力スキル発動後、すぐに再発動できるようになる。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "緻密温度調整"
+  },
+  {
+    "description": "主力スキル命中時、範囲内に追加でダメージを与える。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "感情残響"
+  },
+  {
+    "description": "主力スキルのダメージが増加し、追加で射撃するようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "標的捕捉"
+  },
+  {
+    "description": "主力スキル発動後、攻撃力が上昇する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "弱点見極め"
+  },
+  {
+    "description": "火属性の印：聖炎🔥が付与されている敵を主力スキルで撃破時、次に発動する主力スキルのダメージが増加する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "標的撃破"
+  },
+  {
+    "description": "コハクの会心が火属性の印：聖炎🔥が付与されている敵に発生時、攻撃力が上昇する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "凄腕ガンナー"
+  },
+  {
+    "description": "コハクの回避の発動可能回数が増加する。\nエリート以上の敵にダメージを与えた時、攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "野良猫のリズム"
+  },
+  {
+    "description": "コハクが移動時、攻撃力が上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "野良猫ステップ"
+  },
+  {
+    "description": "必殺技発動後、コハクの攻撃力が上昇する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "烈火の華"
+  },
+  {
+    "description": "必殺技発動時、スキルクールタイムがリセットされるようになる。必殺技終了後、コハクのスキルクールタイムが短縮され、スキルダメージが増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "連射の華"
+  },
+  {
+    "description": "コハクの必殺技で敵を撃破できなかった時、コハクの、その敵へのダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "追魂の華"
+  }
+]

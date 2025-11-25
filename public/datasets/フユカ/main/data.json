@@ -1,0 +1,98 @@
+[
+  {
+    "description": "弾丸の装填上限が増加する。主力スキル発動時、追加のダメージを与えるようになる。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "連撃よーい！"
+  },
+  {
+    "description": "爆炎拳で攻撃するたびに追加のダメージを与えるようになる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "延焼パンチ"
+  },
+  {
+    "description": "爆炎拳の3撃目は追加のダメージを与えるようになる。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "ブレイズナックル"
+  },
+  {
+    "description": "爆炎拳と溶炎破の通常攻撃ダメージが増加し、火属性の印🔥を発動させることができるようになる。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "ヒートサイン"
+  },
+  {
+    "description": "爆炎拳で攻撃後、爆炎拳の通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "烈火の覚悟"
+  },
+  {
+    "description": "主力スキル命中時、爪研ぎマークを付与するようになる。\nフユカが、爪研ぎマークが付与されている敵に通常攻撃ダメージを与えた時、追加のダメージを与える。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": true,
+    "title": "ネコパンチ"
+  },
+  {
+    "description": "主力スキル発動後、次に発動する爆炎拳は溶炎破に変化する。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "焔の構え"
+  },
+  {
+    "description": "フユカが敵に一定回数ダメージを与えた後、追加のダメージを与えるようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "追撃ファイアー"
+  },
+  {
+    "description": "主力スキル発動後、フカの攻撃速度とスキルダメージが上昇する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "フレアラッシュ"
+  },
+  {
+    "description": "一定時間ごとに、爆炎拳と溶炎破の通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "ラヴァチャージ"
+  },
+  {
+    "description": "フカの、HPが低い敵への火属性ダメージが増加する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "紅蓮のトドメ"
+  },
+  {
+    "description": "チーム内に火属性巡遊者が3体いる時、フカの攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "イグニッション"
+  },
+  {
+    "description": "フカがエリート以上の敵に会心発生時、攻撃力が増加する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "勇猛火攻"
+  },
+  {
+    "description": "レベル 1\n必殺技で火属性の印🔥を発動させた時、その必殺技のダメージが増加する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "灼熱ハート"
+  },
+  {
+    "description": "フカの必殺技の打撃回数と必殺技ダメージ増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "業火の鉄拳"
+  },
+  {
+    "description": "必殺技発動時、フカの必殺技ダメージが増加する。この効果は時間経過とともに減少する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "レイジングソウル"
+  }
+]

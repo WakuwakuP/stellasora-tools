@@ -1,0 +1,998 @@
+{
+  "コハク": {
+    "main": [
+      {
+        "description": "主力スキル発動後、装弾数と通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image00.png",
+        "title": "超火力"
+      },
+      {
+        "description": "主力スキル発動後、通常攻撃が範囲攻撃になる。",
+        "fileName": "/datasets/コハク/main/cropped_image01.png",
+        "title": "降雨弾"
+      },
+      {
+        "description": "主力スキル発動後、スーパーアーマーを獲得し、攻撃速度と通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image02.png",
+        "title": "自信満々"
+      },
+      {
+        "description": "コハクの会心が一定回数発生時、通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image03.png",
+        "title": "貪欲銃火"
+      },
+      {
+        "description": "コハクの通常攻撃でダメージを与えた時、通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image04.png",
+        "title": "情熱射撃"
+      },
+      {
+        "description": "主力スキル発動後、すぐに再発動できるようになる。",
+        "fileName": "/datasets/コハク/main/cropped_image05.png",
+        "title": "緻密温度調整"
+      },
+      {
+        "description": "主力スキル命中時、範囲内に追加でダメージを与える。",
+        "fileName": "/datasets/コハク/main/cropped_image06.png",
+        "title": "感情残響"
+      },
+      {
+        "description": "主力スキルのダメージが増加し、追加で射撃するようになる。",
+        "fileName": "/datasets/コハク/main/cropped_image07.png",
+        "title": "標的捕捉"
+      },
+      {
+        "description": "主力スキル発動後、攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/main/cropped_image08.png",
+        "title": "弱点見極め"
+      },
+      {
+        "description": "火属性の印：聖炎🔥が付与されている敵を主力スキルで撃破時、次に発動する主力スキルのダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image09.png",
+        "title": "標的撃破"
+      },
+      {
+        "description": "コハクの会心が火属性の印：聖炎🔥が付与されている敵に発生時、攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/main/cropped_image10.png",
+        "title": "凄腕ガンナー"
+      },
+      {
+        "description": "コハクの回避の発動可能回数が増加する。\nエリート以上の敵にダメージを与えた時、攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/main/cropped_image11.png",
+        "title": "野良猫のリズム"
+      },
+      {
+        "description": "コハクが移動時、攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/main/cropped_image12.png",
+        "title": "野良猫ステップ"
+      },
+      {
+        "description": "必殺技発動後、コハクの攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/main/cropped_image13.png",
+        "title": "烈火の華"
+      },
+      {
+        "description": "必殺技発動時、スキルクールタイムがリセットされるようになる。必殺技終了後、コハクのスキルクールタイムが短縮され、スキルダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image14.png",
+        "title": "連射の華"
+      },
+      {
+        "description": "コハクの必殺技で敵を撃破できなかった時、コハクの、その敵へのダメージが増加する。",
+        "fileName": "/datasets/コハク/main/cropped_image15.png",
+        "title": "追魂の華"
+      }
+    ],
+    "sub": [
+      {
+        "description": "支援スキルは敵を追撃するようになる。",
+        "fileName": "/datasets/コハク/sub/cropped_image00.png",
+        "title": "追尾の舞"
+      },
+      {
+        "description": "支援スキル持続中、残影が発生し続けるようになる。",
+        "fileName": "/datasets/コハク/sub/cropped_image01.png",
+        "title": "散火の舞"
+      },
+      {
+        "description": "支援スキルの攻撃範囲が拡大し、ダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image02.png",
+        "title": "黒猫の気配"
+      },
+      {
+        "description": "支援スキルのダメージが徐々に増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image03.png",
+        "title": "猛る炎渦"
+      },
+      {
+        "description": "支援スキル発動時、コハクの攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/sub/cropped_image04.png",
+        "title": "弾痕共鳴"
+      },
+      {
+        "description": "支援スキル発動後、一定確率で再発動するようになる。",
+        "fileName": "/datasets/コハク/sub/cropped_image05.png",
+        "title": "後進の舞"
+      },
+      {
+        "description": "支援スキル終了時、追加で射撃するようになる。",
+        "fileName": "/datasets/コハク/sub/cropped_image06.png",
+        "title": "幻炎の舞"
+      },
+      {
+        "description": "支援スキル発動後、攻撃力が上昇し、徐々に低下する。",
+        "fileName": "/datasets/コハク/sub/cropped_image07.png",
+        "title": "銃火の余韻"
+      },
+      {
+        "description": "支援スキル発動後、コハクの必殺技ダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image08.png",
+        "title": "猛火の舞"
+      },
+      {
+        "description": "火属性の印：聖炎🔥が付与されている敵にコハクの攻撃命中時、自身の必殺技ダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image09.png",
+        "title": "裂空の炎"
+      },
+      {
+        "description": "火属性巡遊者のスキルダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image10.png",
+        "title": "火付け役"
+      },
+      {
+        "description": "コハクの会心ダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image11.png",
+        "title": "射撃力上昇"
+      },
+      {
+        "description": "コハクの攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/sub/cropped_image12.png",
+        "title": "火炎弾装填"
+      },
+      {
+        "description": "必殺技発動後、コハクの攻撃力が上昇する。",
+        "fileName": "/datasets/コハク/sub/cropped_image13.png",
+        "title": "烈火の華"
+      },
+      {
+        "description": "必殺技発動時、スキルクールタイムがリセットされるようになる。必殺技終了後、コハクのスキルクールタイムが短縮され、スキルダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image14.png",
+        "title": "連射の華"
+      },
+      {
+        "description": "コハクの必殺技で敵を撃破できなかった時、コハクの、その敵へのダメージが増加する。",
+        "fileName": "/datasets/コハク/sub/cropped_image15.png",
+        "title": "追魂の華"
+      }
+    ]
+  },
+  "シア": {
+    "main": [
+      {
+        "description": "雪兎の通常攻撃ダメージを与えた時、電音を付与するようになる。電音が一定数に達すると、追加のダメージを与える。",
+        "fileName": "/datasets/シア/main/cropped_image00.png",
+        "title": "光の雪兎"
+      },
+      {
+        "description": "主力スキルで召喚した雪兎のスキルダメージを与えた時、電音を付与するようになる。電音が一定数に達すると、追加のダメージを与える。",
+        "fileName": "/datasets/シア/main/cropped_image01.png",
+        "title": "スノーフォール"
+      },
+      {
+        "description": "主力スキルは雪兎を追加で1体召喚するようになる。\n主力スキル持続中、すべての雪兎の光属性ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image02.png",
+        "title": "ホワイトウォール"
+      },
+      {
+        "description": "雪兎の通常攻撃ダメージが増加し、通常攻撃の弾丸が敵を貫通するようになる。",
+        "fileName": "/datasets/シア/main/cropped_image03.png",
+        "title": "シーブリザード"
+      },
+      {
+        "description": "雪兎が光属性の印⚡を発動させた時、すべての雪兎の攻撃力が上昇する。",
+        "fileName": "/datasets/シア/main/cropped_image04.png",
+        "title": "マリンスノー"
+      },
+      {
+        "description": "夜兎の通常攻撃時、周囲の敵に追尾ミサイルを発射するようになる。\n追尾ミサイルのダメージを与えた時、夜兎が玉鏡を獲得し、与ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image05.png",
+        "title": "月の夜兎"
+      },
+      {
+        "description": "主力スキルで召喚した夜兎の攻撃時、周囲の敵に追尾ミサイルを発射するようになる。追尾ミサイルのダメージを与えた時、夜兎が玉鏡を獲得し、与ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image06.png",
+        "title": "ナイトフォロー"
+      },
+      {
+        "description": "夜兎のミサイルが命中時に分裂し、周囲にダメージを与えるようになる。",
+        "fileName": "/datasets/シア/main/cropped_image07.png",
+        "title": "集束ミサイル"
+      },
+      {
+        "description": "異なる敵に夜の通常攻撃が命中するごとに、次の夜の通常攻撃のダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image08.png",
+        "title": "ナイトパックス"
+      },
+      {
+        "description": "主力スキルで召喚した夜兎のダメージ間隔が短縮され、スキルダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image09.png",
+        "title": "ラピッドファイア"
+      },
+      {
+        "description": "主力スキル持続中、自身の移動速度が上昇する。\nシアの近距離に敵がいない時、光属性ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image10.png",
+        "title": "オンショア"
+      },
+      {
+        "description": "シアの回避の発動可能回数が増加する。\n光属性の印 ⊕ を発動させた時、攻撃力が上昇する。",
+        "fileName": "/datasets/シア/main/cropped_image11.png",
+        "title": "フォローアップ"
+      },
+      {
+        "description": "シアがHP50%未満の敵への光属性ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image12.png",
+        "title": "フィニッシャー"
+      },
+      {
+        "description": "シアの必殺技の会心発生時、シアの攻撃力が上昇する。",
+        "fileName": "/datasets/シア/main/cropped_image13.png",
+        "title": "シャープムーン"
+      },
+      {
+        "description": "シアの必殺技発動時、自身以外の巡遊者の必殺技がすべてクールタイム中の場合、この必殺技ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image14.png",
+        "title": "静かの海に閃く光"
+      },
+      {
+        "description": "シアの必殺技のダメージ間隔が短縮され、必殺技ダメージが増加する。",
+        "fileName": "/datasets/シア/main/cropped_image15.png",
+        "title": "ハロー波浪注意報"
+      }
+    ],
+    "sub": [
+      {
+        "description": "シアの支援スキル終了後、雪兎を召喚して主力巡遊者に追従させ、敵を攻撃するようになる。",
+        "fileName": "/datasets/シア/sub/cropped_image00.png",
+        "title": "雪兎の火力支援"
+      },
+      {
+        "description": "シアの支援スキル終了後、夜兎を召喚して敵を攻撃するようになる。",
+        "fileName": "/datasets/シア/sub/cropped_image01.png",
+        "title": "夜兎の支援攻撃"
+      },
+      {
+        "description": "フィールドに存在するドローンの数に応じて、ドローンのダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image02.png",
+        "title": "ウサギパーティー"
+      },
+      {
+        "description": "雪兎のダメージを与えるたびに、スキルダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image03.png",
+        "title": "わたしと雪兎"
+      },
+      {
+        "description": "シアが光属性の印を発動させた時、夜兎のスキルダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image04.png",
+        "title": "わたしと夜兎"
+      },
+      {
+        "description": "シアのサーフィンの回数とダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image05.png",
+        "title": "いい波きてる♪"
+      },
+      {
+        "description": "シアのサーフィン後、帯電エリアを発生させ、ダメージを与え続けるようになる。",
+        "fileName": "/datasets/シア/sub/cropped_image06.png",
+        "title": "アブナイウェイヴ"
+      },
+      {
+        "description": "シアのサーフィンのダメージを与えた時、その敵をスタンさせるようになる。\nサーフィンのスキルダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image07.png",
+        "title": "ヘヴィーウェイヴ"
+      },
+      {
+        "description": "シアのサーフィンのダメージを与えた時、その敵のサーフィンの被ダメージを増加させる。",
+        "fileName": "/datasets/シア/sub/cropped_image08.png",
+        "title": "リバースウェイヴ"
+      },
+      {
+        "description": "シアの支援スキル持続中、時間経過で、シアの攻撃力が上昇する。",
+        "fileName": "/datasets/シア/sub/cropped_image09.png",
+        "title": "ロングライド"
+      },
+      {
+        "description": "光属性巡遊者の会心ダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image10.png",
+        "title": "月の海の兎たち"
+      },
+      {
+        "description": "シアが敵を撃破するたびに、自身の攻撃力が上昇する。",
+        "fileName": "/datasets/シア/sub/cropped_image11.png",
+        "title": "ビッグウェイヴ"
+      },
+      {
+        "description": "シアが光属性の印を発動させるたびに、自身の攻撃力が上昇する。",
+        "fileName": "/datasets/シア/sub/cropped_image12.png",
+        "title": "ハイタイド"
+      },
+      {
+        "description": "シアの必殺技の会心発生時、シアの攻撃力が上昇する。",
+        "fileName": "/datasets/シア/sub/cropped_image13.png",
+        "title": "シャープムーン"
+      },
+      {
+        "description": "シアの必殺技発動時、自身以外の巡遊者の必殺技がすべてクールタイム中の場合、この必殺技ダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image14.png",
+        "title": "静かの海に閃く光"
+      },
+      {
+        "description": "シアの必殺技のダメージ間隔が短縮され、必殺技ダメージが増加する。",
+        "fileName": "/datasets/シア/sub/cropped_image15.png",
+        "title": "ハロー波浪注意報"
+      }
+    ]
+  },
+  "チトセ": {
+    "main": [
+      {
+        "description": "主力スキル発動後、通常攻撃は騰蛇を生成するようになる。さらに、中断耐性が上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image00.png",
+        "title": "蛟龍の型"
+      },
+      {
+        "description": "主力スキル発動後、通常攻撃は鏡影を生成するようになる。さらに、中断耐性が上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image01.png",
+        "title": "水影の型"
+      },
+      {
+        "description": "騰蛇命中時、追加で騰蛇を生成するようになる。",
+        "fileName": "/datasets/チトセ/main/cropped_image02.png",
+        "title": "蛟龍の尾"
+      },
+      {
+        "description": "チトセの回避の発動可能回数と通常攻撃ダメージが増加する。主力スキルか回避発動後、通常攻撃の最終撃を発動するようになる。",
+        "fileName": "/datasets/チトセ/main/cropped_image03.png",
+        "title": "影隠れの型"
+      },
+      {
+        "description": "騰蛇のダメージを与えた時、通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/チトセ/main/cropped_image04.png",
+        "title": "蛟龍の剣舞"
+      },
+      {
+        "description": "流閃・鱗の発動に必要な主力スキルの発動回数が減少する。さらに、流閃・鱗が強化される。",
+        "fileName": "/datasets/チトセ/main/cropped_image05.png",
+        "title": "滝斬の型"
+      },
+      {
+        "description": "主力スキルのクールタイムが短縮される。主力スキル発動時、鏡影を生成するようになる。",
+        "fileName": "/datasets/チトセ/main/cropped_image06.png",
+        "title": "引波の型"
+      },
+      {
+        "description": "チトセのスキルダメージが増加する。\nスキルの使用可能回数が増加する。",
+        "fileName": "/datasets/チトセ/main/cropped_image07.png",
+        "title": "連撃の型"
+      },
+      {
+        "description": "主力スキル発動時、スキルダメージが増加する。",
+        "fileName": "/datasets/チトセ/main/cropped_image08.png",
+        "title": "波間の剣舞"
+      },
+      {
+        "description": "チトセのスキルダメージが増加する。\n流閃・鱗で敵を撃破後、次に発動する主力スキルは流閃・鱗に変化する",
+        "fileName": "/datasets/チトセ/main/cropped_image09.png",
+        "title": "連龍の剣舞"
+      },
+      {
+        "description": "自身以外の水属性巡遊者がフィールドにいる時、チトセの攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image10.png",
+        "title": "水龍の共鳴"
+      },
+      {
+        "description": "チトセの回避は地形をすり抜けることができるようになる。回避発動後、攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image11.png",
+        "title": "石穿の剣舞"
+      },
+      {
+        "description": "チトセの攻撃力が上昇する。攻撃を受けた時、攻撃力が追加で上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image12.png",
+        "title": "反攻の型"
+      },
+      {
+        "description": "チトセの必殺技ダメージが増加する。必殺技で水属性の印を 発動させた時、一定確率で寒冷を追加で1付与する。",
+        "fileName": "/datasets/チトセ/main/cropped_image13.png",
+        "title": "暴れまわる蛟龍"
+      },
+      {
+        "description": "必殺技発動時、チトセの攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/main/cropped_image14.png",
+        "title": "蛟龍の加護"
+      },
+      {
+        "description": "必殺技の、寒冷か凍結が付与されている敵へのダメージが増加する。",
+        "fileName": "/datasets/チトセ/main/cropped_image15.png",
+        "title": "蛟龍の霊験"
+      }
+    ],
+    "sub": [
+      {
+        "description": "支援スキルの連撃の回数が増加する。増加分の連撃の会心率が上昇する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image00.png",
+        "title": "追憶の刃"
+      },
+      {
+        "description": "支援スキルの連撃の会心率が上昇する。連撃で会心発生時、追加で連撃を放つようになる。",
+        "fileName": "/datasets/チトセ/sub/cropped_image01.png",
+        "title": "呑流の渦刃"
+      },
+      {
+        "description": "チトセのスキル会心ダメージが増加する。支援スキルの連撃の回数が増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image02.png",
+        "title": "激流に身を任せ"
+      },
+      {
+        "description": "支援スキルの連撃で会心発生時、その後の連撃の会心ダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image03.png",
+        "title": "肺腑穿つ滴"
+      },
+      {
+        "description": "支援スキルの連撃を繰り出すたびに、連撃のダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image04.png",
+        "title": "末広がりの滝"
+      },
+      {
+        "description": "支援スキル発動時、連続で鏡影を生成するようになる。",
+        "fileName": "/datasets/チトセ/sub/cropped_image05.png",
+        "title": "滝壺の水影"
+      },
+      {
+        "description": "支援スキルの鏡影命中時、爆発が発生し、範囲内に水属性ダメージを与えるようになる。",
+        "fileName": "/datasets/チトセ/sub/cropped_image06.png",
+        "title": "砕滝の飛沫"
+      },
+      {
+        "description": "鏡影の、HPが70%未満の敵へのダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image07.png",
+        "title": "影の追い込み漁"
+      },
+      {
+        "description": "鏡影のスキルダメージが増加する。\n鏡影が敵を撃破時、他の鏡影のスキルダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image08.png",
+        "title": "水映の影武者"
+      },
+      {
+        "description": "鏡影命中時、鏡影の攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image09.png",
+        "title": "合わせ鏡の水影"
+      },
+      {
+        "description": "チーム内の水属性巡遊者1体につき、チトセの水属性ダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image10.png",
+        "title": "水龍の加勢"
+      },
+      {
+        "description": "チトセと鏡影の印ダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image11.png",
+        "title": "滝際の波紋"
+      },
+      {
+        "description": "チトセの攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image12.png",
+        "title": "氷川の龍刃"
+      },
+      {
+        "description": "チトセの必殺技ダメージが増加する。必殺技で水属性の印を誘動させた時、一定確率で寒冷を追加で1付与する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image13.png",
+        "title": "暴れまわる蛟龍"
+      },
+      {
+        "description": "必殺技発動時、チトセの攻撃力が上昇する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image14.png",
+        "title": "蛟龍の加護"
+      },
+      {
+        "description": "必殺技の、寒冷か凍結が付与されている敵へのダメージが増加する。",
+        "fileName": "/datasets/チトセ/sub/cropped_image15.png",
+        "title": "蛟龍の霊験"
+      }
+    ]
+  },
+  "テレサ": {
+    "main": [
+      {
+        "description": "主力スキルのダメージが増加し、追加で波を発生させるようになる。",
+        "fileName": "/datasets/テレサ/main/cropped_image00.png",
+        "title": "飛水・爆撃"
+      },
+      {
+        "description": "主力スキルの2段階スキルが解放される。",
+        "fileName": "/datasets/テレサ/main/cropped_image01.png",
+        "title": "飛水・溜力"
+      },
+      {
+        "description": "テレサのスキルダメージを敵に与えた時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/main/cropped_image02.png",
+        "title": "渦流の誘い"
+      },
+      {
+        "description": "テレサのスキルダメージを敵に与えた時、チーム全体のブレイク値貫通効率が上昇する。",
+        "fileName": "/datasets/テレサ/main/cropped_image03.png",
+        "title": "魔剣重圧"
+      },
+      {
+        "description": "テレサのスキルダメージを敵に与えた時、その敵の水属性被ダメージを増加させる。",
+        "fileName": "/datasets/テレサ/main/cropped_image04.png",
+        "title": "大剣の傷痕"
+      },
+      {
+        "description": "テレサがサージシールド獲得時、波が発生し、水属性の印：水流を付与するようになる。",
+        "fileName": "/datasets/テレサ/main/cropped_image05.png",
+        "title": "飛水・環雲"
+      },
+      {
+        "description": "主力スキルで水属性の印：水流↓を付与時、1体の水属性巡遊者が一定確率でSPを獲得する。",
+        "fileName": "/datasets/テレサ/main/cropped_image06.png",
+        "title": "飛水・加護"
+      },
+      {
+        "description": "自身以外の巡遊者が支援スキルか必殺技発動時、テレサがサージシールドを獲得するようになる。",
+        "fileName": "/datasets/テレサ/main/cropped_image07.png",
+        "title": "魔盾召喚"
+      },
+      {
+        "description": "テレサがサージシールド獲得時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/main/cropped_image08.png",
+        "title": "護り人の祝福"
+      },
+      {
+        "description": "テレサのスキルダメージが増加する。\n自身以外の巡遊者の攻撃が、水属性の印：水流↓が付与されている敵に命中時、主カススキルのクールタイムを短縮させる。",
+        "fileName": "/datasets/テレサ/main/cropped_image09.png",
+        "title": "吸魔大剣"
+      },
+      {
+        "description": "チーム内の水属性巡遊者1体につき、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/main/cropped_image10.png",
+        "title": "仲間との絆"
+      },
+      {
+        "description": "テレサがサージシールド獲得時、通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/テレサ/main/cropped_image11.png",
+        "title": "魔盾強化"
+      },
+      {
+        "description": "テレサの攻撃は敵をスタンさせるようになる。",
+        "fileName": "/datasets/テレサ/main/cropped_image12.png",
+        "title": "溜めの一撃"
+      },
+      {
+        "description": "必殺技のダメージを与えた時、その敵の移動速度を低下させ、水属性被ダメージを増加させる。味方に命中時、中断耐性を上昇させる。",
+        "fileName": "/datasets/テレサ/main/cropped_image13.png",
+        "title": "絶水渦流"
+      },
+      {
+        "description": "必殺技発動時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/main/cropped_image14.png",
+        "title": "限界超越"
+      },
+      {
+        "description": "必殺技の、水属性の印：水流か寒冷か凍結が付与されている敵へのダメージが増加する。",
+        "fileName": "/datasets/テレサ/main/cropped_image15.png",
+        "title": "潮流魔剣"
+      }
+    ],
+    "sub": [
+      {
+        "description": "サージシールドの持続時間が延長される。\nサージシールド持続中、水属性の主力巡遊者の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image00.png",
+        "title": "絶流・無限"
+      },
+      {
+        "description": "サージシールド持続中、主力巡遊者がダメージを与えた時、波を発生させるようになる。",
+        "fileName": "/datasets/テレサ/sub/cropped_image01.png",
+        "title": "絶流・波紋"
+      },
+      {
+        "description": "サージシールドの持続中、水属性の主力巡遊者の攻撃速度が上昇し、攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image02.png",
+        "title": "どうにゃ！"
+      },
+      {
+        "description": "サージシールドの持続中、主力巡遊者の攻撃力が上昇する。\n主力巡遊者がダメージを受けた時、支援スキルのクールタイムが短縮される。",
+        "fileName": "/datasets/テレサ/sub/cropped_image03.png",
+        "title": "まだまだにゃ！"
+      },
+      {
+        "description": "サージシールドのダメージ吸収量と中断耐性が強化される。",
+        "fileName": "/datasets/テレサ/sub/cropped_image04.png",
+        "title": "ウチが守るよ！"
+      },
+      {
+        "description": "波エリアの持続時間が延長される。",
+        "fileName": "/datasets/テレサ/sub/cropped_image05.png",
+        "title": "絶流・悠久"
+      },
+      {
+        "description": "波エリアのダメージが増加し、敵をノックバックさせ続けるようになる。",
+        "fileName": "/datasets/テレサ/sub/cropped_image06.png",
+        "title": "絶流・重圧"
+      },
+      {
+        "description": "波エリア内にいる水属性巡遊者の通常攻撃ダメージが、1秒ごとに増加する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image07.png",
+        "title": "強化するにゃ！"
+      },
+      {
+        "description": "レベル 1\n波エリアのダメージ間隔が短縮される。\n波エリアのダメージを与えた時、主力巡遊者の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image08.png",
+        "title": "近づくにゃ！"
+      },
+      {
+        "description": "レベル 1 波エリア内にいる水属性の主力巡遊者のダメージを与えた時、一定確率でその敵の位置に噴水を生成し、水属性のスキルダメージを与え、水属性の印:水流を付与するようになる。",
+        "fileName": "/datasets/テレサ/sub/cropped_image09.png",
+        "title": "決めるにゃ！"
+      },
+      {
+        "description": "水属性巡遊者の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image10.png",
+        "title": "激流鼓舞"
+      },
+      {
+        "description": "テレサがフィールドにいる時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image11.png",
+        "title": "絆創膏集め"
+      },
+      {
+        "description": "テレサの攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image12.png",
+        "title": "縁の下の力持ち"
+      },
+      {
+        "description": "必殺技のダメージを与えた時、その敵の移動速度を低下させ、水属性被ダメージを増加させる。味方に命中時、中断耐性を上昇させる。",
+        "fileName": "/datasets/テレサ/sub/cropped_image13.png",
+        "title": "絶水渦流"
+      },
+      {
+        "description": "必殺技発動時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image14.png",
+        "title": "限界超越"
+      },
+      {
+        "description": "必殺技の、水属性の印：水流⬇か寒冷か凍結が付与されている敵へのダメージが増加する。",
+        "fileName": "/datasets/テレサ/sub/cropped_image15.png",
+        "title": "潮流魔剣"
+      }
+    ]
+  },
+  "ナノハ": {
+    "main": [
+      {
+        "description": "ナノハの通常攻撃で敵に一定回数ダメージを与えた後、範囲内に風属性ダメージを追加で与えるようになる。",
+        "fileName": "/datasets/ナノハ/main/cropped_image00.png",
+        "title": "成長の喜び"
+      },
+      {
+        "description": "主力スキル発動後、通常攻撃は向日葵手裏剣を追加で投げるようになる。",
+        "fileName": "/datasets/ナノハ/main/cropped_image01.png",
+        "title": "扇の散花"
+      },
+      {
+        "description": "向日葵手裏剣を投げるたびに、攻撃速度が上昇し、通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image02.png",
+        "title": "疾風怒濤"
+      },
+      {
+        "description": "分身1体ごとに、ナノハの通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image03.png",
+        "title": "花影の従者"
+      },
+      {
+        "description": "ナノハのダメージを与えた時、一定確率で攻撃速度が上昇し、攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image04.png",
+        "title": "研鑽の日々"
+      },
+      {
+        "description": "向日葵手裏剣は複数回ダメージを与えるようになる。",
+        "fileName": "/datasets/ナノハ/main/cropped_image05.png",
+        "title": "飛旋の刃"
+      },
+      {
+        "description": "向日葵手裏剣のダメージ範囲が拡大し、ダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image06.png",
+        "title": "満開の舞"
+      },
+      {
+        "description": "主力スキル発動時、分身が、向日葵手裏剣を投げるようになる。",
+        "fileName": "/datasets/ナノハ/main/cropped_image07.png",
+        "title": "百花繚乱"
+      },
+      {
+        "description": "向日葵手裏剣はナノハから離れるほどダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image08.png",
+        "title": "日輪草への祈り"
+      },
+      {
+        "description": "主力スキルで風属性の印 を発動させた時、スキルダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image09.png",
+        "title": "花の導き"
+      },
+      {
+        "description": "主力スキル発動時、攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image10.png",
+        "title": "忍の心得"
+      },
+      {
+        "description": "ナノハが風属性の印（緑の葉のマーク）を発動させた時、攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image11.png",
+        "title": "韋駄天"
+      },
+      {
+        "description": "ナノハの回避の発動可能回数が増加する。回避発動時、攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image12.png",
+        "title": "早足"
+      },
+      {
+        "description": "分身が主力巡遊者に追従して戦うようになる。分身のダメージが増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image13.png",
+        "title": "花影の詩"
+      },
+      {
+        "description": "ナノハの必殺技ダメージが上昇する。\n必殺技で召喚できる分身の数が増加する。",
+        "fileName": "/datasets/ナノハ/main/cropped_image14.png",
+        "title": "分身忍術"
+      },
+      {
+        "description": "ナノハの攻撃力が上昇する。分身の持続時間が延長される。",
+        "fileName": "/datasets/ナノハ/main/cropped_image15.png",
+        "title": "忍の矜持"
+      }
+    ],
+    "sub": [
+      {
+        "description": "支援スキルで複数の敵にダメージを与えた時、手裏剣を投げる数が増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image00.png",
+        "title": "追撃用暗器"
+      },
+      {
+        "description": "支援スキルで風属性の印 を発動させた時、クールタイムが短縮される。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image01.png",
+        "title": "風の如く"
+      },
+      {
+        "description": "爆散向日葵生成時、分身が周囲に多数の手裏剣を投げるようになる。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image02.png",
+        "title": "監視交代"
+      },
+      {
+        "description": "支援スキルの、HPが高い敵へのダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image03.png",
+        "title": "急成長"
+      },
+      {
+        "description": "支援スキルが敵に最初のダメージを与えた時、ナノハのスキルダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image04.png",
+        "title": "失敗回避"
+      },
+      {
+        "description": "支援スキルの手裏剣が敵を追尾するようになり、ダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image05.png",
+        "title": "草花の眼"
+      },
+      {
+        "description": "支援スキルは敵にマークをつけるようになる。爆散向日葵が消滅時、マークを爆発させ、ダメージを与える。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image06.png",
+        "title": "対象観察"
+      },
+      {
+        "description": "爆散向日葵消滅時、分身が前方に手裏剣を投げるようになる。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image07.png",
+        "title": "支援忍術"
+      },
+      {
+        "description": "支援スキルの、エリート以上の敵へのダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image08.png",
+        "title": "念には念を"
+      },
+      {
+        "description": "支援スキルのブレイク値貫通効率が上昇する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image09.png",
+        "title": "定期剪定"
+      },
+      {
+        "description": "支援スキルで風属性の印 🍃を発動させた時、チーム全体の攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image10.png",
+        "title": "メイドサービス"
+      },
+      {
+        "description": "主力巡遊者の主力スキル発動時、ナノハの攻撃力が上昇する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image11.png",
+        "title": "精神統一"
+      },
+      {
+        "description": "チーム内の巡遊者のSPが最大時、ナノハの支援スキルのダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image12.png",
+        "title": "花風共鳴"
+      },
+      {
+        "description": "分身が主力巡遊者に追従して戦うようになる。分身のダメージが増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image13.png",
+        "title": "花影の詩"
+      },
+      {
+        "description": "ナノハの必殺技ダメージが上昇する。\n必殺技で召喚できる分身の数が増加する。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image14.png",
+        "title": "分身忍術"
+      },
+      {
+        "description": "ナノハの攻撃力が上昇する。分身の持続時間が延長される。",
+        "fileName": "/datasets/ナノハ/sub/cropped_image15.png",
+        "title": "忍の矜持"
+      }
+    ]
+  },
+  "フユカ": {
+    "main": [
+      {
+        "description": "弾丸の装填上限が増加する。主力スキル発動時、追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/main/cropped_image00.png",
+        "title": "連撃よーい！"
+      },
+      {
+        "description": "爆炎拳で攻撃するたびに追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/main/cropped_image01.png",
+        "title": "延焼パンチ"
+      },
+      {
+        "description": "爆炎拳の3撃目は追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/main/cropped_image02.png",
+        "title": "ブレイズナックル"
+      },
+      {
+        "description": "爆炎拳と溶炎破の通常攻撃ダメージが増加し、火属性の印🔥を発動させることができるようになる。",
+        "fileName": "/datasets/フユカ/main/cropped_image03.png",
+        "title": "ヒートサイン"
+      },
+      {
+        "description": "爆炎拳で攻撃後、爆炎拳の通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image04.png",
+        "title": "烈火の覚悟"
+      },
+      {
+        "description": "主力スキル命中時、爪研ぎマークを付与するようになる。\nフユカが、爪研ぎマークが付与されている敵に通常攻撃ダメージを与えた時、追加のダメージを与える。",
+        "fileName": "/datasets/フユカ/main/cropped_image05.png",
+        "title": "ネコパンチ"
+      },
+      {
+        "description": "主力スキル発動後、次に発動する爆炎拳は溶炎破に変化する。",
+        "fileName": "/datasets/フユカ/main/cropped_image06.png",
+        "title": "焔の構え"
+      },
+      {
+        "description": "フユカが敵に一定回数ダメージを与えた後、追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/main/cropped_image07.png",
+        "title": "追撃ファイアー"
+      },
+      {
+        "description": "主力スキル発動後、フカの攻撃速度とスキルダメージが上昇する。",
+        "fileName": "/datasets/フユカ/main/cropped_image08.png",
+        "title": "フレアラッシュ"
+      },
+      {
+        "description": "一定時間ごとに、爆炎拳と溶炎破の通常攻撃ダメージが増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image09.png",
+        "title": "ラヴァチャージ"
+      },
+      {
+        "description": "フカの、HPが低い敵への火属性ダメージが増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image10.png",
+        "title": "紅蓮のトドメ"
+      },
+      {
+        "description": "チーム内に火属性巡遊者が3体いる時、フカの攻撃力が上昇する。",
+        "fileName": "/datasets/フユカ/main/cropped_image11.png",
+        "title": "イグニッション"
+      },
+      {
+        "description": "フカがエリート以上の敵に会心発生時、攻撃力が増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image12.png",
+        "title": "勇猛火攻"
+      },
+      {
+        "description": "レベル 1\n必殺技で火属性の印🔥を発動させた時、その必殺技のダメージが増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image13.png",
+        "title": "灼熱ハート"
+      },
+      {
+        "description": "フカの必殺技の打撃回数と必殺技ダメージ増加する。",
+        "fileName": "/datasets/フユカ/main/cropped_image14.png",
+        "title": "業火の鉄拳"
+      },
+      {
+        "description": "必殺技発動時、フカの必殺技ダメージが増加する。この効果は時間経過とともに減少する。",
+        "fileName": "/datasets/フユカ/main/cropped_image15.png",
+        "title": "レイジングソウル"
+      }
+    ],
+    "sub": [
+      {
+        "description": "支援スキルが重撃に変化する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image00.png",
+        "title": "ヘビーアタック"
+      },
+      {
+        "description": "支援スキル終了時、フカの周囲の敵に追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/sub/cropped_image01.png",
+        "title": "爆裂火花"
+      },
+      {
+        "description": "支援スキルで踏み込んだ時、追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/sub/cropped_image02.png",
+        "title": "アサルトフレイム"
+      },
+      {
+        "description": "支援スキル発動時、フカの火属性ダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image03.png",
+        "title": "熱烈エール"
+      },
+      {
+        "description": "フカがフィールドから離れた後、一定時間ごとに、次に発動する支援スキルのスキルダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image04.png",
+        "title": "スキルウォーマー"
+      },
+      {
+        "description": "支援スキルのダメージが増加し、ダメージ範囲が拡大し、持続時間が延長される。",
+        "fileName": "/datasets/フユカ/sub/cropped_image05.png",
+        "title": "バーストフレア"
+      },
+      {
+        "description": "支援スキルの火属性ダメージが時間経過とともに増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image06.png",
+        "title": "閃火の心"
+      },
+      {
+        "description": "フユカの支援スキルのダメージを与えるたびに、追加のダメージを与えるようになる。",
+        "fileName": "/datasets/フユカ/sub/cropped_image07.png",
+        "title": "サポートコンボ"
+      },
+      {
+        "description": "支援スキル持続中、時間経過とともにフカの火属性ダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image08.png",
+        "title": "ヒートアップ"
+      },
+      {
+        "description": "支援スキルのダメージ間隔が短縮され、ダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image09.png",
+        "title": "ナックルラッシュ"
+      },
+      {
+        "description": "火属性巡遊者の会心ダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image10.png",
+        "title": "仲間の力"
+      },
+      {
+        "description": "フカがエリート以上の敵に与える火属性ダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image11.png",
+        "title": "勇者の闘志"
+      },
+      {
+        "description": "支援スキルで敵撃破時、フカの攻撃力が上昇する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image12.png",
+        "title": "才焔の証"
+      },
+      {
+        "description": "必殺技で火属性の印🔥を発動させた時、その必殺技のダメージが増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image13.png",
+        "title": "灼熱ハート"
+      },
+      {
+        "description": "フカの必殺技の打撃回数と必殺技ダメージ増加する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image14.png",
+        "title": "業火の鉄拳"
+      },
+      {
+        "description": "必殺技発動時、フカの必殺技ダメージが増加する。この効果は時間経過とともに減少する。",
+        "fileName": "/datasets/フユカ/sub/cropped_image15.png",
+        "title": "レイジングソウル"
+      }
+    ]
+  }
+}

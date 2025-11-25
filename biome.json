@@ -36,7 +36,8 @@
       "!**/tests/**/*",
       "!**/.storybook/MockAuth.tsx",
       "!**/*.test.ts",
-      "!**/*.test.tsx"
+      "!**/*.test.tsx",
+      "!**/素質カード抽出ツール.jsx"
     ]
   },
   "formatter": {

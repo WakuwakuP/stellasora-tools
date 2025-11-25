@@ -1,0 +1,98 @@
+[
+  {
+    "description": "支援スキルは敵を追撃するようになる。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "追尾の舞"
+  },
+  {
+    "description": "支援スキル持続中、残影が発生し続けるようになる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "散火の舞"
+  },
+  {
+    "description": "支援スキルの攻撃範囲が拡大し、ダメージが増加する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "黒猫の気配"
+  },
+  {
+    "description": "支援スキルのダメージが徐々に増加する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "猛る炎渦"
+  },
+  {
+    "description": "支援スキル発動時、コハクの攻撃力が上昇する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "弾痕共鳴"
+  },
+  {
+    "description": "支援スキル発動後、一定確率で再発動するようになる。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "後進の舞"
+  },
+  {
+    "description": "支援スキル終了時、追加で射撃するようになる。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "幻炎の舞"
+  },
+  {
+    "description": "支援スキル発動後、攻撃力が上昇し、徐々に低下する。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "銃火の余韻"
+  },
+  {
+    "description": "支援スキル発動後、コハクの必殺技ダメージが増加する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "猛火の舞"
+  },
+  {
+    "description": "火属性の印：聖炎🔥が付与されている敵にコハクの攻撃命中時、自身の必殺技ダメージが増加する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "裂空の炎"
+  },
+  {
+    "description": "火属性巡遊者のスキルダメージが増加する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "火付け役"
+  },
+  {
+    "description": "コハクの会心ダメージが増加する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "射撃力上昇"
+  },
+  {
+    "description": "コハクの攻撃力が上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "火炎弾装填"
+  },
+  {
+    "description": "必殺技発動後、コハクの攻撃力が上昇する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "烈火の華"
+  },
+  {
+    "description": "必殺技発動時、スキルクールタイムがリセットされるようになる。必殺技終了後、コハクのスキルクールタイムが短縮され、スキルダメージが増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "連射の華"
+  },
+  {
+    "description": "コハクの必殺技で敵を撃破できなかった時、コハクの、その敵へのダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "追魂の華"
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "description": "主力スキルのダメージが増加し、追加で波を発生させるようになる。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "飛水・爆撃"
+  },
+  {
+    "description": "主力スキルの2段階スキルが解放される。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "飛水・溜力"
+  },
+  {
+    "description": "テレサのスキルダメージを敵に与えた時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "渦流の誘い"
+  },
+  {
+    "description": "テレサのスキルダメージを敵に与えた時、チーム全体のブレイク値貫通効率が上昇する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "魔剣重圧"
+  },
+  {
+    "description": "テレサのスキルダメージを敵に与えた時、その敵の水属性被ダメージを増加させる。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "大剣の傷痕"
+  },
+  {
+    "description": "テレサがサージシールド獲得時、波が発生し、水属性の印：水流を付与するようになる。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "飛水・環雲"
+  },
+  {
+    "description": "主力スキルで水属性の印：水流↓を付与時、1体の水属性巡遊者が一定確率でSPを獲得する。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "飛水・加護"
+  },
+  {
+    "description": "自身以外の巡遊者が支援スキルか必殺技発動時、テレサがサージシールドを獲得するようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "魔盾召喚"
+  },
+  {
+    "description": "テレサがサージシールド獲得時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "護り人の祝福"
+  },
+  {
+    "description": "テレサのスキルダメージが増加する。\n自身以外の巡遊者の攻撃が、水属性の印：水流↓が付与されている敵に命中時、主カススキルのクールタイムを短縮させる。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": true,
+    "title": "吸魔大剣"
+  },
+  {
+    "description": "チーム内の水属性巡遊者1体につき、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "仲間との絆"
+  },
+  {
+    "description": "テレサがサージシールド獲得時、通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "魔盾強化"
+  },
+  {
+    "description": "テレサの攻撃は敵をスタンさせるようになる。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "溜めの一撃"
+  },
+  {
+    "description": "必殺技のダメージを与えた時、その敵の移動速度を低下させ、水属性被ダメージを増加させる。味方に命中時、中断耐性を上昇させる。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "絶水渦流"
+  },
+  {
+    "description": "必殺技発動時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "限界超越"
+  },
+  {
+    "description": "必殺技の、水属性の印：水流か寒冷か凍結が付与されている敵へのダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "潮流魔剣"
+  }
+]

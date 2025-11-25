@@ -1,0 +1,98 @@
+[
+  {
+    "description": "雪兎の通常攻撃ダメージを与えた時、電音を付与するようになる。電音が一定数に達すると、追加のダメージを与える。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "光の雪兎"
+  },
+  {
+    "description": "主力スキルで召喚した雪兎のスキルダメージを与えた時、電音を付与するようになる。電音が一定数に達すると、追加のダメージを与える。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": true,
+    "title": "スノーフォール"
+  },
+  {
+    "description": "主力スキルは雪兎を追加で1体召喚するようになる。\n主力スキル持続中、すべての雪兎の光属性ダメージが増加する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "ホワイトウォール"
+  },
+  {
+    "description": "雪兎の通常攻撃ダメージが増加し、通常攻撃の弾丸が敵を貫通するようになる。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "シーブリザード"
+  },
+  {
+    "description": "雪兎が光属性の印⚡を発動させた時、すべての雪兎の攻撃力が上昇する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "マリンスノー"
+  },
+  {
+    "description": "夜兎の通常攻撃時、周囲の敵に追尾ミサイルを発射するようになる。\n追尾ミサイルのダメージを与えた時、夜兎が玉鏡を獲得し、与ダメージが増加する。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": true,
+    "title": "月の夜兎"
+  },
+  {
+    "description": "主力スキルで召喚した夜兎の攻撃時、周囲の敵に追尾ミサイルを発射するようになる。追尾ミサイルのダメージを与えた時、夜兎が玉鏡を獲得し、与ダメージが増加する。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": true,
+    "title": "ナイトフォロー"
+  },
+  {
+    "description": "夜兎のミサイルが命中時に分裂し、周囲にダメージを与えるようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "集束ミサイル"
+  },
+  {
+    "description": "異なる敵に夜の通常攻撃が命中するごとに、次の夜の通常攻撃のダメージが増加する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "ナイトパックス"
+  },
+  {
+    "description": "主力スキルで召喚した夜兎のダメージ間隔が短縮され、スキルダメージが増加する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "ラピッドファイア"
+  },
+  {
+    "description": "主力スキル持続中、自身の移動速度が上昇する。\nシアの近距離に敵がいない時、光属性ダメージが増加する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "オンショア"
+  },
+  {
+    "description": "シアの回避の発動可能回数が増加する。\n光属性の印 ⊕ を発動させた時、攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "フォローアップ"
+  },
+  {
+    "description": "シアがHP50%未満の敵への光属性ダメージが増加する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "フィニッシャー"
+  },
+  {
+    "description": "シアの必殺技の会心発生時、シアの攻撃力が上昇する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "シャープムーン"
+  },
+  {
+    "description": "シアの必殺技発動時、自身以外の巡遊者の必殺技がすべてクールタイム中の場合、この必殺技ダメージが増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "静かの海に閃く光"
+  },
+  {
+    "description": "シアの必殺技のダメージ間隔が短縮され、必殺技ダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "ハロー波浪注意報"
+  }
+]

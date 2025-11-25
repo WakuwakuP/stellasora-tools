@@ -1,0 +1,98 @@
+[
+  {
+    "description": "支援スキルで複数の敵にダメージを与えた時、手裏剣を投げる数が増加する。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "追撃用暗器"
+  },
+  {
+    "description": "支援スキルで風属性の印 を発動させた時、クールタイムが短縮される。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "風の如く"
+  },
+  {
+    "description": "爆散向日葵生成時、分身が周囲に多数の手裏剣を投げるようになる。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "監視交代"
+  },
+  {
+    "description": "支援スキルの、HPが高い敵へのダメージが増加する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "急成長"
+  },
+  {
+    "description": "支援スキルが敵に最初のダメージを与えた時、ナノハのスキルダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "失敗回避"
+  },
+  {
+    "description": "支援スキルの手裏剣が敵を追尾するようになり、ダメージが増加する。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "草花の眼"
+  },
+  {
+    "description": "支援スキルは敵にマークをつけるようになる。爆散向日葵が消滅時、マークを爆発させ、ダメージを与える。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "対象観察"
+  },
+  {
+    "description": "爆散向日葵消滅時、分身が前方に手裏剣を投げるようになる。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "支援忍術"
+  },
+  {
+    "description": "支援スキルの、エリート以上の敵へのダメージが増加する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "念には念を"
+  },
+  {
+    "description": "支援スキルのブレイク値貫通効率が上昇する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "定期剪定"
+  },
+  {
+    "description": "支援スキルで風属性の印 🍃を発動させた時、チーム全体の攻撃力が上昇する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "メイドサービス"
+  },
+  {
+    "description": "主力巡遊者の主力スキル発動時、ナノハの攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "精神統一"
+  },
+  {
+    "description": "チーム内の巡遊者のSPが最大時、ナノハの支援スキルのダメージが増加する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "花風共鳴"
+  },
+  {
+    "description": "分身が主力巡遊者に追従して戦うようになる。分身のダメージが増加する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "花影の詩"
+  },
+  {
+    "description": "ナノハの必殺技ダメージが上昇する。\n必殺技で召喚できる分身の数が増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "分身忍術"
+  },
+  {
+    "description": "ナノハの攻撃力が上昇する。分身の持続時間が延長される。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "忍の矜持"
+  }
+]

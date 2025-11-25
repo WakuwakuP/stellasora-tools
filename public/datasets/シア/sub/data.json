@@ -1,0 +1,98 @@
+[
+  {
+    "description": "シアの支援スキル終了後、雪兎を召喚して主力巡遊者に追従させ、敵を攻撃するようになる。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "雪兎の火力支援"
+  },
+  {
+    "description": "シアの支援スキル終了後、夜兎を召喚して敵を攻撃するようになる。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "夜兎の支援攻撃"
+  },
+  {
+    "description": "フィールドに存在するドローンの数に応じて、ドローンのダメージが増加する。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "ウサギパーティー"
+  },
+  {
+    "description": "雪兎のダメージを与えるたびに、スキルダメージが増加する。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "わたしと雪兎"
+  },
+  {
+    "description": "シアが光属性の印を発動させた時、夜兎のスキルダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "わたしと夜兎"
+  },
+  {
+    "description": "シアのサーフィンの回数とダメージが増加する。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "いい波きてる♪"
+  },
+  {
+    "description": "シアのサーフィン後、帯電エリアを発生させ、ダメージを与え続けるようになる。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "アブナイウェイヴ"
+  },
+  {
+    "description": "シアのサーフィンのダメージを与えた時、その敵をスタンさせるようになる。\nサーフィンのスキルダメージが増加する。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": true,
+    "title": "ヘヴィーウェイヴ"
+  },
+  {
+    "description": "シアのサーフィンのダメージを与えた時、その敵のサーフィンの被ダメージを増加させる。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "リバースウェイヴ"
+  },
+  {
+    "description": "シアの支援スキル持続中、時間経過で、シアの攻撃力が上昇する。",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "ロングライド"
+  },
+  {
+    "description": "光属性巡遊者の会心ダメージが増加する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "月の海の兎たち"
+  },
+  {
+    "description": "シアが敵を撃破するたびに、自身の攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "ビッグウェイヴ"
+  },
+  {
+    "description": "シアが光属性の印を発動させるたびに、自身の攻撃力が上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "ハイタイド"
+  },
+  {
+    "description": "シアの必殺技の会心発生時、シアの攻撃力が上昇する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "シャープムーン"
+  },
+  {
+    "description": "シアの必殺技発動時、自身以外の巡遊者の必殺技がすべてクールタイム中の場合、この必殺技ダメージが増加する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "静かの海に閃く光"
+  },
+  {
+    "description": "シアの必殺技のダメージ間隔が短縮され、必殺技ダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "ハロー波浪注意報"
+  }
+]

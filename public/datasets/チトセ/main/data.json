@@ -1,0 +1,98 @@
+[
+  {
+    "description": "主力スキル発動後、通常攻撃は騰蛇を生成するようになる。さらに、中断耐性が上昇する。",
+    "fileName": "cropped_image00.png",
+    "isTruncated": false,
+    "title": "蛟龍の型"
+  },
+  {
+    "description": "主力スキル発動後、通常攻撃は鏡影を生成するようになる。さらに、中断耐性が上昇する。",
+    "fileName": "cropped_image01.png",
+    "isTruncated": false,
+    "title": "水影の型"
+  },
+  {
+    "description": "騰蛇命中時、追加で騰蛇を生成するようになる。",
+    "fileName": "cropped_image02.png",
+    "isTruncated": false,
+    "title": "蛟龍の尾"
+  },
+  {
+    "description": "チトセの回避の発動可能回数と通常攻撃ダメージが増加する。主力スキルか回避発動後、通常攻撃の最終撃を発動するようになる。",
+    "fileName": "cropped_image03.png",
+    "isTruncated": false,
+    "title": "影隠れの型"
+  },
+  {
+    "description": "騰蛇のダメージを与えた時、通常攻撃ダメージが増加する。",
+    "fileName": "cropped_image04.png",
+    "isTruncated": false,
+    "title": "蛟龍の剣舞"
+  },
+  {
+    "description": "流閃・鱗の発動に必要な主力スキルの発動回数が減少する。さらに、流閃・鱗が強化される。",
+    "fileName": "cropped_image05.png",
+    "isTruncated": false,
+    "title": "滝斬の型"
+  },
+  {
+    "description": "主力スキルのクールタイムが短縮される。主力スキル発動時、鏡影を生成するようになる。",
+    "fileName": "cropped_image06.png",
+    "isTruncated": false,
+    "title": "引波の型"
+  },
+  {
+    "description": "チトセのスキルダメージが増加する。\nスキルの使用可能回数が増加する。",
+    "fileName": "cropped_image07.png",
+    "isTruncated": false,
+    "title": "連撃の型"
+  },
+  {
+    "description": "主力スキル発動時、スキルダメージが増加する。",
+    "fileName": "cropped_image08.png",
+    "isTruncated": false,
+    "title": "波間の剣舞"
+  },
+  {
+    "description": "チトセのスキルダメージが増加する。\n流閃・鱗で敵を撃破後、次に発動する主力スキルは流閃・鱗に変化する",
+    "fileName": "cropped_image09.png",
+    "isTruncated": false,
+    "title": "連龍の剣舞"
+  },
+  {
+    "description": "自身以外の水属性巡遊者がフィールドにいる時、チトセの攻撃力が上昇する。",
+    "fileName": "cropped_image10.png",
+    "isTruncated": false,
+    "title": "水龍の共鳴"
+  },
+  {
+    "description": "チトセの回避は地形をすり抜けることができるようになる。回避発動後、攻撃力が上昇する。",
+    "fileName": "cropped_image11.png",
+    "isTruncated": false,
+    "title": "石穿の剣舞"
+  },
+  {
+    "description": "チトセの攻撃力が上昇する。攻撃を受けた時、攻撃力が追加で上昇する。",
+    "fileName": "cropped_image12.png",
+    "isTruncated": false,
+    "title": "反攻の型"
+  },
+  {
+    "description": "チトセの必殺技ダメージが増加する。必殺技で水属性の印を 発動させた時、一定確率で寒冷を追加で1付与する。",
+    "fileName": "cropped_image13.png",
+    "isTruncated": false,
+    "title": "暴れまわる蛟龍"
+  },
+  {
+    "description": "必殺技発動時、チトセの攻撃力が上昇する。",
+    "fileName": "cropped_image14.png",
+    "isTruncated": false,
+    "title": "蛟龍の加護"
+  },
+  {
+    "description": "必殺技の、寒冷か凍結が付与されている敵へのダメージが増加する。",
+    "fileName": "cropped_image15.png",
+    "isTruncated": false,
+    "title": "蛟龍の霊験"
+  }
+]

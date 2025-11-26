@@ -574,10 +574,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const support2 = characters[2]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
-      <div className="flex flex-col gap-4 p-4 lg:flex-row">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
+      <div className="flex h-full flex-col gap-4 p-4 lg:flex-row">
         {/* 左パネル - ビルド情報 */}
-        <div className="w-full rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:w-80">
+        <div className="w-full shrink-0 overflow-y-auto rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80">
           {/* ビルド名・スコア */}
           <div className="mb-4 rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 p-4 text-white">
             <div className="flex items-center gap-2">
@@ -679,9 +679,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         </div>
 
         {/* 右パネル - 素質/ロスレコスキル */}
-        <div className="flex-1 rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-            <TabsList className="w-full justify-start rounded-none rounded-t-xl border-b bg-slate-100 p-0 dark:bg-slate-900">
+        <div className="flex min-h-0 flex-1 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex min-h-0 flex-1 flex-col">
+            <TabsList className="w-full shrink-0 justify-start rounded-none rounded-t-xl border-b bg-slate-100 p-0 dark:bg-slate-900">
               <TabsTrigger
                 value="qualities"
                 className="rounded-none rounded-tl-xl border-r px-6 py-3 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
@@ -696,7 +696,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="qualities" className="mt-0 h-[calc(100vh-200px)]">
+            <TabsContent value="qualities" className="mt-0 min-h-0 flex-1">
               <ScrollArea className="h-full p-4">
                 {/* 主力キャラクターの素質 */}
                 {mainCharacter.name && qualitiesData[mainCharacter.name] && (
@@ -736,10 +736,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="lossreco" className="mt-0 p-4">
-              <div className="flex h-64 items-center justify-center text-slate-500">
-                <p>ロスレコスキル機能は準備中です</p>
-              </div>
+            <TabsContent value="lossreco" className="mt-0 min-h-0 flex-1">
+              <ScrollArea className="h-full p-4">
+                <div className="flex min-h-64 items-center justify-center text-slate-500">
+                  <p>ロスレコスキル機能は準備中です</p>
+                </div>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
         </div>

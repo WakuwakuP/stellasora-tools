@@ -8,6 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from 'components/ui/dialog'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import Image from 'next/image'
@@ -264,43 +269,55 @@ const QualityCard: FC<{
   isCore: boolean
   onClick: () => void
 }> = ({ quality, index, isSelected, level, isCore, onClick }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`relative flex flex-col items-center rounded-lg border-2 p-1 transition-all hover:scale-105 ${
-      isSelected
-        ? isCore
-          ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
-          : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
-        : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
-    }`}
-  >
-    {/* コア素質は選択時にチェックマーク、通常素質はレベル表示 */}
-    {isSelected && (
-      <Badge
-        className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
-          isCore ? 'bg-pink-500' : 'bg-blue-600'
+  <HoverCard openDelay={200} closeDelay={100}>
+    <HoverCardTrigger asChild>
+      <button
+        type="button"
+        onClick={onClick}
+        className={`relative flex flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+          isSelected
+            ? isCore
+              ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
+              : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
+            : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
         }`}
       >
-        {isCore ? '✓' : level}
-      </Badge>
-    )}
-    <div
-      className="relative w-full overflow-hidden rounded-md"
-      style={{ aspectRatio: QUALITY_IMAGE_ASPECT_RATIO }}
-    >
-      <Image
-        src={quality.fileName}
-        alt={quality.title}
-        fill
-        sizes="100px"
-        className="object-cover"
-      />
-    </div>
-    <span className="mt-1 line-clamp-1 w-full text-center text-xs">
-      {quality.title}
-    </span>
-  </button>
+        {/* コア素質は選択時にチェックマーク、通常素質はレベル表示 */}
+        {isSelected && (
+          <Badge
+            className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
+              isCore ? 'bg-pink-500' : 'bg-blue-600'
+            }`}
+          >
+            {isCore ? '✓' : level}
+          </Badge>
+        )}
+        <div
+          className="relative w-full overflow-hidden rounded-md"
+          style={{ aspectRatio: QUALITY_IMAGE_ASPECT_RATIO }}
+        >
+          <Image
+            src={quality.fileName}
+            alt={quality.title}
+            fill
+            sizes="100px"
+            className="object-cover"
+          />
+        </div>
+        <span className="mt-1 line-clamp-1 w-full text-center text-xs">
+          {quality.title}
+        </span>
+      </button>
+    </HoverCardTrigger>
+    <HoverCardContent className="w-72" side="top" align="center">
+      <div className="space-y-2">
+        <h4 className="font-bold text-sm">{quality.title}</h4>
+        <p className="text-muted-foreground text-xs whitespace-pre-wrap">
+          {quality.description}
+        </p>
+      </div>
+    </HoverCardContent>
+  </HoverCard>
 )
 
 const CharacterAvatar: FC<{

@@ -274,7 +274,7 @@ const QualityCard: FC<{
       <button
         type="button"
         onClick={onClick}
-        className={`relative flex flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+        className={`relative flex max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
           isSelected
             ? isCore
               ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
@@ -300,7 +300,7 @@ const QualityCard: FC<{
             src={quality.fileName}
             alt={quality.title}
             fill
-            sizes="100px"
+            sizes="150px"
             className="object-cover"
           />
         </div>

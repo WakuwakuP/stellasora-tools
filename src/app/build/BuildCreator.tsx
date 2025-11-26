@@ -403,6 +403,13 @@ const CharacterSelectDialog: FC<{
   </Dialog>
 )
 
+/** 素質グループの定義 */
+const QUALITY_GROUPS = [
+  { name: '特化素質1', start: 0, end: 5 },
+  { name: '特化素質2', start: 5, end: 10 },
+  { name: '汎用素質', start: 10, end: 16 },
+] as const
+
 const CharacterQualitiesSection: FC<{
   characterName: string
   qualities: QualityInfo[]
@@ -425,27 +432,35 @@ const CharacterQualitiesSection: FC<{
         <span className="font-bold text-lg">{totalLevel}</span>
       </div>
     </div>
-    <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
-      {qualities.map((quality, index) => {
-        const selectedTalent = selectedTalents.find(
-          (t) =>
-            t.characterName === characterName &&
-            t.role === role &&
-            t.index === index,
-        )
-        const isCore = isCoreTalent(index)
-        return (
-          <QualityCard
-            key={`${characterName}-${role}-${index}`}
-            quality={quality}
-            index={index}
-            isSelected={selectedTalent !== undefined}
-            level={selectedTalent?.level}
-            isCore={isCore}
-            onClick={() => onTalentSelect(characterName, role, index)}
-          />
-        )
-      })}
+    <div className="space-y-3">
+      {QUALITY_GROUPS.map((group) => (
+        <div key={group.name}>
+          <div className="mb-1 text-xs text-slate-500 font-medium">{group.name}</div>
+          <div className="grid grid-cols-5 gap-2">
+            {qualities.slice(group.start, group.end).map((quality, idx) => {
+              const index = group.start + idx
+              const selectedTalent = selectedTalents.find(
+                (t) =>
+                  t.characterName === characterName &&
+                  t.role === role &&
+                  t.index === index,
+              )
+              const isCore = isCoreTalent(index)
+              return (
+                <QualityCard
+                  key={`${characterName}-${role}-${index}`}
+                  quality={quality}
+                  index={index}
+                  isSelected={selectedTalent !== undefined}
+                  level={selectedTalent?.level}
+                  isCore={isCore}
+                  onClick={() => onTalentSelect(characterName, role, index)}
+                />
+              )
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   </div>
 )

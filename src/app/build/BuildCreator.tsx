@@ -40,6 +40,9 @@ const CORE_TALENT_INDICES = [0, 1, 5, 6]
 /** コア素質の最大選択数 */
 const MAX_CORE_TALENTS = 2
 
+/** 通常素質の最大レベル */
+const MAX_TALENT_LEVEL = 6
+
 /** 素質がコア素質かどうかを判定 */
 const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
 
@@ -206,6 +209,7 @@ const QualityCard: FC<{
       <button
         type="button"
         onClick={onClick}
+        aria-label={`${quality.title}${isSelected ? (isCore ? '、選択中' : `、レベル${level}選択中`) : ''}`}
         className={`relative flex min-w-[130px] max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
           isSelected
             ? isCore
@@ -262,6 +266,7 @@ const CharacterAvatar: FC<{
   <button
     type="button"
     onClick={onClick}
+    aria-label={`${label}を変更${name ? `（現在: ${name}）` : '（未選択）'}`}
     className={`group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
       isMain ? 'border-red-500' : 'border-slate-300'
     }`}
@@ -407,34 +412,38 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // characterNamesをメモ化してパフォーマンス向上
   const characterNames = useMemo(() => Object.keys(qualitiesData), [qualitiesData])
 
-  // 初期ステートを設定
-  const getInitialState = useCallback(() => {
-    // URLパスからの初期化を試みる
+  // 初期ステートを計算（遅延初期化パターン）
+  const [characters, setCharacters] = useState<CharacterSlot[]>(() => {
     if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
       return decodeBuildFromPath(
         initialChar1,
         initialChar2,
         initialChar3,
         initialTalents,
-        characterNames,
-      )
+        Object.keys(qualitiesData),
+      ).characters
     }
+    const names = Object.keys(qualitiesData)
+    return [
+      { name: names[0] || null, role: 'main' as const, label: '主力' },
+      { name: names[1] || null, role: 'support' as const, label: '支援1' },
+      { name: names[2] || null, role: 'support' as const, label: '支援2' },
+    ]
+  })
 
-    // デフォルト値
-    return {
-      characters: [
-        { name: characterNames[0] || null, role: 'main' as const, label: '主力' },
-        { name: characterNames[1] || null, role: 'support' as const, label: '支援1' },
-        { name: characterNames[2] || null, role: 'support' as const, label: '支援2' },
-      ],
-      selectedTalents: [],
+  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(() => {
+    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
+      return decodeBuildFromPath(
+        initialChar1,
+        initialChar2,
+        initialChar3,
+        initialTalents,
+        Object.keys(qualitiesData),
+      ).selectedTalents
     }
-  }, [characterNames, initialChar1, initialChar2, initialChar3, initialTalents])
+    return []
+  })
 
-  const initialState = getInitialState()
-
-  const [characters, setCharacters] = useState<CharacterSlot[]>(initialState.characters)
-  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(initialState.selectedTalents)
   const [buildName, setBuildName] = useState('新規ビルド')
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
@@ -479,7 +488,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           return prev.filter((t) => t !== existing)
         }
         // 通常素質はレベルアップ、最大レベルで解除
-        if (existing.level < 6) {
+        if (existing.level < MAX_TALENT_LEVEL) {
           return prev.map((t) =>
             t === existing ? { ...t, level: t.level + 1 } : t,
           )
@@ -576,6 +585,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   type="text"
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
+                  aria-label="ビルド名"
                   className="bg-transparent font-bold text-xl outline-none"
                 />
                 <div className="flex items-center gap-1 text-sm">

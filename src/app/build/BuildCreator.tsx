@@ -274,7 +274,7 @@ const QualityCard: FC<{
       <button
         type="button"
         onClick={onClick}
-        className={`relative flex max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+        className={`relative flex min-w-[130px] max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
           isSelected
             ? isCore
               ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'

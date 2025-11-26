@@ -22,7 +22,7 @@ import {
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
 import Image from 'next/image'
-import { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
 
 /** スコア計算時の1レベルあたりのポイント */
@@ -45,7 +45,8 @@ const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(in
 
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16
-const TOTAL_TALENTS = TALENTS_PER_CHARACTER * 3
+const TOTAL_CHARACTERS = 3
+const TOTAL_TALENTS = TALENTS_PER_CHARACTER * TOTAL_CHARACTERS
 
 /**
  * 選択された素質情報を48個の配列に変換
@@ -89,7 +90,7 @@ function arrayToSelectedTalents(
 ): SelectedTalent[] {
   const result: SelectedTalent[] = []
 
-  for (let charIndex = 0; charIndex < 3; charIndex++) {
+  for (let charIndex = 0; charIndex < TOTAL_CHARACTERS; charIndex++) {
     const charName = characters[charIndex]?.name
     if (!charName) continue
 
@@ -403,7 +404,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   initialChar3,
   initialTalents,
 }) => {
-  const characterNames = Object.keys(qualitiesData)
+  // characterNamesをメモ化してパフォーマンス向上
+  const characterNames = useMemo(() => Object.keys(qualitiesData), [qualitiesData])
 
   // 初期ステートを設定
   const getInitialState = useCallback(() => {
@@ -536,9 +538,17 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
+    // 変更前のキャラクター名を取得
+    const prevCharacterName = characters[slotIndex]?.name
     setCharacters((prev) =>
       prev.map((char, i) => (i === slotIndex ? { ...char, name: newName } : char)),
     )
+    // 変更前キャラクターの素質をクリア
+    if (prevCharacterName) {
+      setSelectedTalents((prev) =>
+        prev.filter((t) => t.characterName !== prevCharacterName)
+      )
+    }
   }
 
   const openCharacterDialog = (slotIndex: number) => {

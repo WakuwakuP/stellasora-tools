@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
 
-import { BuildCreator } from '../../../../BuildCreator'
+import { BuildCreator } from 'app/build/BuildCreator'
 import {
   BuildCreatorFallback,
   getAvailableCharacters,
   getQualitiesData,
-} from '../../../../utils'
+} from 'app/build/utils'
 
 interface Props {
   params: Promise<{

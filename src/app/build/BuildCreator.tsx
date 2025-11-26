@@ -436,7 +436,7 @@ const CharacterQualitiesSection: FC<{
       {QUALITY_GROUPS.map((group) => (
         <div key={group.name}>
           <div className="mb-1 text-xs text-slate-500 font-medium">{group.name}</div>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="flex flex-wrap justify-start gap-2">
             {qualities.slice(group.start, group.end).map((quality, idx) => {
               const index = group.start + idx
               const selectedTalent = selectedTalents.find(

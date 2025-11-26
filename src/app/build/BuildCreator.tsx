@@ -4,6 +4,11 @@ import { SavedBuildList } from 'app/build/SavedBuildList'
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { Badge } from 'components/ui/badge'
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from 'components/ui/collapsible'
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -16,6 +21,7 @@ import {
 } from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
@@ -23,6 +29,7 @@ import {
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import Image from 'next/image'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
@@ -450,6 +457,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
   const [currentUrl, setCurrentUrl] = useState('/build')
 
+  // モバイル判定
+  const isMobile = useIsMobile()
+
+  // モバイル用のセクション折りたたみ状態
+  const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(true)
+  const [isSavedBuildsOpen, setIsSavedBuildsOpen] = useState(false)
+
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 
@@ -602,25 +616,99 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </div>
           </div>
 
-          {/* 巡遊者（キャラクター）セクション */}
-          <div className="mb-4">
-            <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-              <span className="text-lg">🏆</span>
-              巡遊者
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {characters.map((char, index) => (
-                <CharacterAvatar
-                  key={char.label}
-                  name={char.name}
-                  label={char.label}
-                  isMain={char.role === 'main'}
-                  totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
-                  onClick={() => openCharacterDialog(index)}
-                />
-              ))}
-            </div>
-          </div>
+          {/* モバイルの場合、ビルド情報を折りたたみ可能にする */}
+          {isMobile ? (
+            <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
+              <CollapsibleTrigger className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-2 font-bold dark:bg-slate-700">
+                <span className="flex items-center gap-1 text-amber-600">
+                  <span className="text-lg">🏆</span>
+                  ビルド設定
+                </span>
+                {isBuildInfoOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-4">
+                {/* 巡遊者（キャラクター）セクション */}
+                <div>
+                  <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
+                    <span className="text-lg">🏆</span>
+                    巡遊者
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {characters.map((char, index) => (
+                      <CharacterAvatar
+                        key={char.label}
+                        name={char.name}
+                        label={char.label}
+                        isMain={char.role === 'main'}
+                        totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                        onClick={() => openCharacterDialog(index)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* メインロスレコセクション（プレースホルダー） */}
+                <div>
+                  <h3 className="mb-2 flex items-center gap-1 font-bold">
+                    <span>⊕</span>
+                    メインロスレコ
+                    <span className="ml-auto text-slate-400">🔍</span>
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <>
+              {/* デスクトップ: 巡遊者（キャラクター）セクション */}
+              <div className="mb-4">
+                <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
+                  <span className="text-lg">🏆</span>
+                  巡遊者
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {characters.map((char, index) => (
+                    <CharacterAvatar
+                      key={char.label}
+                      name={char.name}
+                      label={char.label}
+                      isMain={char.role === 'main'}
+                      totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                      onClick={() => openCharacterDialog(index)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* デスクトップ: メインロスレコセクション（プレースホルダー） */}
+              <div className="mb-4">
+                <h3 className="mb-2 flex items-center gap-1 font-bold">
+                  <span>⊕</span>
+                  メインロスレコ
+                  <span className="ml-auto text-slate-400">🔍</span>
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
+                    />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* キャラクター選択ダイアログ */}
           {editingSlotIndex !== null && (
@@ -634,25 +722,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             />
           )}
 
-          {/* メインロスレコセクション（プレースホルダー） */}
-          <div className="mb-4">
-            <h3 className="mb-2 flex items-center gap-1 font-bold">
-              <span>⊕</span>
-              メインロスレコ
-              <span className="ml-auto text-slate-400">🔍</span>
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
-                />
-              ))}
-            </div>
-          </div>
-
           {/* ステータス表示 */}
-          <div className="rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
+          <div className="mt-4 rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
             <div className="flex items-center gap-2 text-sm">
               <span className="text-blue-500">ℹ</span>
               <span>
@@ -673,20 +744,47 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </button>
           </div>
 
-          {/* 保存されたビルドリスト */}
-          <div className="mt-4 flex min-h-0 flex-1 flex-col">
-            <h3 className="mb-2 flex items-center gap-1 font-bold">
-              <span>📋</span>
-              保存済みビルド
-            </h3>
-            <div className="min-h-0 flex-1 overflow-hidden">
-              <SavedBuildList
-                builds={builds}
-                onRemove={removeBuild}
-                currentUrl={currentUrl}
-              />
+          {/* 保存されたビルドリスト - モバイルでは折りたたみ可能 */}
+          {isMobile ? (
+            <Collapsible
+              open={isSavedBuildsOpen}
+              onOpenChange={setIsSavedBuildsOpen}
+              className="mt-4"
+            >
+              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-2 font-bold dark:bg-slate-700">
+                <span className="flex items-center gap-1">
+                  <span>📋</span>
+                  保存済みビルド ({builds.length})
+                </span>
+                {isSavedBuildsOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <div className="mt-4 flex min-h-0 flex-1 flex-col">
+              <h3 className="mb-2 flex items-center gap-1 font-bold">
+                <span>📋</span>
+                保存済みビルド
+              </h3>
+              <div className="min-h-0 flex-1 overflow-hidden">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* 右パネル - 素質/ロスレコスキル */}

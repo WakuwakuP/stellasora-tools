@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import Image from 'next/image'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { type FC, useCallback, useEffect, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
 
@@ -33,8 +33,214 @@ const MAX_CORE_TALENTS = 2
 /** 素質がコア素質かどうかを判定 */
 const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
 
+/** Base64URL文字セット（RFC 4648） */
+const BASE64URL_CHARS =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
+
+/** 素質数（1キャラクター16個 × 3人 = 48個） */
+const TALENTS_PER_CHARACTER = 16
+const TOTAL_TALENTS = TALENTS_PER_CHARACTER * 3
+const TALENT_LEVELS = 7 // 0-6 (0 = not selected, 1-6 = level)
+
+/**
+ * 48個の素質レベルを7進数としてBigIntに変換
+ */
+function talentsToBase7BigInt(allTalents: number[]): bigint {
+  let result = BigInt(0)
+  const base = BigInt(TALENT_LEVELS)
+
+  // 最下位桁から順に処理
+  for (let i = allTalents.length - 1; i >= 0; i--) {
+    result = result * base + BigInt(allTalents[i])
+  }
+
+  return result
+}
+
+/**
+ * BigIntから48個の素質レベル配列に変換
+ */
+function base7BigIntToTalents(value: bigint, count: number): number[] {
+  const result: number[] = []
+  const base = BigInt(TALENT_LEVELS)
+  let remaining = value
+
+  for (let i = 0; i < count; i++) {
+    result.push(Number(remaining % base))
+    remaining = remaining / base
+  }
+
+  return result
+}
+
+/**
+ * BigIntをBase64URL文字列に変換
+ */
+function bigIntToBase64Url(value: bigint): string {
+  if (value === BigInt(0)) {
+    return BASE64URL_CHARS[0]
+  }
+
+  let result = ''
+  let remaining = value
+  const base = BigInt(64)
+
+  while (remaining > BigInt(0)) {
+    result = BASE64URL_CHARS[Number(remaining % base)] + result
+    remaining = remaining / base
+  }
+
+  return result
+}
+
+/**
+ * Base64URL文字列をBigIntに変換
+ */
+function base64UrlToBigInt(str: string): bigint {
+  let result = BigInt(0)
+  const base = BigInt(64)
+
+  for (const char of str) {
+    const index = BASE64URL_CHARS.indexOf(char)
+    if (index === -1) {
+      throw new Error(`Invalid Base64URL character: ${char}`)
+    }
+    result = result * base + BigInt(index)
+  }
+
+  return result
+}
+
+/**
+ * 選択された素質情報を48個の配列に変換
+ * コア素質（0, 1, 5, 6）は選択時にlevel=1として扱う（レベル表示はしない）
+ */
+function selectedTalentsToArray(
+  selectedTalents: SelectedTalent[],
+  characters: CharacterSlot[],
+): number[] {
+  const result = new Array<number>(TOTAL_TALENTS).fill(0)
+
+  for (const talent of selectedTalents) {
+    const charIndex = characters.findIndex((c) => c.name === talent.characterName)
+    if (charIndex === -1) continue
+
+    // 主力はmain素質、支援はsub素質を使う
+    const isMainChar = charIndex === 0
+    const expectedRole = isMainChar ? 'main' : 'sub'
+    if (talent.role !== expectedRole) continue
+
+    const baseIndex = charIndex * TALENTS_PER_CHARACTER
+    const talentIndex = baseIndex + talent.index
+
+    // コア素質は選択時にlevel=1として扱う
+    if (isCoreTalent(talent.index)) {
+      result[talentIndex] = 1
+    } else {
+      result[talentIndex] = talent.level
+    }
+  }
+
+  return result
+}
+
+/**
+ * 48個の配列から選択された素質情報に変換
+ */
+function arrayToSelectedTalents(
+  arr: number[],
+  characters: CharacterSlot[],
+): SelectedTalent[] {
+  const result: SelectedTalent[] = []
+
+  for (let charIndex = 0; charIndex < 3; charIndex++) {
+    const charName = characters[charIndex]?.name
+    if (!charName) continue
+
+    const isMainChar = charIndex === 0
+    const role = isMainChar ? 'main' : 'sub'
+    const baseIndex = charIndex * TALENTS_PER_CHARACTER
+
+    for (let i = 0; i < TALENTS_PER_CHARACTER; i++) {
+      const level = arr[baseIndex + i]
+      if (level > 0) {
+        result.push({
+          characterName: charName,
+          role: role as 'main' | 'sub',
+          index: i,
+          // コア素質はレベル0として扱う（表示しない）
+          level: isCoreTalent(i) ? 0 : level,
+        })
+      }
+    }
+  }
+
+  return result
+}
+
+/**
+ * ビルド情報をURLパスにエンコード
+ */
+function encodeBuildToPath(
+  characters: CharacterSlot[],
+  selectedTalents: SelectedTalent[],
+): string {
+  const char1 = characters[0]?.name || ''
+  const char2 = characters[1]?.name || ''
+  const char3 = characters[2]?.name || ''
+
+  if (!char1 || !char2 || !char3) {
+    return '/build'
+  }
+
+  const talentsArray = selectedTalentsToArray(selectedTalents, characters)
+  const bigIntValue = talentsToBase7BigInt(talentsArray)
+  const talentsCode = bigIntToBase64Url(bigIntValue)
+
+  return `/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+}
+
+/**
+ * URLパスからビルド情報をデコード
+ */
+function decodeBuildFromPath(
+  char1: string,
+  char2: string,
+  char3: string,
+  talentsCode: string,
+  characterNames: string[],
+): { characters: CharacterSlot[]; selectedTalents: SelectedTalent[] } {
+  const decodedChar1 = decodeURIComponent(char1)
+  const decodedChar2 = decodeURIComponent(char2)
+  const decodedChar3 = decodeURIComponent(char3)
+
+  // キャラクター名の検証
+  const validChar1 = characterNames.includes(decodedChar1) ? decodedChar1 : null
+  const validChar2 = characterNames.includes(decodedChar2) ? decodedChar2 : null
+  const validChar3 = characterNames.includes(decodedChar3) ? decodedChar3 : null
+
+  const characters: CharacterSlot[] = [
+    { name: validChar1, role: 'main', label: '主力' },
+    { name: validChar2, role: 'support', label: '支援1' },
+    { name: validChar3, role: 'support', label: '支援2' },
+  ]
+
+  try {
+    const bigIntValue = base64UrlToBigInt(talentsCode)
+    const talentsArray = base7BigIntToTalents(bigIntValue, TOTAL_TALENTS)
+    const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
+    return { characters, selectedTalents }
+  } catch {
+    return { characters, selectedTalents: [] }
+  }
+}
+
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
+  initialChar1?: string
+  initialChar2?: string
+  initialChar3?: string
+  initialTalents?: string
 }
 
 interface SelectedTalent {
@@ -227,56 +433,44 @@ const CharacterQualitiesSection: FC<{
   </div>
 )
 
-export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
+export const BuildCreator: FC<BuildCreatorProps> = ({
+  qualitiesData,
+  initialChar1,
+  initialChar2,
+  initialChar3,
+  initialTalents,
+}) => {
   const characterNames = Object.keys(qualitiesData)
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter()
 
-  // URLからステートを復元
-  const parseStateFromUrl = useCallback(() => {
-    const chars = searchParams.get('chars')
-    const talents = searchParams.get('talents')
-
-    let parsedCharacters: CharacterSlot[] = [
-      { name: characterNames[0] || null, role: 'main', label: '主力' },
-      { name: characterNames[1] || null, role: 'support', label: '支援1' },
-      { name: characterNames[2] || null, role: 'support', label: '支援2' },
-    ]
-
-    if (chars) {
-      const charNames = chars.split(',')
-      parsedCharacters = parsedCharacters.map((char, i) => ({
-        ...char,
-        name: charNames[i] && characterNames.includes(charNames[i]) ? charNames[i] : char.name,
-      }))
+  // 初期ステートを設定
+  const getInitialState = useCallback(() => {
+    // URLパスからの初期化を試みる
+    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
+      return decodeBuildFromPath(
+        initialChar1,
+        initialChar2,
+        initialChar3,
+        initialTalents,
+        characterNames,
+      )
     }
 
-    let parsedTalents: SelectedTalent[] = []
-    if (talents) {
-      // フォーマット: charIndex-role-talentIndex-level,...
-      // 例: 0-main-0-1,0-main-2-3,1-sub-4-2
-      const talentParts = talents.split(',').filter(Boolean)
-      parsedTalents = talentParts.map((part) => {
-        const [charIdxStr, role, indexStr, levelStr] = part.split('-')
-        const charIdx = Number.parseInt(charIdxStr, 10)
-        const charName = parsedCharacters[charIdx]?.name
-        return {
-          characterName: charName || '',
-          role: role as 'main' | 'sub',
-          index: Number.parseInt(indexStr, 10),
-          level: Number.parseInt(levelStr, 10) || 1,
-        }
-      }).filter((t) => t.characterName)
+    // デフォルト値
+    return {
+      characters: [
+        { name: characterNames[0] || null, role: 'main' as const, label: '主力' },
+        { name: characterNames[1] || null, role: 'support' as const, label: '支援1' },
+        { name: characterNames[2] || null, role: 'support' as const, label: '支援2' },
+      ],
+      selectedTalents: [],
     }
+  }, [characterNames, initialChar1, initialChar2, initialChar3, initialTalents])
 
-    return { parsedCharacters, parsedTalents }
-  }, [characterNames, searchParams])
+  const initialState = getInitialState()
 
-  // 初期ステートをURLから復元
-  const { parsedCharacters: initialCharacters, parsedTalents: initialTalents } = parseStateFromUrl()
-
-  const [characters, setCharacters] = useState<CharacterSlot[]>(initialCharacters)
-  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(initialTalents)
+  const [characters, setCharacters] = useState<CharacterSlot[]>(initialState.characters)
+  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(initialState.selectedTalents)
   const [buildName, setBuildName] = useState('新規ビルド')
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
@@ -285,34 +479,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
   // URLを更新する関数
   const updateUrl = useCallback(
     (chars: CharacterSlot[], talents: SelectedTalent[]) => {
-      const params = new URLSearchParams()
-
-      // キャラクター情報
-      const charNames = chars.map((c) => c.name || '').join(',')
-      if (charNames.replace(/,/g, '')) {
-        params.set('chars', charNames)
+      const newPath = encodeBuildToPath(chars, talents)
+      // 全てのキャラクターが選択されている場合のみURLを更新
+      if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
+        window.history.replaceState(null, '', newPath)
       }
-
-      // 素質情報
-      if (talents.length > 0) {
-        const talentStr = talents
-          .map((t) => {
-            const charIdx = chars.findIndex((c) => c.name === t.characterName)
-            if (charIdx === -1) return ''
-            return `${charIdx}-${t.role}-${t.index}-${t.level}`
-          })
-          .filter(Boolean)
-          .join(',')
-        if (talentStr) {
-          params.set('talents', talentStr)
-        }
-      }
-
-      const queryString = params.toString()
-      const newUrl = queryString ? `${pathname}?${queryString}` : pathname
-      window.history.replaceState(null, '', newUrl)
     },
-    [pathname],
+    [],
   )
 
   // ステート変更時にURLを更新

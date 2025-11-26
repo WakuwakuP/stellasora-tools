@@ -1,5 +1,6 @@
 'use client'
 
+import { SavedBuildList } from 'app/build/SavedBuildList'
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { Badge } from 'components/ui/badge'
 import {
@@ -15,6 +16,7 @@ import {
 } from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
@@ -24,9 +26,6 @@ import {
 import Image from 'next/image'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
-
-/** スコア計算時の1レベルあたりのポイント */
-const POINTS_PER_LEVEL = 100
 
 /** デフォルトのビルドレベル（表示用） */
 const DEFAULT_BUILD_LEVEL = 25
@@ -449,6 +448,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
+  const [currentUrl, setCurrentUrl] = useState('/build')
+
+  // 保存されたビルドの管理
+  const { builds, addBuild, removeBuild } = useSavedBuilds()
 
   // URLを更新する関数
   const updateUrl = useCallback(
@@ -457,6 +460,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       // 全てのキャラクターが選択されている場合のみURLを更新
       if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
         window.history.replaceState(null, '', newPath)
+        setCurrentUrl(newPath)
       }
     },
     [],
@@ -543,8 +547,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       .reduce((sum, t) => sum + t.level, 0)
   }
 
-  const calculateTotalScore = () => {
-    return selectedTalents.reduce((sum, t) => sum + t.level * POINTS_PER_LEVEL, 0)
+  const handleSaveBuild = () => {
+    if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
+      addBuild(buildName, currentUrl)
+    }
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
@@ -577,27 +583,21 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
       <div className="flex h-full flex-col gap-4 p-4 lg:flex-row">
         {/* 左パネル - ビルド情報 */}
-        <div className="w-full shrink-0 overflow-y-auto rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80">
-          {/* ビルド名・スコア */}
+        <div className="flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80">
+          {/* ビルド名 */}
           <div className="mb-4 rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 p-4 text-white">
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-bold text-lg">
                 {DEFAULT_BUILD_LEVEL}
               </div>
-              <div>
+              <div className="flex-1">
                 <input
                   type="text"
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
-                  className="bg-transparent font-bold text-xl outline-none"
+                  className="w-full bg-transparent font-bold text-xl outline-none"
                 />
-                <div className="flex items-center gap-1 text-sm">
-                  <span>⊕ スコア</span>
-                  <span className="rounded bg-slate-500 px-2 py-0.5">
-                    {calculateTotalScore()}
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -661,20 +661,31 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </div>
           </div>
 
-          {/* アクションボタン */}
-          <div className="mt-4 flex gap-2">
+          {/* 登録ボタン */}
+          <div className="mt-4">
             <button
               type="button"
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-slate-200 py-2 font-medium transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600"
-            >
-              🔒 ロック済
-            </button>
-            <button
-              type="button"
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+              onClick={handleSaveBuild}
+              disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+              className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
             >
               ❤ 登録
             </button>
+          </div>
+
+          {/* 保存されたビルドリスト */}
+          <div className="mt-4 flex min-h-0 flex-1 flex-col">
+            <h3 className="mb-2 flex items-center gap-1 font-bold">
+              <span>📋</span>
+              保存済みビルド
+            </h3>
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <SavedBuildList
+                builds={builds}
+                onRemove={removeBuild}
+                currentUrl={currentUrl}
+              />
+            </div>
           </div>
         </div>
 

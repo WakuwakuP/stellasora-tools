@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from 'react'
 
 /** 保存されたビルドの型定義 */
 export interface SavedBuild {
+  createdAt: number
   id: string
   name: string
   url: string
-  createdAt: number
 }
 
 const STORAGE_KEY = 'stellasora-saved-builds'
@@ -18,6 +18,36 @@ const RANDOM_ID_RADIX = 36
 const RANDOM_ID_START = 2
 /** ランダムID生成用の終了位置 */
 const RANDOM_ID_END = 9
+
+/**
+ * ユニークなIDを生成する
+ * crypto.randomUUID()が利用可能な場合はそちらを使用
+ */
+function generateUniqueId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return `build-${crypto.randomUUID()}`
+  }
+  const randomPart = Math.random()
+    .toString(RANDOM_ID_RADIX)
+    .substring(RANDOM_ID_START, RANDOM_ID_END)
+  return `build-${Date.now()}-${randomPart}`
+}
+
+/**
+ * SavedBuildの配列かどうかを検証
+ */
+function isValidSavedBuilds(data: unknown): data is SavedBuild[] {
+  if (!Array.isArray(data)) return false
+  return data.every(
+    (item) =>
+      typeof item === 'object' &&
+      item !== null &&
+      typeof item.id === 'string' &&
+      typeof item.name === 'string' &&
+      typeof item.url === 'string' &&
+      typeof item.createdAt === 'number',
+  )
+}
 
 /**
  * ローカルストレージにビルドを保存・管理するフック
@@ -31,8 +61,13 @@ export function useSavedBuilds() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        const parsed = JSON.parse(stored) as SavedBuild[]
-        setBuilds(parsed)
+        const parsed: unknown = JSON.parse(stored)
+        if (isValidSavedBuilds(parsed)) {
+          setBuilds(parsed)
+        } else {
+          console.warn('Invalid saved builds data format, resetting')
+          localStorage.removeItem(STORAGE_KEY)
+        }
       }
     } catch (error) {
       console.warn('Failed to load saved builds:', error)
@@ -42,12 +77,9 @@ export function useSavedBuilds() {
 
   // ビルドの追加
   const addBuild = useCallback((name: string, url: string) => {
-    const randomPart = Math.random()
-      .toString(RANDOM_ID_RADIX)
-      .substring(RANDOM_ID_START, RANDOM_ID_END)
     const newBuild: SavedBuild = {
       createdAt: Date.now(),
-      id: `build-${Date.now()}-${randomPart}`,
+      id: generateUniqueId(),
       name,
       url,
     }

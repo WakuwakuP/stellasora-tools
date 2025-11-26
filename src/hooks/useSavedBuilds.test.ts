@@ -40,10 +40,10 @@ describe('useSavedBuilds', () => {
   it('ローカルストレージから保存済みビルドを読み込む', () => {
     const savedBuilds = [
       {
+        createdAt: 1700000000000,
         id: 'build-1',
         name: 'テストビルド',
         url: '/build/test/test2/test3/abc',
-        createdAt: 1700000000000,
       },
     ]
     localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(savedBuilds))
@@ -70,10 +70,10 @@ describe('useSavedBuilds', () => {
   it('removeBuild でビルドを削除できる', () => {
     const savedBuilds = [
       {
+        createdAt: 1700000000000,
         id: 'build-1',
         name: 'テストビルド',
         url: '/build/test/test2/test3/abc',
-        createdAt: 1700000000000,
       },
     ]
     localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(savedBuilds))
@@ -91,10 +91,10 @@ describe('useSavedBuilds', () => {
   it('updateBuildName でビルド名を更新できる', () => {
     const savedBuilds = [
       {
+        createdAt: 1700000000000,
         id: 'build-1',
         name: 'テストビルド',
         url: '/build/test/test2/test3/abc',
-        createdAt: 1700000000000,
       },
     ]
     localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(savedBuilds))
@@ -124,5 +124,18 @@ describe('useSavedBuilds', () => {
     // 新しいビルドが先頭に追加される
     expect(result.current.builds[0].name).toBe('ビルド2')
     expect(result.current.builds[1].name).toBe('ビルド1')
+  })
+
+  it('不正なデータ形式の場合は空配列を返す', () => {
+    const invalidData = [{ invalid: 'data' }]
+    localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(invalidData))
+
+    const { result } = renderHook(() => useSavedBuilds())
+
+    expect(result.current.builds).toEqual([])
+    expect(result.current.isLoaded).toBe(true)
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+      'stellasora-saved-builds',
+    )
   })
 })

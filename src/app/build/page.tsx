@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import {
   CHARACTER_NAMES,
   type CharacterQualities,
@@ -20,6 +21,14 @@ async function getQualitiesData(): Promise<QualitiesData> {
   return JSON.parse(data) as QualitiesData
 }
 
+function BuildCreatorFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-lg">読み込み中...</div>
+    </div>
+  )
+}
+
 export default async function BuildPage() {
   const qualitiesData = await getQualitiesData()
 
@@ -34,5 +43,9 @@ export default async function BuildPage() {
     {} as Record<string, CharacterQualities>,
   )
 
-  return <BuildCreator qualitiesData={availableCharacters} />
+  return (
+    <Suspense fallback={<BuildCreatorFallback />}>
+      <BuildCreator qualitiesData={availableCharacters} />
+    </Suspense>
+  )
 }

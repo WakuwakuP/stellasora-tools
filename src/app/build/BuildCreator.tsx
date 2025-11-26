@@ -11,7 +11,8 @@ import {
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import Image from 'next/image'
-import { type FC, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { type FC, useCallback, useEffect, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
 
 /** スコア計算時の1レベルあたりのポイント */
@@ -22,6 +23,15 @@ const DEFAULT_BUILD_LEVEL = 25
 
 /** 素質画像のアスペクト比 (width / height = 432 / 606) */
 const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606
+
+/** コア素質のインデックス（レベルなし、最大2個選択可能） */
+const CORE_TALENT_INDICES = [0, 1, 5, 6]
+
+/** コア素質の最大選択数 */
+const MAX_CORE_TALENTS = 2
+
+/** 素質がコア素質かどうかを判定 */
+const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
 
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
@@ -45,20 +55,28 @@ const QualityCard: FC<{
   index: number
   isSelected: boolean
   level?: number
+  isCore: boolean
   onClick: () => void
-}> = ({ quality, index, isSelected, level, onClick }) => (
+}> = ({ quality, index, isSelected, level, isCore, onClick }) => (
   <button
     type="button"
     onClick={onClick}
     className={`relative flex flex-col items-center rounded-lg border-2 p-1 transition-all hover:scale-105 ${
       isSelected
-        ? 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
+        ? isCore
+          ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
+          : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
         : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
     }`}
   >
-    {level !== undefined && level > 0 && (
-      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-blue-600 text-white">
-        {level}
+    {/* コア素質は選択時にチェックマーク、通常素質はレベル表示 */}
+    {isSelected && (
+      <Badge
+        className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
+          isCore ? 'bg-pink-500' : 'bg-blue-600'
+        }`}
+      >
+        {isCore ? '✓' : level}
       </Badge>
     )}
     <div
@@ -192,6 +210,7 @@ const CharacterQualitiesSection: FC<{
             t.role === role &&
             t.index === index,
         )
+        const isCore = isCoreTalent(index)
         return (
           <QualityCard
             key={`${characterName}-${role}-${index}`}
@@ -199,6 +218,7 @@ const CharacterQualitiesSection: FC<{
             index={index}
             isSelected={selectedTalent !== undefined}
             level={selectedTalent?.level}
+            isCore={isCore}
             onClick={() => onTalentSelect(characterName, role, index)}
           />
         )
@@ -209,24 +229,104 @@ const CharacterQualitiesSection: FC<{
 
 export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
   const characterNames = Object.keys(qualitiesData)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const [characters, setCharacters] = useState<CharacterSlot[]>([
-    { name: characterNames[0] || null, role: 'main', label: '主力' },
-    { name: characterNames[1] || null, role: 'support', label: '支援1' },
-    { name: characterNames[2] || null, role: 'support', label: '支援2' },
-  ])
+  // URLからステートを復元
+  const parseStateFromUrl = useCallback(() => {
+    const chars = searchParams.get('chars')
+    const talents = searchParams.get('talents')
 
-  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>([])
+    let parsedCharacters: CharacterSlot[] = [
+      { name: characterNames[0] || null, role: 'main', label: '主力' },
+      { name: characterNames[1] || null, role: 'support', label: '支援1' },
+      { name: characterNames[2] || null, role: 'support', label: '支援2' },
+    ]
+
+    if (chars) {
+      const charNames = chars.split(',')
+      parsedCharacters = parsedCharacters.map((char, i) => ({
+        ...char,
+        name: charNames[i] && characterNames.includes(charNames[i]) ? charNames[i] : char.name,
+      }))
+    }
+
+    let parsedTalents: SelectedTalent[] = []
+    if (talents) {
+      // フォーマット: charIndex-role-talentIndex-level,...
+      // 例: 0-main-0-1,0-main-2-3,1-sub-4-2
+      const talentParts = talents.split(',').filter(Boolean)
+      parsedTalents = talentParts.map((part) => {
+        const [charIdxStr, role, indexStr, levelStr] = part.split('-')
+        const charIdx = Number.parseInt(charIdxStr, 10)
+        const charName = parsedCharacters[charIdx]?.name
+        return {
+          characterName: charName || '',
+          role: role as 'main' | 'sub',
+          index: Number.parseInt(indexStr, 10),
+          level: Number.parseInt(levelStr, 10) || 1,
+        }
+      }).filter((t) => t.characterName)
+    }
+
+    return { parsedCharacters, parsedTalents }
+  }, [characterNames, searchParams])
+
+  // 初期ステートをURLから復元
+  const { parsedCharacters: initialCharacters, parsedTalents: initialTalents } = parseStateFromUrl()
+
+  const [characters, setCharacters] = useState<CharacterSlot[]>(initialCharacters)
+  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(initialTalents)
   const [buildName, setBuildName] = useState('新規ビルド')
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
+
+  // URLを更新する関数
+  const updateUrl = useCallback(
+    (chars: CharacterSlot[], talents: SelectedTalent[]) => {
+      const params = new URLSearchParams()
+
+      // キャラクター情報
+      const charNames = chars.map((c) => c.name || '').join(',')
+      if (charNames.replace(/,/g, '')) {
+        params.set('chars', charNames)
+      }
+
+      // 素質情報
+      if (talents.length > 0) {
+        const talentStr = talents
+          .map((t) => {
+            const charIdx = chars.findIndex((c) => c.name === t.characterName)
+            if (charIdx === -1) return ''
+            return `${charIdx}-${t.role}-${t.index}-${t.level}`
+          })
+          .filter(Boolean)
+          .join(',')
+        if (talentStr) {
+          params.set('talents', talentStr)
+        }
+      }
+
+      const queryString = params.toString()
+      const newUrl = queryString ? `${pathname}?${queryString}` : pathname
+      window.history.replaceState(null, '', newUrl)
+    },
+    [pathname],
+  )
+
+  // ステート変更時にURLを更新
+  useEffect(() => {
+    updateUrl(characters, selectedTalents)
+  }, [characters, selectedTalents, updateUrl])
 
   const handleTalentSelect = (
     characterName: string,
     role: 'main' | 'sub',
     index: number,
   ) => {
+    const isCore = isCoreTalent(index)
+
     setSelectedTalents((prev) => {
       const existing = prev.find(
         (t) =>
@@ -236,6 +336,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
       )
 
       if (existing) {
+        // 既に選択されている場合
+        if (isCore) {
+          // コア素質は選択解除のみ
+          return prev.filter((t) => t !== existing)
+        }
+        // 通常素質はレベルアップ、最大レベルで解除
         if (existing.level < 6) {
           return prev.map((t) =>
             t === existing ? { ...t, level: t.level + 1 } : t,
@@ -244,6 +350,34 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
         return prev.filter((t) => t !== existing)
       }
 
+      // 新規選択
+      if (isCore) {
+        // コア素質の選択数チェック（キャラクター・ロールごとに最大2個）
+        const currentCoreCount = prev.filter(
+          (t) =>
+            t.characterName === characterName &&
+            t.role === role &&
+            isCoreTalent(t.index),
+        ).length
+
+        if (currentCoreCount >= MAX_CORE_TALENTS) {
+          // 最大数に達している場合は選択不可
+          return prev
+        }
+
+        // コア素質はレベルなし（level: 0として扱う）
+        return [
+          ...prev,
+          {
+            characterName,
+            role,
+            index,
+            level: 0,
+          },
+        ]
+      }
+
+      // 通常素質
       return [
         ...prev,
         {

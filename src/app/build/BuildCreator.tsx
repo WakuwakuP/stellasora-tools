@@ -170,7 +170,8 @@ function decodeBuildFromPath(
     const talentsArray = base7BigIntToArray(bigIntValue, TOTAL_TALENTS)
     const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
     return { characters, selectedTalents }
-  } catch {
+  } catch (error) {
+    console.warn('素質データのデコードに失敗しました:', error)
     return { characters, selectedTalents: [] }
   }
 }
@@ -322,6 +323,7 @@ const CharacterSelectDialog: FC<{
               onSelect(name)
               onOpenChange(false)
             }}
+            aria-label={`${name}を選択`}
             className={`flex flex-col items-center rounded-lg border-2 p-3 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
               selectedName === name
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
@@ -420,14 +422,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         initialChar2,
         initialChar3,
         initialTalents,
-        Object.keys(qualitiesData),
+        characterNames,
       ).characters
     }
-    const names = Object.keys(qualitiesData)
     return [
-      { name: names[0] || null, role: 'main' as const, label: '主力' },
-      { name: names[1] || null, role: 'support' as const, label: '支援1' },
-      { name: names[2] || null, role: 'support' as const, label: '支援2' },
+      { name: characterNames[0] || null, role: 'main' as const, label: '主力' },
+      { name: characterNames[1] || null, role: 'support' as const, label: '支援1' },
+      { name: characterNames[2] || null, role: 'support' as const, label: '支援2' },
     ]
   })
 
@@ -438,7 +439,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         initialChar2,
         initialChar3,
         initialTalents,
-        Object.keys(qualitiesData),
+        characterNames,
       ).selectedTalents
     }
     return []
@@ -547,15 +548,18 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
-    // 変更前のキャラクター名を取得
+    // 変更前のキャラクター名とロールを取得
     const prevCharacterName = characters[slotIndex]?.name
+    const prevRole = characters[slotIndex]?.role
     setCharacters((prev) =>
       prev.map((char, i) => (i === slotIndex ? { ...char, name: newName } : char)),
     )
-    // 変更前キャラクターの素質をクリア
-    if (prevCharacterName) {
+    // 変更前キャラクターの素質をクリア（同じキャラが他スロットにいる場合は消さない）
+    if (prevCharacterName && prevRole) {
       setSelectedTalents((prev) =>
-        prev.filter((t) => t.characterName !== prevCharacterName)
+        prev.filter(
+          (t) => !(t.characterName === prevCharacterName && t.role === prevRole)
+        )
       )
     }
   }

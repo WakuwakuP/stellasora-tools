@@ -1,22 +1,28 @@
+import { unstable_cache } from 'next/cache'
 import type { CharacterQualities, QualitiesData } from 'types/quality'
 import { CHARACTER_NAMES } from 'types/quality'
 
 /**
  * qualities.jsonからデータを読み込む
+ * unstable_cacheを使用して静的データをキャッシュし、パフォーマンスを向上
  */
-export async function getQualitiesData(): Promise<QualitiesData> {
-  const fs = await import('node:fs/promises')
-  const path = await import('node:path')
+export const getQualitiesData = unstable_cache(
+  async (): Promise<QualitiesData> => {
+    const fs = await import('node:fs/promises')
+    const path = await import('node:path')
 
-  const filePath = path.join(
-    process.cwd(),
-    'public',
-    'datasets',
-    'qualities.json',
-  )
-  const data = await fs.readFile(filePath, 'utf-8')
-  return JSON.parse(data) as QualitiesData
-}
+    const filePath = path.join(
+      process.cwd(),
+      'public',
+      'datasets',
+      'qualities.json',
+    )
+    const data = await fs.readFile(filePath, 'utf-8')
+    return JSON.parse(data) as QualitiesData
+  },
+  ['qualities-data'],
+  { revalidate: 3600 }, // 1時間キャッシュ
+)
 
 /**
  * 利用可能なキャラクターデータのみを抽出

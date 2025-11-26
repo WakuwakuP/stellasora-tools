@@ -15,6 +15,12 @@ import {
 } from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import {
+  arrayToBase7BigInt,
+  base7BigIntToArray,
+  base64UrlToBigInt,
+  bigIntToBase64Url,
+} from 'lib/encoding-utils'
 import Image from 'next/image'
 import { type FC, useCallback, useEffect, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
@@ -37,92 +43,9 @@ const MAX_CORE_TALENTS = 2
 /** 素質がコア素質かどうかを判定 */
 const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
 
-/**
- * 素質エンコード/デコードユーティリティ
- *
- * Note: src/lib/build-encoder-v2.ts と類似のロジックですが、
- * このコンポーネントでは SelectedTalent[] 型を使用しており、
- * Build 型とは異なるデータ構造のため、独自の実装を使用しています。
- * 将来的にデータ構造を統一する際に共通化を検討してください。
- */
-
-/** Base64URL文字セット（RFC 4648） */
-const BASE64URL_CHARS =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
-
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16
 const TOTAL_TALENTS = TALENTS_PER_CHARACTER * 3
-const TALENT_LEVELS = 7 // 0-6 (0 = not selected, 1-6 = level)
-
-/**
- * 48個の素質レベルを7進数としてBigIntに変換
- */
-function talentsToBase7BigInt(allTalents: number[]): bigint {
-  let result = BigInt(0)
-  const base = BigInt(TALENT_LEVELS)
-
-  // 最下位桁から順に処理
-  for (let i = allTalents.length - 1; i >= 0; i--) {
-    result = result * base + BigInt(allTalents[i])
-  }
-
-  return result
-}
-
-/**
- * BigIntから48個の素質レベル配列に変換
- */
-function base7BigIntToTalents(value: bigint, count: number): number[] {
-  const result: number[] = []
-  const base = BigInt(TALENT_LEVELS)
-  let remaining = value
-
-  for (let i = 0; i < count; i++) {
-    result.push(Number(remaining % base))
-    remaining = remaining / base
-  }
-
-  return result
-}
-
-/**
- * BigIntをBase64URL文字列に変換
- */
-function bigIntToBase64Url(value: bigint): string {
-  if (value === BigInt(0)) {
-    return BASE64URL_CHARS[0]
-  }
-
-  let result = ''
-  let remaining = value
-  const base = BigInt(64)
-
-  while (remaining > BigInt(0)) {
-    result = BASE64URL_CHARS[Number(remaining % base)] + result
-    remaining = remaining / base
-  }
-
-  return result
-}
-
-/**
- * Base64URL文字列をBigIntに変換
- */
-function base64UrlToBigInt(str: string): bigint {
-  let result = BigInt(0)
-  const base = BigInt(64)
-
-  for (const char of str) {
-    const index = BASE64URL_CHARS.indexOf(char)
-    if (index === -1) {
-      throw new Error(`Invalid Base64URL character: ${char}`)
-    }
-    result = result * base + BigInt(index)
-  }
-
-  return result
-}
 
 /**
  * 選択された素質情報を48個の配列に変換
@@ -207,7 +130,7 @@ function encodeBuildToPath(
   }
 
   const talentsArray = selectedTalentsToArray(selectedTalents, characters)
-  const bigIntValue = talentsToBase7BigInt(talentsArray)
+  const bigIntValue = arrayToBase7BigInt(talentsArray)
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
   return `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
@@ -240,7 +163,7 @@ function decodeBuildFromPath(
 
   try {
     const bigIntValue = base64UrlToBigInt(talentsCode)
-    const talentsArray = base7BigIntToTalents(bigIntValue, TOTAL_TALENTS)
+    const talentsArray = base7BigIntToArray(bigIntValue, TOTAL_TALENTS)
     const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
     return { characters, selectedTalents }
   } catch {

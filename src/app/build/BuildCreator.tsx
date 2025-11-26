@@ -460,8 +460,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // モバイル判定
   const isMobile = useIsMobile()
 
-  // モバイル用のセクション折りたたみ状態
-  const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(true)
+  // モバイル用のセクション折りたたみ状態（デフォルトは閉じた状態で素質選択エリアを広く表示）
+  const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(false)
   const [isSavedBuildsOpen, setIsSavedBuildsOpen] = useState(false)
 
   // 保存されたビルドの管理
@@ -595,13 +595,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
-      <div className="flex h-full flex-col gap-4 p-4 lg:flex-row">
+      <div className="flex h-full flex-col gap-2 p-2 lg:gap-4 lg:p-4 lg:flex-row">
         {/* 左パネル - ビルド情報 */}
-        <div className="flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80">
-          {/* ビルド名 */}
-          <div className="mb-4 rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 p-4 text-white">
+        <div className={`flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80 ${isMobile ? 'p-2' : 'p-4'}`}>
+          {/* ビルド名 - モバイルではコンパクトに */}
+          <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-bold text-lg">
+              <div className={`flex items-center justify-center rounded-full bg-amber-500 font-bold ${isMobile ? 'h-8 w-8 text-sm' : 'h-10 w-10 text-lg'}`}>
                 {DEFAULT_BUILD_LEVEL}
               </div>
               <div className="flex-1">
@@ -610,7 +610,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
-                  className="w-full bg-transparent font-bold text-xl outline-none"
+                  className={`w-full bg-transparent font-bold outline-none ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
               </div>
             </div>
@@ -619,10 +619,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           {/* モバイルの場合、ビルド情報を折りたたみ可能にする */}
           {isMobile ? (
             <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
-              <CollapsibleTrigger className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-2 font-bold dark:bg-slate-700">
+              <CollapsibleTrigger className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700">
                 <span className="flex items-center gap-1 text-amber-600">
-                  <span className="text-lg">🏆</span>
-                  ビルド設定
+                  <span>🏆</span>
+                  巡遊者・ロスレコ
                 </span>
                 {isBuildInfoOpen ? (
                   <ChevronUp className="h-4 w-4" />
@@ -630,14 +630,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   <ChevronDown className="h-4 w-4" />
                 )}
               </CollapsibleTrigger>
-              <CollapsibleContent className="space-y-4">
-                {/* 巡遊者（キャラクター）セクション */}
+              <CollapsibleContent className="space-y-2">
+                {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
                 <div>
-                  <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-                    <span className="text-lg">🏆</span>
-                    巡遊者
-                  </h3>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1">
                     {characters.map((char, index) => (
                       <CharacterAvatar
                         key={char.label}
@@ -651,14 +647,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   </div>
                 </div>
 
-                {/* メインロスレコセクション（プレースホルダー） */}
+                {/* メインロスレコセクション（プレースホルダー） - コンパクト版 */}
                 <div>
-                  <h3 className="mb-2 flex items-center gap-1 font-bold">
+                  <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
                     <span>⊕</span>
                     メインロスレコ
-                    <span className="ml-auto text-slate-400">🔍</span>
                   </h3>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1">
                     {[1, 2, 3].map((i) => (
                       <div
                         key={i}
@@ -722,23 +717,23 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             />
           )}
 
-          {/* ステータス表示 */}
-          <div className="mt-4 rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
-            <div className="flex items-center gap-2 text-sm">
+          {/* ステータス表示 - モバイルではコンパクトに */}
+          <div className={`rounded-lg bg-slate-200 dark:bg-slate-700 ${isMobile ? 'mt-2 p-2' : 'mt-4 p-3'}`}>
+            <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               <span className="text-blue-500">ℹ</span>
               <span>
-                選択素質: {selectedTalents.length}個 / 合計レベル: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
               </span>
             </div>
           </div>
 
           {/* 登録ボタン */}
-          <div className="mt-4">
+          <div className={isMobile ? 'mt-2' : 'mt-4'}>
             <button
               type="button"
               onClick={handleSaveBuild}
               disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-              className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+              className={`flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800 ${isMobile ? 'py-1.5 text-sm' : 'py-2'}`}
             >
               ❤ 登録
             </button>
@@ -749,12 +744,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             <Collapsible
               open={isSavedBuildsOpen}
               onOpenChange={setIsSavedBuildsOpen}
-              className="mt-4"
+              className="mt-2"
             >
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-2 font-bold dark:bg-slate-700">
+              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700">
                 <span className="flex items-center gap-1">
                   <span>📋</span>
-                  保存済みビルド ({builds.length})
+                  保存済み ({builds.length})
                 </span>
                 {isSavedBuildsOpen ? (
                   <ChevronUp className="h-4 w-4" />

@@ -2,6 +2,12 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { Badge } from 'components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from 'components/ui/dialog'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import Image from 'next/image'
@@ -13,6 +19,9 @@ const POINTS_PER_LEVEL = 100
 
 /** デフォルトのビルドレベル（表示用） */
 const DEFAULT_BUILD_LEVEL = 25
+
+/** 素質画像のアスペクト比 (width / height = 432 / 606) */
+const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606
 
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
@@ -52,15 +61,21 @@ const QualityCard: FC<{
         {level}
       </Badge>
     )}
-    <div className="relative h-16 w-16 overflow-hidden rounded-md">
+    <div
+      className="relative w-full overflow-hidden rounded-md"
+      style={{ aspectRatio: QUALITY_IMAGE_ASPECT_RATIO }}
+    >
       <Image
         src={quality.fileName}
         alt={quality.title}
         fill
+        sizes="100px"
         className="object-cover"
       />
     </div>
-    <span className="mt-1 line-clamp-1 text-center text-xs">{quality.title}</span>
+    <span className="mt-1 line-clamp-1 w-full text-center text-xs">
+      {quality.title}
+    </span>
   </button>
 )
 
@@ -68,8 +83,9 @@ const CharacterAvatar: FC<{
   name: string | null
   label: string
   isMain?: boolean
+  totalLevel?: number
   onClick?: () => void
-}> = ({ name, label, isMain = false, onClick }) => (
+}> = ({ name, label, isMain = false, totalLevel = 0, onClick }) => (
   <button
     type="button"
     onClick={onClick}
@@ -96,7 +112,54 @@ const CharacterAvatar: FC<{
     <span className="mt-1 text-center text-sm font-medium">
       {name || '未選択'}
     </span>
+    {totalLevel > 0 && (
+      <div className="mt-0.5 flex items-center gap-0.5 text-xs text-slate-500">
+        <span>⊕</span>
+        <span>{totalLevel}</span>
+      </div>
+    )}
   </button>
+)
+
+/** キャラクター選択ダイアログ */
+const CharacterSelectDialog: FC<{
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  characterNames: string[]
+  selectedName: string | null
+  onSelect: (name: string) => void
+  slotLabel: string
+}> = ({ open, onOpenChange, characterNames, selectedName, onSelect, slotLabel }) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="max-w-md">
+      <DialogHeader>
+        <DialogTitle>{slotLabel}を選択</DialogTitle>
+      </DialogHeader>
+      <div className="grid grid-cols-3 gap-3 p-2">
+        {characterNames.map((name) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => {
+              onSelect(name)
+              onOpenChange(false)
+            }}
+            className={`flex flex-col items-center rounded-lg border-2 p-3 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
+              selectedName === name
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
+                : 'border-slate-200 dark:border-slate-700'
+            }`}
+          >
+            <Avatar className="h-14 w-14">
+              <AvatarImage src="/placeholder-character.png" alt={name} />
+              <AvatarFallback className="text-xl">{name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <span className="mt-2 text-center text-sm font-medium">{name}</span>
+          </button>
+        ))}
+      </div>
+    </DialogContent>
+  </Dialog>
 )
 
 const CharacterQualitiesSection: FC<{
@@ -156,6 +219,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
   const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>([])
   const [buildName, setBuildName] = useState('新規ビルド')
   const [activeTab, setActiveTab] = useState('qualities')
+  const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
+  const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
 
   const handleTalentSelect = (
     characterName: string,
@@ -207,6 +272,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
     )
   }
 
+  const openCharacterDialog = (slotIndex: number) => {
+    setEditingSlotIndex(slotIndex)
+    setCharacterDialogOpen(true)
+  }
+
   const mainCharacter = characters[0]
   const support1 = characters[1]
   const support2 = characters[2]
@@ -247,27 +317,29 @@ export const BuildCreator: FC<BuildCreatorProps> = ({ qualitiesData }) => {
             </h3>
             <div className="grid grid-cols-3 gap-2">
               {characters.map((char, index) => (
-                <div key={char.label} className="relative">
-                  <select
-                    value={char.name || ''}
-                    onChange={(e) => handleCharacterChange(index, e.target.value)}
-                    className="absolute bottom-0 left-0 z-20 w-full cursor-pointer opacity-0"
-                  >
-                    {characterNames.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                  <CharacterAvatar
-                    name={char.name}
-                    label={char.label}
-                    isMain={char.role === 'main'}
-                  />
-                </div>
+                <CharacterAvatar
+                  key={char.label}
+                  name={char.name}
+                  label={char.label}
+                  isMain={char.role === 'main'}
+                  totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                  onClick={() => openCharacterDialog(index)}
+                />
               ))}
             </div>
           </div>
+
+          {/* キャラクター選択ダイアログ */}
+          {editingSlotIndex !== null && (
+            <CharacterSelectDialog
+              open={characterDialogOpen}
+              onOpenChange={setCharacterDialogOpen}
+              characterNames={characterNames}
+              selectedName={characters[editingSlotIndex]?.name ?? null}
+              onSelect={(name) => handleCharacterChange(editingSlotIndex, name)}
+              slotLabel={characters[editingSlotIndex]?.label ?? ''}
+            />
+          )}
 
           {/* メインロスレコセクション（プレースホルダー） */}
           <div className="mb-4">

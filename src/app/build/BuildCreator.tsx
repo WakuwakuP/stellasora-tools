@@ -16,7 +16,6 @@ import {
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { type FC, useCallback, useEffect, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
 
@@ -37,6 +36,15 @@ const MAX_CORE_TALENTS = 2
 
 /** 素質がコア素質かどうかを判定 */
 const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
+
+/**
+ * 素質エンコード/デコードユーティリティ
+ *
+ * Note: src/lib/build-encoder-v2.ts と類似のロジックですが、
+ * このコンポーネントでは SelectedTalent[] 型を使用しており、
+ * Build 型とは異なるデータ構造のため、独自の実装を使用しています。
+ * 将来的にデータ構造を統一する際に共通化を検討してください。
+ */
 
 /** Base64URL文字セット（RFC 4648） */
 const BASE64URL_CHARS =
@@ -473,7 +481,6 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   initialTalents,
 }) => {
   const characterNames = Object.keys(qualitiesData)
-  const router = useRouter()
 
   // 初期ステートを設定
   const getInitialState = useCallback(() => {

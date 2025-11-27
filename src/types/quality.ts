@@ -12,6 +12,8 @@ export interface QualityInfo {
   fileName: string
   /** コア素質かどうか */
   isCore: boolean
+  /** 素質のパラメータ（説明文の&ParamN&を置換する値） */
+  params?: string[]
   /** 素質のレアリティ（1または2） */
   rarity: number
   /** 素質の名前 */

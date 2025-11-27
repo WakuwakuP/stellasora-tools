@@ -138,4 +138,27 @@ describe('useSavedBuilds', () => {
       'stellasora-saved-builds',
     )
   })
+
+  it('JSON解析エラーが発生した場合、空配列を返す', () => {
+    localStorageMock.getItem.mockReturnValueOnce('invalid json{')
+
+    const { result } = renderHook(() => useSavedBuilds())
+
+    expect(result.current.builds).toEqual([])
+    expect(result.current.isLoaded).toBe(true)
+  })
+
+  it('localStorage容量オーバー時もエラーをスローしない', () => {
+    localStorageMock.setItem.mockImplementationOnce(() => {
+      throw new Error('QuotaExceededError')
+    })
+
+    const { result } = renderHook(() => useSavedBuilds())
+
+    expect(() => {
+      act(() => {
+        result.current.addBuild('テスト', '/build/a/b/c/d')
+      })
+    }).not.toThrow()
+  })
 })

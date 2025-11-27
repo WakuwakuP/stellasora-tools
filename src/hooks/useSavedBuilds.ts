@@ -75,7 +75,12 @@ export function useSavedBuilds() {
     setIsLoaded(true)
   }, [])
 
-  // ビルドの追加
+  /**
+   * ビルドをローカルストレージに追加
+   * @param name - ビルド名
+   * @param url - ビルドのURL（/build/...形式）
+   * @returns 追加されたビルド情報
+   */
   const addBuild = useCallback((name: string, url: string) => {
     const newBuild: SavedBuild = {
       createdAt: Date.now(),
@@ -97,7 +102,10 @@ export function useSavedBuilds() {
     return newBuild
   }, [])
 
-  // ビルドの削除
+  /**
+   * ビルドをローカルストレージから削除
+   * @param id - 削除するビルドのID
+   */
   const removeBuild = useCallback((id: string) => {
     setBuilds((prev) => {
       const updated = prev.filter((build) => build.id !== id)
@@ -110,7 +118,11 @@ export function useSavedBuilds() {
     })
   }, [])
 
-  // ビルド名の更新
+  /**
+   * ビルド名を更新
+   * @param id - 更新するビルドのID
+   * @param newName - 新しいビルド名
+   */
   const updateBuildName = useCallback((id: string, newName: string) => {
     setBuilds((prev) => {
       const updated = prev.map((build) =>

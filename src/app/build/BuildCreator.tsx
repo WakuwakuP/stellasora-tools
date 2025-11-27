@@ -455,7 +455,20 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
-  const [currentUrl, setCurrentUrl] = useState('/build')
+  const [currentUrl, setCurrentUrl] = useState(() => {
+    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
+      const { characters: decodedChars, selectedTalents: decodedTalents } =
+        decodeBuildFromPath(
+          initialChar1,
+          initialChar2,
+          initialChar3,
+          initialTalents,
+          characterNames,
+        )
+      return encodeBuildToPath(decodedChars, decodedTalents)
+    }
+    return '/build'
+  })
 
   // モバイル判定
   const isMobile = useIsMobile()
@@ -619,7 +632,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           {/* モバイルの場合、ビルド情報を折りたたみ可能にする */}
           {isMobile ? (
             <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
-              <CollapsibleTrigger className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700">
+              <CollapsibleTrigger
+                className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                aria-expanded={isBuildInfoOpen}
+              >
                 <span className="flex items-center gap-1 text-amber-600">
                   <span>🏆</span>
                   巡遊者・ロスレコ
@@ -746,7 +762,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               onOpenChange={setIsSavedBuildsOpen}
               className="mt-2"
             >
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700">
+              <CollapsibleTrigger
+                className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                aria-expanded={isSavedBuildsOpen}
+              >
                 <span className="flex items-center gap-1">
                   <span>📋</span>
                   保存済み ({builds.length})

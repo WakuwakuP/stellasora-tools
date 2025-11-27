@@ -13,6 +13,17 @@ interface SavedBuildListProps {
   currentUrl: string
 }
 
+/**
+ * ビルドURLが有効な形式かどうかを検証
+ * @param url - 検証するURL
+ * @returns 有効なビルドURL形式の場合はtrue
+ */
+function isValidBuildUrl(
+  url: string,
+): url is `/build/${string}/${string}/${string}/${string}` {
+  return /^\/build\/[^/]+\/[^/]+\/[^/]+\/[^/]+$/.test(url)
+}
+
 export const SavedBuildList: FC<SavedBuildListProps> = ({
   builds,
   onRemove,
@@ -40,13 +51,22 @@ export const SavedBuildList: FC<SavedBuildListProps> = ({
                   : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600'
               }`}
             >
-              <Link
-                href={build.url as `/build/${string}/${string}/${string}/${string}`}
-                className="flex-1 truncate text-sm font-medium hover:underline"
-                title={build.name}
-              >
-                {build.name}
-              </Link>
+              {isValidBuildUrl(build.url) ? (
+                <Link
+                  href={build.url}
+                  className="flex-1 truncate text-sm font-medium hover:underline"
+                  title={build.name}
+                >
+                  {build.name}
+                </Link>
+              ) : (
+                <span
+                  className="flex-1 truncate text-sm font-medium text-slate-400"
+                  title={`無効なURL: ${build.url}`}
+                >
+                  {build.name}
+                </span>
+              )}
               <Button
                 variant="ghost"
                 size="icon"

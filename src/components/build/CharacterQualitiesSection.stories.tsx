@@ -1,7 +1,13 @@
 import { type Meta, type StoryObj } from '@storybook/react'
 import { useState } from 'react'
 import type { QualityInfo } from 'types/quality'
-import { CharacterQualitiesSection, type SelectedTalent } from './CharacterQualitiesSection'
+import {
+  CharacterQualitiesSection,
+  isCoreTalent,
+  MAX_CORE_TALENTS,
+  MAX_TALENT_LEVEL,
+  type SelectedTalent,
+} from './CharacterQualitiesSection'
 
 // サンプル素質データを生成
 const generateSampleQualities = (characterName: string): QualityInfo[] => {
@@ -108,8 +114,7 @@ export const Interactive: Story = {
     const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>([])
 
     const handleTalentSelect = (characterName: string, role: 'main' | 'sub', index: number) => {
-      const CORE_INDICES = [0, 1, 5, 6]
-      const isCore = CORE_INDICES.includes(index)
+      const isCore = isCoreTalent(index)
 
       setSelectedTalents((prev) => {
         const existing = prev.find(
@@ -120,7 +125,7 @@ export const Interactive: Story = {
           if (isCore) {
             return prev.filter((t) => t !== existing)
           }
-          if (existing.level < 6) {
+          if (existing.level < MAX_TALENT_LEVEL) {
             return prev.map((t) => (t === existing ? { ...t, level: t.level + 1 } : t))
           }
           return prev.filter((t) => t !== existing)
@@ -128,9 +133,9 @@ export const Interactive: Story = {
 
         if (isCore) {
           const currentCoreCount = prev.filter(
-            (t) => t.characterName === characterName && CORE_INDICES.includes(t.index)
+            (t) => t.characterName === characterName && isCoreTalent(t.index)
           ).length
-          if (currentCoreCount >= 2) return prev
+          if (currentCoreCount >= MAX_CORE_TALENTS) return prev
           return [...prev, { characterName, role, index, level: 0 }]
         }
 

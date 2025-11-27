@@ -15,6 +15,12 @@ export const QUALITY_GROUPS = [
 /** コア素質のインデックス（レベルなし、最大2個選択可能） */
 export const CORE_TALENT_INDICES = [0, 1, 5, 6]
 
+/** コア素質の最大選択数 */
+export const MAX_CORE_TALENTS = 2
+
+/** 通常素質の最大レベル */
+export const MAX_TALENT_LEVEL = 6
+
 /** 素質がコア素質かどうかを判定 */
 export const isCoreTalent = (index: number): boolean =>
   CORE_TALENT_INDICES.includes(index)

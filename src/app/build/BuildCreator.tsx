@@ -5,7 +5,6 @@ import {
   CharacterAvatar,
   CharacterQualitiesSection,
   CharacterSelectDialog,
-  CORE_TALENT_INDICES,
   isCoreTalent,
 } from 'components/build'
 import type { SelectedTalent } from 'components/build'

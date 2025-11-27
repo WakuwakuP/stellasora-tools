@@ -76,7 +76,7 @@ export const QualityCard: FC<QualityCardProps> = ({
           type="button"
           onClick={onClick}
           aria-label={`${quality.title}${isSelected ? (isCoreQuality ? '、選択中' : `、レベル${level}選択中`) : ''}`}
-          className={`relative flex min-w-[130px] max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-1 transition-colors ${
             isSelected
               ? isCoreQuality
                 ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'

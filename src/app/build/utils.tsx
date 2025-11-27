@@ -15,10 +15,15 @@ export function getAvailableCharacters(
   qualitiesData: QualitiesData,
 ): Record<string, CharacterQualities> {
   // APIから取得したデータはすべて有効
-  // main と sub の両方が存在するキャラクターのみを返す
+  // main と sub の両方が存在し、かつ要素を持つキャラクターのみを返す
   return Object.entries(qualitiesData).reduce(
     (acc, [name, qualities]) => {
-      if (qualities.main && qualities.sub) {
+      if (
+        qualities.main &&
+        qualities.main.length > 0 &&
+        qualities.sub &&
+        qualities.sub.length > 0
+      ) {
         acc[name] = qualities
       }
       return acc

@@ -16,6 +16,21 @@ const STELLA_SORA_API_BASE_URL = 'https://api.ennead.cc'
 /** キャッシュ時間（4時間 = 14400秒） */
 const CACHE_REVALIDATE_SECONDS = 14400
 
+/**
+ * フォールバック用のアイコンパスを生成する
+ * @param characterName - キャラクター名
+ * @param role - 役割（'main' または 'sub'）
+ * @param index - インデックス番号
+ * @returns アイコンのファイルパス
+ */
+function generateFallbackIconPath(
+  characterName: string,
+  role: 'main' | 'sub',
+  index: number,
+): string {
+  return `/datasets/${characterName}/${role}/cropped_image${String(index).padStart(2, '0')}.png`
+}
+
 /** APIから取得するキャラクターの素質情報 */
 interface ApiTalentInfo {
   name: string
@@ -111,10 +126,9 @@ function convertTalentToQualityInfo(
   characterName: string,
   role: 'main' | 'sub',
 ): QualityInfo {
-  // アイコンパスをAPIから取得するか、デフォルトパスを生成
+  // アイコンパスをAPIから取得するか、フォールバックパスを生成
   const fileName =
-    talent.icon ||
-    `/datasets/${characterName}/${role}/cropped_image${String(index).padStart(2, '0')}.png`
+    talent.icon || generateFallbackIconPath(characterName, role, index)
 
   return {
     description: talent.description,

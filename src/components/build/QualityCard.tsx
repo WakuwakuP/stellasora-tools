@@ -112,7 +112,7 @@ export const QualityCard: FC<QualityCardProps> = ({
               fill
               sizes="150px"
               className="relative z-[1] object-contain"
-              style={{ objectPosition: 'center 35%' }}
+              style={{ objectPosition: 'center 25%' }}
             />
           </div>
           <span className="mt-1 line-clamp-1 w-full text-center text-xs">

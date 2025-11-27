@@ -1,25 +1,107 @@
 'use server'
 
 import { unstable_cache } from 'next/cache'
-import { type CharacterQualities, type QualitiesData } from 'types/quality'
+import {
+  type CharacterQualities,
+  type QualitiesData,
+  type QualityInfo,
+} from 'types/quality'
 
 /**
  * StellaSoraAPI からキャラクターデータを取得する Server Action
  *
- * 注意: 現在のStellaSoraAPI (/stella/character) は talents を main/support 形式で
- * 返さないため、ローカルの qualities.json を使用しています。
- * 将来的にAPIが対応した場合は、APIからのデータ取得に切り替えることができます。
+ * APIドキュメント: https://github.com/torikushiii/StellaSoraAPI/tree/main/docs
+ *
+ * 利用可能なエンドポイント:
+ * - GET /stella/characters?lang=JP - キャラクター一覧（軽量版）
+ * - GET /stella/character/{idOrName}?lang=JP - キャラクター詳細（potentials含む）
+ *
+ * langパラメータ: EN, JP, KR, CN, TW（デフォルト: EN）
  */
+
+/** API Base URL */
+const STELLA_SORA_API_BASE_URL = 'https://api.ennead.cc'
 
 /** キャッシュ時間（4時間 = 14400秒） */
 const CACHE_REVALIDATE_SECONDS = 14400
 
 // ============================================================================
-// ローカルデータ読み込み
+// API Response Types（docs/characters.md に基づく）
 // ============================================================================
 
 /**
- * ローカルのqualities.jsonからデータを読み込む
+ * キャラクター一覧レスポンス（GET /stella/characters）
+ */
+interface ApiCharacterListItem {
+  id: number
+  name: string
+  icon: string
+  portrait: string
+  description: string
+  grade: number
+  element: string
+  position: string
+  attackType: string
+  style: string
+  faction: string
+  tags: string[]
+}
+
+/**
+ * 個々のポテンシャル（potential）情報
+ */
+interface ApiPotentialEntry {
+  name: string
+  icon: string
+  description: string
+  shortDescription: string
+  params: string[]
+  rarity: number
+  stype: number
+  corner: number | null
+  hints?: Record<string, unknown>
+}
+
+/**
+ * キャラクターのポテンシャルデータ
+ * potentials.mainCore + potentials.mainNormal + potentials.common = main (16)
+ * potentials.supportCore + potentials.supportNormal + potentials.common = sub (16)
+ */
+interface ApiPotentials {
+  mainCore: ApiPotentialEntry[]
+  mainNormal: ApiPotentialEntry[]
+  supportCore: ApiPotentialEntry[]
+  supportNormal: ApiPotentialEntry[]
+  common: ApiPotentialEntry[]
+}
+
+/**
+ * キャラクター詳細レスポンス（GET /stella/character/{idOrName}）
+ */
+interface ApiCharacterDetail {
+  id: number
+  name: string
+  icon: string
+  portrait: string
+  background: string
+  variants: Record<string, string>
+  description: string
+  grade: number
+  element: string
+  position: string
+  attackType: string
+  style: string
+  faction: string
+  tags: string[]
+  potentials?: ApiPotentials
+}
+
+// ============================================================================
+// フォールバック用ローカルデータ読み込み
+// ============================================================================
+
+/**
+ * ローカルのqualities.jsonからデータを読み込む（フォールバック用）
  */
 async function loadLocalQualitiesData(): Promise<QualitiesData> {
   const fs = await import('node:fs/promises')
@@ -36,21 +118,172 @@ async function loadLocalQualitiesData(): Promise<QualitiesData> {
 }
 
 // ============================================================================
+// API通信関数
+// ============================================================================
+
+/**
+ * StellaSoraAPIからキャラクター一覧を取得する
+ * @see https://github.com/torikushiii/StellaSoraAPI/blob/main/docs/characters.md#get-stellacharacters
+ */
+async function fetchCharacterList(
+  lang = 'JP',
+): Promise<ApiCharacterListItem[]> {
+  const url = `${STELLA_SORA_API_BASE_URL}/stella/characters?lang=${lang}`
+
+  const response = await fetch(url, {
+    next: { revalidate: CACHE_REVALIDATE_SECONDS },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch character list: ${response.status}`)
+  }
+
+  return response.json() as Promise<ApiCharacterListItem[]>
+}
+
+/**
+ * StellaSoraAPIからキャラクター詳細を取得する
+ * @see https://github.com/torikushiii/StellaSoraAPI/blob/main/docs/characters.md#get-stellacharacteridorname
+ */
+async function fetchCharacterDetail(
+  idOrName: string | number,
+  lang = 'JP',
+): Promise<ApiCharacterDetail> {
+  const url = `${STELLA_SORA_API_BASE_URL}/stella/character/${encodeURIComponent(String(idOrName))}?lang=${lang}`
+
+  const response = await fetch(url, {
+    next: { revalidate: CACHE_REVALIDATE_SECONDS },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch character detail: ${response.status}`)
+  }
+
+  return response.json() as Promise<ApiCharacterDetail>
+}
+
+// ============================================================================
+// データ変換関数
+// ============================================================================
+
+/**
+ * フォールバック用のアイコンパスを生成する
+ * ローカルの画像パス形式: /datasets/{characterName}/{role}/cropped_image{index:02d}.png
+ */
+function generateFallbackIconPath(
+  characterName: string,
+  role: 'main' | 'sub',
+  index: number,
+): string {
+  const paddedIndex = String(index).padStart(2, '0')
+  return `/datasets/${characterName}/${role}/cropped_image${paddedIndex}.png`
+}
+
+/**
+ * APIのポテンシャルデータをアプリケーションの形式に変換する
+ */
+function convertPotentialToQualityInfo(
+  potential: ApiPotentialEntry,
+  index: number,
+  characterName: string,
+  role: 'main' | 'sub',
+): QualityInfo {
+  return {
+    description: potential.shortDescription,
+    fileName: generateFallbackIconPath(characterName, role, index),
+    title: potential.name,
+  }
+}
+
+/**
+ * キャラクター詳細からポテンシャルデータを抽出して変換する
+ *
+ * main = mainCore (4) + mainNormal (9) + common (3) = 16
+ * sub = supportCore (4) + supportNormal (9) + common (3) = 16
+ */
+function extractCharacterQualities(
+  detail: ApiCharacterDetail,
+): CharacterQualities | null {
+  if (!detail.potentials) {
+    return null
+  }
+
+  const { mainCore, mainNormal, common, supportCore, supportNormal } =
+    detail.potentials
+
+  // main素質: mainCore + mainNormal + common
+  const mainPotentials = [...mainCore, ...mainNormal, ...common]
+  // sub素質: supportCore + supportNormal + common
+  const subPotentials = [...supportCore, ...supportNormal, ...common]
+
+  // ポテンシャルデータが空の場合はnullを返す
+  if (mainPotentials.length === 0 && subPotentials.length === 0) {
+    return null
+  }
+
+  return {
+    main: mainPotentials.map((p, i) =>
+      convertPotentialToQualityInfo(p, i, detail.name, 'main'),
+    ),
+    sub: subPotentials.map((p, i) =>
+      convertPotentialToQualityInfo(p, i, detail.name, 'sub'),
+    ),
+  }
+}
+
+// ============================================================================
 // Server Actions
 // ============================================================================
+
+/**
+ * StellaSoraAPIから全キャラクターのポテンシャルデータを取得する
+ * APIが利用できない場合はローカルのqualities.jsonを使用する
+ */
+async function fetchQualitiesDataFromApiOrFallback(): Promise<QualitiesData> {
+  try {
+    // Step 1: キャラクター一覧を取得
+    const characterList = await fetchCharacterList('JP')
+
+    // Step 2: 各キャラクターの詳細を並行して取得
+    const detailPromises = characterList.map((char) =>
+      fetchCharacterDetail(char.id, 'JP'),
+    )
+    const characterDetails = await Promise.all(detailPromises)
+
+    // Step 3: ポテンシャルデータを整形
+    const qualitiesData: QualitiesData = {}
+
+    for (const detail of characterDetails) {
+      const qualities = extractCharacterQualities(detail)
+      if (qualities) {
+        qualitiesData[detail.name] = qualities
+      }
+    }
+
+    return qualitiesData
+  } catch (error) {
+    // APIが利用できない場合はローカルデータにフォールバック
+    console.warn(
+      'StellaSoraAPI is not available, falling back to local data:',
+      error,
+    )
+    return loadLocalQualitiesData()
+  }
+}
 
 /**
  * 素質データを取得する Server Action
  *
  * - unstable_cacheを使用して4時間キャッシュする
- * - ローカルのqualities.jsonを使用（StellaSoraAPIのtalentsフォーマットが異なるため）
+ * - StellaSoraAPIからデータを取得
+ * - APIが利用できない場合はローカルのqualities.jsonを使用する
  *
  * @see https://github.com/torikushiii/StellaSoraAPI/blob/main/docs/characters.md
  */
 export async function getQualitiesData(): Promise<QualitiesData> {
   const cachedFetch = unstable_cache(
-    loadLocalQualitiesData,
-    ['qualities-data'],
+    fetchQualitiesDataFromApiOrFallback,
+    ['stella-sora-api-qualities-data'],
     { revalidate: CACHE_REVALIDATE_SECONDS },
   )
 
@@ -58,15 +291,20 @@ export async function getQualitiesData(): Promise<QualitiesData> {
 }
 
 /**
- * キャラクター名一覧を取得する Server Action
+ * StellaSoraAPIからキャラクター名一覧を取得する Server Action
  */
 export async function getCharacterNames(): Promise<string[]> {
   const cachedFetch = unstable_cache(
     async (): Promise<string[]> => {
-      const qualitiesData = await loadLocalQualitiesData()
-      return Object.keys(qualitiesData)
+      try {
+        const characterList = await fetchCharacterList('JP')
+        return characterList.map((char) => char.name)
+      } catch {
+        const qualitiesData = await loadLocalQualitiesData()
+        return Object.keys(qualitiesData)
+      }
     },
-    ['character-names'],
+    ['stella-sora-api-character-names'],
     { revalidate: CACHE_REVALIDATE_SECONDS },
   )
 

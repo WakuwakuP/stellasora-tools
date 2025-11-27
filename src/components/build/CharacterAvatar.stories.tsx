@@ -13,6 +13,10 @@ const meta: Meta<typeof CharacterAvatar> = {
       control: 'text',
       description: 'キャラクター名',
     },
+    iconUrl: {
+      control: 'text',
+      description: 'キャラクターアイコンのURL',
+    },
     label: {
       control: 'text',
       description: 'スロットのラベル',
@@ -41,6 +45,7 @@ type Story = StoryObj<typeof CharacterAvatar>
 export const MainCharacter: Story = {
   args: {
     name: 'コハク',
+    iconUrl: 'https://api.ennead.cc/stella/assets/Kohaku.png',
     label: '主力',
     isMain: true,
     totalLevel: 15,
@@ -53,6 +58,7 @@ export const MainCharacter: Story = {
 export const SupportCharacter: Story = {
   args: {
     name: 'シア',
+    iconUrl: 'https://api.ennead.cc/stella/assets/Sia.png',
     label: '支援1',
     isMain: false,
     totalLevel: 10,
@@ -89,6 +95,7 @@ export const SupportUnselected: Story = {
 export const NoLevel: Story = {
   args: {
     name: 'テレサ',
+    iconUrl: 'https://api.ennead.cc/stella/assets/Teresa.png',
     label: '支援2',
     isMain: false,
     totalLevel: 0,
@@ -108,6 +115,7 @@ export const PartyFormation: Story = {
     <div className="flex gap-4">
       <CharacterAvatar
         name="コハク"
+        iconUrl="https://api.ennead.cc/stella/assets/Kohaku.png"
         label="主力"
         isMain={true}
         totalLevel={20}
@@ -115,6 +123,7 @@ export const PartyFormation: Story = {
       />
       <CharacterAvatar
         name="シア"
+        iconUrl="https://api.ennead.cc/stella/assets/Sia.png"
         label="支援1"
         isMain={false}
         totalLevel={12}
@@ -122,6 +131,7 @@ export const PartyFormation: Story = {
       />
       <CharacterAvatar
         name="テレサ"
+        iconUrl="https://api.ennead.cc/stella/assets/Teresa.png"
         label="支援2"
         isMain={false}
         totalLevel={8}

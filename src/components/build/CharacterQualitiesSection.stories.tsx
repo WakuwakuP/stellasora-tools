@@ -12,9 +12,11 @@ import {
 // サンプル素質データを生成
 const generateSampleQualities = (characterName: string): QualityInfo[] => {
   return Array.from({ length: 16 }, (_, i) => ({
-    title: `${characterName}の素質${i + 1}`,
     description: `これは${characterName}の素質${i + 1}の説明です。\n効果の詳細がここに表示されます。`,
     fileName: '/placeholder-character.png',
+    isCore: i < 4, // 最初の4つはコア素質
+    rarity: i < 4 ? 1 : i % 2 === 0 ? 1 : 2, // コア素質はrarity1、それ以外は交互
+    title: `${characterName}の素質${i + 1}`,
   }))
 }
 

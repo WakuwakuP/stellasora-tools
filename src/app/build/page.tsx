@@ -1,15 +1,10 @@
 import { Suspense } from 'react'
 
 import { BuildCreator } from 'app/build/BuildCreator'
-import {
-  BuildCreatorFallback,
-  getAvailableCharacters,
-  getQualitiesData,
-} from 'app/build/utils'
+import { BuildCreatorFallback, getAvailableCharacters } from 'app/build/utils'
 
 export default async function BuildPage() {
-  const qualitiesData = await getQualitiesData()
-  const availableCharacters = getAvailableCharacters(qualitiesData)
+  const availableCharacters = await getAvailableCharacters()
 
   return (
     <Suspense fallback={<BuildCreatorFallback />}>

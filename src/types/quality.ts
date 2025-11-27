@@ -1,6 +1,7 @@
 /**
  * 素質（Quality）データの型定義
- * /public/datasets/qualities.json から読み込むデータの型
+ * StellaSoraAPI から取得するデータの型
+ * @see https://github.com/torikushiii/StellaSoraAPI/blob/main/docs/characters.md
  */
 
 /** 個々の素質情報 */
@@ -9,12 +10,18 @@ export interface QualityInfo {
   description: string
   /** 素質画像のファイルパス */
   fileName: string
+  /** コア素質かどうか */
+  isCore: boolean
+  /** 素質のレアリティ（1または2） */
+  rarity: number
   /** 素質の名前 */
   title: string
 }
 
 /** キャラクターの素質データ（主力/支援） */
 export interface CharacterQualities {
+  /** キャラクターアイコンのURL */
+  icon?: string
   /** 主力用素質（16個） */
   main: QualityInfo[]
   /** 支援用素質（16個） */
@@ -25,22 +32,3 @@ export interface CharacterQualities {
 export interface QualitiesData {
   [characterName: string]: CharacterQualities
 }
-
-/** 利用可能なキャラクター名 */
-export type CharacterName =
-  | 'コハク'
-  | 'シア'
-  | 'チトセ'
-  | 'テレサ'
-  | 'ナノハ'
-  | 'フユカ'
-
-/** キャラクターのリスト */
-export const CHARACTER_NAMES: CharacterName[] = [
-  'コハク',
-  'シア',
-  'チトセ',
-  'テレサ',
-  'ナノハ',
-  'フユカ',
-]

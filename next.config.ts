@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
         port: '',
         protocol: 'https',
       },
+      {
+        hostname: 'api.ennead.cc',
+        pathname: '/stella/assets/**',
+        port: '',
+        protocol: 'https',
+      },
     ],
   },
   typedRoutes: true,

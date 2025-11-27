@@ -7,6 +7,8 @@ import type { FC } from 'react'
 export interface CharacterAvatarProps {
   /** キャラクター名 */
   name: string | null
+  /** キャラクターアイコンのURL */
+  iconUrl?: string
   /** スロットのラベル（例: "主力", "支援1"） */
   label: string
   /** 主力キャラクターかどうか */
@@ -25,6 +27,7 @@ export interface CharacterAvatarProps {
  */
 export const CharacterAvatar: FC<CharacterAvatarProps> = ({
   name,
+  iconUrl,
   label,
   isMain = false,
   totalLevel = 0,
@@ -49,7 +52,7 @@ export const CharacterAvatar: FC<CharacterAvatarProps> = ({
       </Badge>
     )}
     <Avatar className="h-16 w-16">
-      <AvatarImage src="/placeholder-character.png" alt={name || 'キャラクター'} />
+      <AvatarImage src={iconUrl || '/placeholder-character.png'} alt={name || 'キャラクター'} />
       <AvatarFallback className="text-lg">
         {name ? name.charAt(0) : '?'}
       </AvatarFallback>

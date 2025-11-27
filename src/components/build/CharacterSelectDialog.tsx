@@ -9,13 +9,19 @@ import {
 } from 'components/ui/dialog'
 import type { FC } from 'react'
 
+/** キャラクター情報（名前とアイコンURL） */
+export interface CharacterInfo {
+  name: string
+  iconUrl?: string
+}
+
 export interface CharacterSelectDialogProps {
   /** ダイアログの開閉状態 */
   open: boolean
   /** ダイアログの開閉状態変更ハンドラー */
   onOpenChange: (open: boolean) => void
-  /** 選択可能なキャラクター名のリスト */
-  characterNames: string[]
+  /** 選択可能なキャラクター情報のリスト */
+  characters: CharacterInfo[]
   /** 現在選択中のキャラクター名 */
   selectedName: string | null
   /** キャラクター選択時のハンドラー */
@@ -33,7 +39,7 @@ export interface CharacterSelectDialogProps {
 export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
   open,
   onOpenChange,
-  characterNames,
+  characters,
   selectedName,
   onSelect,
   slotLabel,
@@ -44,26 +50,26 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
         <DialogTitle>{slotLabel}を選択</DialogTitle>
       </DialogHeader>
       <div className="grid grid-cols-3 gap-3 p-2">
-        {characterNames.map((name) => (
+        {characters.map((char) => (
           <button
-            key={name}
+            key={char.name}
             type="button"
             onClick={() => {
-              onSelect(name)
+              onSelect(char.name)
               onOpenChange(false)
             }}
-            aria-label={`${name}を選択`}
+            aria-label={`${char.name}を選択`}
             className={`flex flex-col items-center rounded-lg border-2 p-3 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
-              selectedName === name
+              selectedName === char.name
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
                 : 'border-slate-200 dark:border-slate-700'
             }`}
           >
             <Avatar className="h-14 w-14">
-              <AvatarImage src="/placeholder-character.png" alt={name} />
-              <AvatarFallback className="text-xl">{name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={char.iconUrl || '/placeholder-character.png'} alt={char.name} />
+              <AvatarFallback className="text-xl">{char.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="mt-2 text-center text-sm font-medium">{name}</span>
+            <span className="mt-2 text-center text-sm font-medium">{char.name}</span>
           </button>
         ))}
       </div>

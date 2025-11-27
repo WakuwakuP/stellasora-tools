@@ -1,24 +1,19 @@
 'use client'
 
 import { SavedBuildList } from 'app/build/SavedBuildList'
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
-import { Badge } from 'components/ui/badge'
+import {
+  CharacterAvatar,
+  CharacterQualitiesSection,
+  CharacterSelectDialog,
+  CORE_TALENT_INDICES,
+  isCoreTalent,
+} from 'components/build'
+import type { SelectedTalent } from 'components/build'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from 'components/ui/collapsible'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from 'components/ui/dialog'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import { useIsMobile } from 'hooks/use-mobile'
@@ -30,27 +25,17 @@ import {
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import Image from 'next/image'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
-import type { CharacterQualities, QualityInfo } from 'types/quality'
+import type { CharacterQualities } from 'types/quality'
 
 /** デフォルトのビルドレベル（表示用） */
 const DEFAULT_BUILD_LEVEL = 25
-
-/** 素質画像のアスペクト比 (width / height = 432 / 606) */
-const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606
-
-/** コア素質のインデックス（レベルなし、最大2個選択可能） */
-const CORE_TALENT_INDICES = [0, 1, 5, 6]
 
 /** コア素質の最大選択数 */
 const MAX_CORE_TALENTS = 2
 
 /** 通常素質の最大レベル */
 const MAX_TALENT_LEVEL = 6
-
-/** 素質がコア素質かどうかを判定 */
-const isCoreTalent = (index: number): boolean => CORE_TALENT_INDICES.includes(index)
 
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16
@@ -190,225 +175,11 @@ interface BuildCreatorProps {
   initialTalents?: string
 }
 
-interface SelectedTalent {
-  characterName: string
-  role: 'main' | 'sub'
-  index: number
-  level: number
-}
-
 interface CharacterSlot {
   name: string | null
   role: 'main' | 'support'
   label: string
 }
-
-const QualityCard: FC<{
-  quality: QualityInfo
-  index: number
-  isSelected: boolean
-  level?: number
-  isCore: boolean
-  onClick: () => void
-}> = ({ quality, index, isSelected, level, isCore, onClick }) => (
-  <HoverCard openDelay={200} closeDelay={100}>
-    <HoverCardTrigger asChild>
-      <button
-        type="button"
-        onClick={onClick}
-        aria-label={`${quality.title}${isSelected ? (isCore ? '、選択中' : `、レベル${level}選択中`) : ''}`}
-        className={`relative flex min-w-[130px] max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
-          isSelected
-            ? isCore
-              ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
-              : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
-            : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
-        }`}
-      >
-        {/* コア素質は選択時にチェックマーク、通常素質はレベル表示 */}
-        {isSelected && (
-          <Badge
-            className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
-              isCore ? 'bg-pink-500' : 'bg-blue-600'
-            }`}
-          >
-            {isCore ? '✓' : level}
-          </Badge>
-        )}
-        <div
-          className="relative w-full overflow-hidden rounded-md"
-          style={{ aspectRatio: QUALITY_IMAGE_ASPECT_RATIO }}
-        >
-          <Image
-            src={quality.fileName}
-            alt={quality.title}
-            fill
-            sizes="150px"
-            className="object-cover"
-          />
-        </div>
-        <span className="mt-1 line-clamp-1 w-full text-center text-xs">
-          {quality.title}
-        </span>
-      </button>
-    </HoverCardTrigger>
-    <HoverCardContent className="w-72" side="top" align="center">
-      <div className="space-y-2">
-        <h4 className="font-bold text-sm">{quality.title}</h4>
-        <p className="text-muted-foreground text-xs whitespace-pre-wrap">
-          {quality.description}
-        </p>
-      </div>
-    </HoverCardContent>
-  </HoverCard>
-)
-
-const CharacterAvatar: FC<{
-  name: string | null
-  label: string
-  isMain?: boolean
-  totalLevel?: number
-  onClick?: () => void
-}> = ({ name, label, isMain = false, totalLevel = 0, onClick }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    aria-label={`${label}を変更${name ? `（現在: ${name}）` : '（未選択）'}`}
-    className={`group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
-      isMain ? 'border-red-500' : 'border-slate-300'
-    }`}
-  >
-    {isMain && (
-      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-red-500 text-white text-xs">
-        主力
-      </Badge>
-    )}
-    {!isMain && label && (
-      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-slate-500 text-white text-xs">
-        支援
-      </Badge>
-    )}
-    <Avatar className="h-16 w-16">
-      <AvatarImage src="/placeholder-character.png" alt={name || 'キャラクター'} />
-      <AvatarFallback className="text-lg">
-        {name ? name.charAt(0) : '?'}
-      </AvatarFallback>
-    </Avatar>
-    <span className="mt-1 text-center text-sm font-medium">
-      {name || '未選択'}
-    </span>
-    {totalLevel > 0 && (
-      <div className="mt-0.5 flex items-center gap-0.5 text-xs text-slate-500">
-        <span>⊕</span>
-        <span>{totalLevel}</span>
-      </div>
-    )}
-  </button>
-)
-
-/** キャラクター選択ダイアログ */
-const CharacterSelectDialog: FC<{
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  characterNames: string[]
-  selectedName: string | null
-  onSelect: (name: string) => void
-  slotLabel: string
-}> = ({ open, onOpenChange, characterNames, selectedName, onSelect, slotLabel }) => (
-  <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="max-w-md">
-      <DialogHeader>
-        <DialogTitle>{slotLabel}を選択</DialogTitle>
-      </DialogHeader>
-      <div className="grid grid-cols-3 gap-3 p-2">
-        {characterNames.map((name) => (
-          <button
-            key={name}
-            type="button"
-            onClick={() => {
-              onSelect(name)
-              onOpenChange(false)
-            }}
-            aria-label={`${name}を選択`}
-            className={`flex flex-col items-center rounded-lg border-2 p-3 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
-              selectedName === name
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-                : 'border-slate-200 dark:border-slate-700'
-            }`}
-          >
-            <Avatar className="h-14 w-14">
-              <AvatarImage src="/placeholder-character.png" alt={name} />
-              <AvatarFallback className="text-xl">{name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span className="mt-2 text-center text-sm font-medium">{name}</span>
-          </button>
-        ))}
-      </div>
-    </DialogContent>
-  </Dialog>
-)
-
-/** 素質グループの定義 */
-const QUALITY_GROUPS = [
-  { name: '特化素質1', start: 0, end: 5 },
-  { name: '特化素質2', start: 5, end: 10 },
-  { name: '汎用素質', start: 10, end: 16 },
-] as const
-
-const CharacterQualitiesSection: FC<{
-  characterName: string
-  qualities: QualityInfo[]
-  role: 'main' | 'sub'
-  selectedTalents: SelectedTalent[]
-  onTalentSelect: (characterName: string, role: 'main' | 'sub', index: number) => void
-  totalLevel: number
-}> = ({ characterName, qualities, role, selectedTalents, onTalentSelect, totalLevel }) => (
-  <div className="mb-6">
-    <div className="mb-3 flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src="/placeholder-character.png" alt={characterName} />
-          <AvatarFallback>{characterName.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <span className="font-bold text-lg">{characterName}</span>
-      </div>
-      <div className="flex items-center gap-1 text-slate-500">
-        <span className="text-xl">⊕</span>
-        <span className="font-bold text-lg">{totalLevel}</span>
-      </div>
-    </div>
-    <div className="space-y-3">
-      {QUALITY_GROUPS.map((group) => (
-        <div key={group.name}>
-          <div className="mb-1 text-xs text-slate-500 font-medium">{group.name}</div>
-          <div className="flex flex-wrap justify-start gap-2">
-            {qualities.slice(group.start, group.end).map((quality, idx) => {
-              const index = group.start + idx
-              const selectedTalent = selectedTalents.find(
-                (t) =>
-                  t.characterName === characterName &&
-                  t.role === role &&
-                  t.index === index,
-              )
-              const isCore = isCoreTalent(index)
-              return (
-                <QualityCard
-                  key={`${characterName}-${role}-${index}`}
-                  quality={quality}
-                  index={index}
-                  isSelected={selectedTalent !== undefined}
-                  level={selectedTalent?.level}
-                  isCore={isCore}
-                  onClick={() => onTalentSelect(characterName, role, index)}
-                />
-              )
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)
 
 export const BuildCreator: FC<BuildCreatorProps> = ({
   qualitiesData,

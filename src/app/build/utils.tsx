@@ -1,38 +1,26 @@
-import { unstable_cache } from 'next/cache'
+import { getQualitiesDataFromApi } from 'lib/stella-sora-api'
 import type { CharacterQualities, QualitiesData } from 'types/quality'
-import { CHARACTER_NAMES } from 'types/quality'
 
 /**
- * qualities.jsonからデータを読み込む
- * unstable_cacheを使用して静的データをキャッシュし、パフォーマンスを向上
+ * StellaSoraAPIから素質データを取得する
+ * 4時間キャッシュで結果を保持
  */
-export const getQualitiesData = unstable_cache(
-  async (): Promise<QualitiesData> => {
-    const fs = await import('node:fs/promises')
-    const path = await import('node:path')
-
-    const filePath = path.join(
-      process.cwd(),
-      'public',
-      'datasets',
-      'qualities.json',
-    )
-    const data = await fs.readFile(filePath, 'utf-8')
-    return JSON.parse(data) as QualitiesData
-  },
-  ['qualities-data'],
-  { revalidate: 3600 }, // 1時間キャッシュ
-)
+export const getQualitiesData = getQualitiesDataFromApi
 
 /**
  * 利用可能なキャラクターデータのみを抽出
+ * APIから取得したデータはすべて有効なキャラクターデータなので、そのまま返す
  */
 export function getAvailableCharacters(
   qualitiesData: QualitiesData,
 ): Record<string, CharacterQualities> {
-  return CHARACTER_NAMES.filter((name) => qualitiesData[name]).reduce(
-    (acc, name) => {
-      acc[name] = qualitiesData[name]
+  // APIから取得したデータはすべて有効
+  // main と sub の両方が存在するキャラクターのみを返す
+  return Object.entries(qualitiesData).reduce(
+    (acc, [name, qualities]) => {
+      if (qualities.main && qualities.sub) {
+        acc[name] = qualities
+      }
       return acc
     },
     {} as Record<string, CharacterQualities>,

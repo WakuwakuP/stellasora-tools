@@ -22,10 +22,14 @@ export interface QualityInfo {
 
 /** キャラクターの素質データ（主力/支援） */
 export interface CharacterQualities {
+  /** キャラクターの属性（Fire, Water, Wind, Earth, Light, Dark） */
+  element?: string
   /** キャラクターアイコンのURL */
   icon?: string
   /** 主力用素質（16個） */
   main: QualityInfo[]
+  /** キャラクターのロール（Attacker, Balancer, Supporter） */
+  position?: string
   /** 支援用素質（16個） */
   sub: QualityInfo[]
 }

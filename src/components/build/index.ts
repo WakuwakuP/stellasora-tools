@@ -11,7 +11,11 @@ export type {
   CharacterQualitiesSectionProps,
   SelectedTalent,
 } from './CharacterQualitiesSection'
-export { CharacterSelectDialog } from './CharacterSelectDialog'
+export {
+  CharacterSelectDialog,
+  ELEMENT_FILTERS,
+  POSITION_FILTERS,
+} from './CharacterSelectDialog'
 export type {
   CharacterInfo,
   CharacterSelectDialogProps,

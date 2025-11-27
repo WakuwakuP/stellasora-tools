@@ -13,6 +13,9 @@ export type {
   SelectedTalent,
 } from './CharacterQualitiesSection'
 export { CharacterSelectDialog } from './CharacterSelectDialog'
-export type { CharacterSelectDialogProps } from './CharacterSelectDialog'
+export type {
+  CharacterInfo,
+  CharacterSelectDialogProps,
+} from './CharacterSelectDialog'
 export { QualityCard } from './QualityCard'
 export type { QualityCardProps } from './QualityCard'

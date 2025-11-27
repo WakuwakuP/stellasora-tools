@@ -20,6 +20,8 @@ export interface QualityInfo {
 
 /** キャラクターの素質データ（主力/支援） */
 export interface CharacterQualities {
+  /** キャラクターアイコンのURL */
+  icon?: string
   /** 主力用素質（16個） */
   main: QualityInfo[]
   /** 支援用素質（16個） */

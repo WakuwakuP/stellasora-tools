@@ -170,8 +170,16 @@ async function fetchCharacterDetail(
  * APIのアイコン名からフルURLを生成する
  * @example "10301_Potential_01" -> "https://api.ennead.cc/stella/assets/10301_Potential_01_A.png"
  */
-function generateIconUrl(iconName: string): string {
+function generatePotentialIconUrl(iconName: string): string {
   return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}_A.png`
+}
+
+/**
+ * キャラクターアイコンのフルURLを生成する
+ * @example "Kohaku" -> "https://api.ennead.cc/stella/assets/Kohaku.png"
+ */
+function generateCharacterIconUrl(iconName: string): string {
+  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}.png`
 }
 
 /**
@@ -185,7 +193,7 @@ function convertPotentialToQualityInfo(
 ): QualityInfo {
   return {
     description: potential.shortDescription,
-    fileName: generateIconUrl(potential.icon),
+    fileName: generatePotentialIconUrl(potential.icon),
     isCore,
     rarity: potential.rarity,
     title: potential.name,
@@ -227,6 +235,7 @@ function extractCharacterQualities(
   }
 
   return {
+    icon: generateCharacterIconUrl(detail.icon),
     main: mainPotentials,
     sub: subPotentials,
   }

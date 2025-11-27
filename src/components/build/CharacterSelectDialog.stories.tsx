@@ -1,8 +1,17 @@
 import { type Meta, type StoryObj } from '@storybook/react'
 import { useState } from 'react'
+import type { CharacterInfo } from './CharacterSelectDialog'
 import { CharacterSelectDialog } from './CharacterSelectDialog'
 
-const characterNames = ['コハク', 'シア', 'チトセ', 'テレサ', 'ナノハ', 'フユカ']
+const characters: CharacterInfo[] = [
+  { name: 'コハク', iconUrl: 'https://api.ennead.cc/stella/assets/Kohaku.png' },
+  { name: 'シア', iconUrl: 'https://api.ennead.cc/stella/assets/Sia.png' },
+  { name: 'チトセ', iconUrl: 'https://api.ennead.cc/stella/assets/Chitose.png' },
+  { name: 'テレサ', iconUrl: 'https://api.ennead.cc/stella/assets/Teresa.png' },
+  { name: 'ナノハ', iconUrl: 'https://api.ennead.cc/stella/assets/Nanoha.png' },
+  { name: 'フユカ', iconUrl: 'https://api.ennead.cc/stella/assets/Fuyuka.png' },
+]
+const characterNames = characters.map((c) => c.name)
 
 const meta: Meta<typeof CharacterSelectDialog> = {
   title: 'Build/CharacterSelectDialog',
@@ -16,9 +25,9 @@ const meta: Meta<typeof CharacterSelectDialog> = {
       control: 'boolean',
       description: 'ダイアログの開閉状態',
     },
-    characterNames: {
+    characters: {
       control: 'object',
-      description: '選択可能なキャラクター名のリスト',
+      description: '選択可能なキャラクター情報のリスト',
     },
     selectedName: {
       control: 'select',
@@ -49,7 +58,7 @@ type Story = StoryObj<typeof CharacterSelectDialog>
 export const MainCharacterSelect: Story = {
   args: {
     open: true,
-    characterNames,
+    characters,
     selectedName: null,
     slotLabel: '主力',
   },
@@ -61,7 +70,7 @@ export const MainCharacterSelect: Story = {
 export const WithSelection: Story = {
   args: {
     open: true,
-    characterNames,
+    characters,
     selectedName: 'コハク',
     slotLabel: '主力',
   },
@@ -73,7 +82,7 @@ export const WithSelection: Story = {
 export const SupportCharacterSelect: Story = {
   args: {
     open: true,
-    characterNames,
+    characters,
     selectedName: 'シア',
     slotLabel: '支援1',
   },
@@ -85,7 +94,7 @@ export const SupportCharacterSelect: Story = {
 export const Interactive: Story = {
   args: {
     open: false,
-    characterNames,
+    characters,
     selectedName: null,
     slotLabel: '主力',
   },
@@ -110,7 +119,7 @@ export const Interactive: Story = {
         <CharacterSelectDialog
           open={open}
           onOpenChange={setOpen}
-          characterNames={characterNames}
+          characters={characters}
           selectedName={selectedName}
           onSelect={setSelectedName}
           slotLabel="主力"

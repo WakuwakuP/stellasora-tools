@@ -9,7 +9,7 @@ import {
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
 } from 'components/build'
-import type { SelectedTalent } from 'components/build'
+import type { CharacterInfo, SelectedTalent } from 'components/build'
 import {
   Collapsible,
   CollapsibleContent,
@@ -183,8 +183,30 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   initialChar3,
   initialTalents,
 }) => {
-  // characterNamesをメモ化してパフォーマンス向上
-  const characterNames = useMemo(() => Object.keys(qualitiesData), [qualitiesData])
+  // キャラクター情報（名前とアイコン）をメモ化してパフォーマンス向上
+  const characterInfoList = useMemo<CharacterInfo[]>(
+    () =>
+      Object.entries(qualitiesData).map(([name, qualities]) => ({
+        name,
+        iconUrl: qualities.icon,
+      })),
+    [qualitiesData],
+  )
+
+  // 後方互換性のためcharacterNamesも保持
+  const characterNames = useMemo(
+    () => characterInfoList.map((c) => c.name),
+    [characterInfoList],
+  )
+
+  // キャラクター名からアイコンURLを取得するヘルパー
+  const getCharacterIconUrl = useCallback(
+    (name: string | null): string | undefined => {
+      if (!name) return undefined
+      return characterInfoList.find((c) => c.name === name)?.iconUrl
+    },
+    [characterInfoList],
+  )
 
   // 初期ステートを計算（遅延初期化パターン）
   const [characters, setCharacters] = useState<CharacterSlot[]>(() => {
@@ -413,6 +435,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                       <CharacterAvatar
                         key={char.label}
                         name={char.name}
+                        iconUrl={getCharacterIconUrl(char.name)}
                         label={char.label}
                         isMain={char.role === 'main'}
                         totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
@@ -452,6 +475,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     <CharacterAvatar
                       key={char.label}
                       name={char.name}
+                      iconUrl={getCharacterIconUrl(char.name)}
                       label={char.label}
                       isMain={char.role === 'main'}
                       totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
@@ -485,7 +509,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             <CharacterSelectDialog
               open={characterDialogOpen}
               onOpenChange={setCharacterDialogOpen}
-              characterNames={characterNames}
+              characters={characterInfoList}
               selectedName={characters[editingSlotIndex]?.name ?? null}
               onSelect={(name) => handleCharacterChange(editingSlotIndex, name)}
               slotLabel={characters[editingSlotIndex]?.label ?? ''}

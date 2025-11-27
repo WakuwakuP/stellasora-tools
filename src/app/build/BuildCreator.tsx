@@ -6,6 +6,8 @@ import {
   CharacterQualitiesSection,
   CharacterSelectDialog,
   isCoreTalent,
+  MAX_CORE_TALENTS,
+  MAX_TALENT_LEVEL,
 } from 'components/build'
 import type { SelectedTalent } from 'components/build'
 import {
@@ -29,12 +31,6 @@ import type { CharacterQualities } from 'types/quality'
 
 /** デフォルトのビルドレベル（表示用） */
 const DEFAULT_BUILD_LEVEL = 25
-
-/** コア素質の最大選択数 */
-const MAX_CORE_TALENTS = 2
-
-/** 通常素質の最大レベル */
-const MAX_TALENT_LEVEL = 6
 
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16

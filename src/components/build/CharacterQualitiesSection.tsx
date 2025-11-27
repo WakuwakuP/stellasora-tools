@@ -1,9 +1,9 @@
 'use client'
 
-import { QualityCard } from 'components/build/QualityCard'
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import type { FC } from 'react'
 import type { QualityInfo } from 'types/quality'
+import { QualityCard } from './QualityCard'
 
 /** 素質グループの定義 */
 export const QUALITY_GROUPS = [

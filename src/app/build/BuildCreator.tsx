@@ -1,7 +1,13 @@
 'use client'
 
+import { SavedBuildList } from 'app/build/SavedBuildList'
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { Badge } from 'components/ui/badge'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from 'components/ui/collapsible'
 import {
   Dialog,
   DialogContent,
@@ -15,18 +21,18 @@ import {
 } from 'components/ui/hover-card'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { useIsMobile } from 'hooks/use-mobile'
+import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import Image from 'next/image'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { CharacterQualities, QualityInfo } from 'types/quality'
-
-/** スコア計算時の1レベルあたりのポイント */
-const POINTS_PER_LEVEL = 100
 
 /** デフォルトのビルドレベル（表示用） */
 const DEFAULT_BUILD_LEVEL = 25
@@ -449,6 +455,22 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
+  const [currentUrl, setCurrentUrl] = useState(() => {
+    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
+      return `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
+    }
+    return '/build'
+  })
+
+  // モバイル判定
+  const isMobile = useIsMobile()
+
+  // モバイル用のセクション折りたたみ状態（デフォルトは閉じた状態で素質選択エリアを広く表示）
+  const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(false)
+  const [isSavedBuildsOpen, setIsSavedBuildsOpen] = useState(false)
+
+  // 保存されたビルドの管理
+  const { builds, addBuild, removeBuild } = useSavedBuilds()
 
   // URLを更新する関数
   const updateUrl = useCallback(
@@ -457,6 +479,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       // 全てのキャラクターが選択されている場合のみURLを更新
       if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
         window.history.replaceState(null, '', newPath)
+        setCurrentUrl(newPath)
       }
     },
     [],
@@ -543,8 +566,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       .reduce((sum, t) => sum + t.level, 0)
   }
 
-  const calculateTotalScore = () => {
-    return selectedTalents.reduce((sum, t) => sum + t.level * POINTS_PER_LEVEL, 0)
+  const handleSaveBuild = () => {
+    if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
+      addBuild(buildName, currentUrl)
+    }
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
@@ -575,52 +600,119 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
-      <div className="flex h-full flex-col gap-4 p-4 lg:flex-row">
+      <div className="flex h-full flex-col gap-2 p-2 lg:gap-4 lg:p-4 lg:flex-row">
         {/* 左パネル - ビルド情報 */}
-        <div className="w-full shrink-0 overflow-y-auto rounded-xl border-2 border-slate-300 bg-slate-50/80 p-4 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80">
-          {/* ビルド名・スコア */}
-          <div className="mb-4 rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 p-4 text-white">
+        <div className={`flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 lg:h-full lg:w-80 ${isMobile ? 'p-2' : 'p-4'}`}>
+          {/* ビルド名 - モバイルではコンパクトに */}
+          <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-bold text-lg">
+              <div className={`flex items-center justify-center rounded-full bg-amber-500 font-bold ${isMobile ? 'h-8 w-8 text-sm' : 'h-10 w-10 text-lg'}`}>
                 {DEFAULT_BUILD_LEVEL}
               </div>
-              <div>
+              <div className="flex-1">
                 <input
                   type="text"
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
-                  className="bg-transparent font-bold text-xl outline-none"
+                  placeholder="ビルド名を入力"
+                  className={`w-full bg-transparent font-bold outline-none ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
-                <div className="flex items-center gap-1 text-sm">
-                  <span>⊕ スコア</span>
-                  <span className="rounded bg-slate-500 px-2 py-0.5">
-                    {calculateTotalScore()}
-                  </span>
-                </div>
               </div>
             </div>
           </div>
 
-          {/* 巡遊者（キャラクター）セクション */}
-          <div className="mb-4">
-            <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-              <span className="text-lg">🏆</span>
-              巡遊者
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {characters.map((char, index) => (
-                <CharacterAvatar
-                  key={char.label}
-                  name={char.name}
-                  label={char.label}
-                  isMain={char.role === 'main'}
-                  totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
-                  onClick={() => openCharacterDialog(index)}
-                />
-              ))}
-            </div>
-          </div>
+          {/* モバイルの場合、ビルド情報を折りたたみ可能にする */}
+          {isMobile ? (
+            <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
+              <CollapsibleTrigger
+                className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                aria-expanded={isBuildInfoOpen}
+              >
+                <span className="flex items-center gap-1 text-amber-600">
+                  <span>🏆</span>
+                  巡遊者・ロスレコ
+                </span>
+                {isBuildInfoOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-2">
+                {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
+                <div>
+                  <div className="grid grid-cols-3 gap-1">
+                    {characters.map((char, index) => (
+                      <CharacterAvatar
+                        key={char.label}
+                        name={char.name}
+                        label={char.label}
+                        isMain={char.role === 'main'}
+                        totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                        onClick={() => openCharacterDialog(index)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* メインロスレコセクション（プレースホルダー） - コンパクト版 */}
+                <div>
+                  <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                    <span>⊕</span>
+                    メインロスレコ
+                  </h3>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <>
+              {/* デスクトップ: 巡遊者（キャラクター）セクション */}
+              <div className="mb-4">
+                <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
+                  <span className="text-lg">🏆</span>
+                  巡遊者
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {characters.map((char, index) => (
+                    <CharacterAvatar
+                      key={char.label}
+                      name={char.name}
+                      label={char.label}
+                      isMain={char.role === 'main'}
+                      totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                      onClick={() => openCharacterDialog(index)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* デスクトップ: メインロスレコセクション（プレースホルダー） */}
+              <div className="mb-4">
+                <h3 className="mb-2 flex items-center gap-1 font-bold">
+                  <span>⊕</span>
+                  メインロスレコ
+                  <span className="ml-auto text-slate-400">🔍</span>
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
+                    />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* キャラクター選択ダイアログ */}
           {editingSlotIndex !== null && (
@@ -634,48 +726,72 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             />
           )}
 
-          {/* メインロスレコセクション（プレースホルダー） */}
-          <div className="mb-4">
-            <h3 className="mb-2 flex items-center gap-1 font-bold">
-              <span>⊕</span>
-              メインロスレコ
-              <span className="ml-auto text-slate-400">🔍</span>
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* ステータス表示 */}
-          <div className="rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
-            <div className="flex items-center gap-2 text-sm">
+          {/* ステータス表示 - モバイルではコンパクトに */}
+          <div className={`rounded-lg bg-slate-200 dark:bg-slate-700 ${isMobile ? 'mt-2 p-2' : 'mt-4 p-3'}`}>
+            <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               <span className="text-blue-500">ℹ</span>
               <span>
-                選択素質: {selectedTalents.length}個 / 合計レベル: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
               </span>
             </div>
           </div>
 
-          {/* アクションボタン */}
-          <div className="mt-4 flex gap-2">
+          {/* 登録ボタン */}
+          <div className={isMobile ? 'mt-2' : 'mt-4'}>
             <button
               type="button"
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-slate-200 py-2 font-medium transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600"
-            >
-              🔒 ロック済
-            </button>
-            <button
-              type="button"
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+              onClick={handleSaveBuild}
+              disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+              className={`flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800 ${isMobile ? 'py-1.5 text-sm' : 'py-2'}`}
             >
               ❤ 登録
             </button>
           </div>
+
+          {/* 保存されたビルドリスト - モバイルでは折りたたみ可能 */}
+          {isMobile ? (
+            <Collapsible
+              open={isSavedBuildsOpen}
+              onOpenChange={setIsSavedBuildsOpen}
+              className="mt-2"
+            >
+              <CollapsibleTrigger
+                className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                aria-expanded={isSavedBuildsOpen}
+              >
+                <span className="flex items-center gap-1">
+                  <span>📋</span>
+                  保存済み ({builds.length})
+                </span>
+                {isSavedBuildsOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <div className="mt-4 flex min-h-0 flex-1 flex-col">
+              <h3 className="mb-2 flex items-center gap-1 font-bold">
+                <span>📋</span>
+                保存済みビルド
+              </h3>
+              <div className="min-h-0 flex-1 overflow-hidden">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 右パネル - 素質/ロスレコスキル */}

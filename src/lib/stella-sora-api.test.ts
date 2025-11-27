@@ -29,14 +29,53 @@ describe('stella-sora-api', () => {
 
   describe('getQualitiesDataFromApi', () => {
     it('APIからデータを正常に取得できる', async () => {
+      // docs/characters.md の例に基づくモックデータ
       const mockCharacterList = [
-        { id: 103, name: 'コハク', icon: '/stella/assets/Amber.png' },
-        { id: 107, name: 'シア', icon: '/stella/assets/Tilia.png' },
+        {
+          id: 103,
+          name: 'コハク',
+          icon: '/stella/assets/Amber.png',
+          portrait: '/stella/assets/head_10301_XL.png',
+          description: 'テスト説明',
+          grade: 4,
+          element: 'Ignis',
+          position: 'Vanguard',
+          attackType: 'ranged',
+          style: 'Collector',
+          faction: 'New Star Guild',
+          tags: ['Vanguard', 'Collector'],
+        },
+        {
+          id: 107,
+          name: 'シア',
+          icon: '/stella/assets/Tilia.png',
+          portrait: '/stella/assets/head_10701_XL.png',
+          description: 'テスト説明',
+          grade: 4,
+          element: 'Lux',
+          position: 'Support',
+          attackType: 'melee',
+          style: 'Steady',
+          faction: 'Imperial Guard',
+          tags: ['Support', 'Steady'],
+        },
       ]
 
       const mockKohakuDetail = {
         id: 103,
         name: 'コハク',
+        icon: '/stella/assets/Amber.png',
+        portrait: '/stella/assets/Amber_portrait.png',
+        background: '/stella/assets/Amber_background.png',
+        variants: { base: '/stella/assets/Amber_base.png' },
+        description: 'テスト説明',
+        grade: 4,
+        element: 'Ignis',
+        position: 'Vanguard',
+        attackType: 'ranged',
+        style: 'Collector',
+        faction: 'New Star Guild',
+        tags: ['Vanguard', 'Collector'],
         talents: {
           main: [
             { name: '超火力', description: '主力スキル発動後、装弾数と通常攻撃ダメージが増加する。' },
@@ -51,6 +90,18 @@ describe('stella-sora-api', () => {
       const mockSiaDetail = {
         id: 107,
         name: 'シア',
+        icon: '/stella/assets/Tilia.png',
+        portrait: '/stella/assets/Tilia_portrait.png',
+        background: '/stella/assets/Tilia_background.png',
+        variants: { base: '/stella/assets/Tilia_base.png' },
+        description: 'テスト説明',
+        grade: 4,
+        element: 'Lux',
+        position: 'Support',
+        attackType: 'melee',
+        style: 'Steady',
+        faction: 'Imperial Guard',
+        tags: ['Support', 'Steady'],
         talents: {
           main: [
             { name: '光の雪兎', description: '雪兎の通常攻撃ダメージを与えた時、電音を付与するようになる。' },
@@ -86,7 +137,7 @@ describe('stella-sora-api', () => {
       expect(result['シア'].main).toHaveLength(1)
       expect(result['シア'].sub).toHaveLength(1)
 
-      // APIが正しいURLで呼び出されたことを確認
+      // APIが正しいURLで呼び出されたことを確認（docs/characters.md より）
       expect(mockFetch).toHaveBeenCalledWith(
         'https://api.ennead.cc/stella/characters?lang=JP',
         expect.objectContaining({ next: { revalidate: 14400 } }),
@@ -95,9 +146,9 @@ describe('stella-sora-api', () => {
 
     it('APIエラー時にローカルデータにフォールバックする', async () => {
       const mockLocalData = {
-        'コハク': {
-          main: [{ title: 'テスト', description: 'テスト説明', fileName: '/test.png' }],
-          sub: [{ title: 'テスト2', description: 'テスト説明2', fileName: '/test2.png' }],
+        コハク: {
+          main: [{ description: 'テスト説明', fileName: '/test.png', title: 'テスト' }],
+          sub: [{ description: 'テスト説明2', fileName: '/test2.png', title: 'テスト2' }],
         },
       }
 
@@ -116,13 +167,51 @@ describe('stella-sora-api', () => {
 
     it('キャラクターにtalentsがない場合はスキップする', async () => {
       const mockCharacterList = [
-        { id: 103, name: 'コハク' },
-        { id: 999, name: 'テスト' },
+        {
+          id: 103,
+          name: 'コハク',
+          icon: '/stella/assets/Amber.png',
+          portrait: '/stella/assets/head_10301_XL.png',
+          description: 'テスト説明',
+          grade: 4,
+          element: 'Ignis',
+          position: 'Vanguard',
+          attackType: 'ranged',
+          style: 'Collector',
+          faction: 'New Star Guild',
+          tags: [],
+        },
+        {
+          id: 999,
+          name: 'テスト',
+          icon: '/stella/assets/Test.png',
+          portrait: '/stella/assets/head_99901_XL.png',
+          description: 'テスト説明',
+          grade: 4,
+          element: 'Ignis',
+          position: 'Vanguard',
+          attackType: 'ranged',
+          style: 'Collector',
+          faction: 'New Star Guild',
+          tags: [],
+        },
       ]
 
       const mockKohakuDetail = {
         id: 103,
         name: 'コハク',
+        icon: '/stella/assets/Amber.png',
+        portrait: '/stella/assets/Amber_portrait.png',
+        background: '/stella/assets/Amber_background.png',
+        variants: {},
+        description: 'テスト説明',
+        grade: 4,
+        element: 'Ignis',
+        position: 'Vanguard',
+        attackType: 'ranged',
+        style: 'Collector',
+        faction: 'New Star Guild',
+        tags: [],
         talents: {
           main: [{ name: '超火力', description: 'テスト' }],
           support: [{ name: '追尾の舞', description: 'テスト' }],
@@ -132,6 +221,18 @@ describe('stella-sora-api', () => {
       const mockTestDetail = {
         id: 999,
         name: 'テスト',
+        icon: '/stella/assets/Test.png',
+        portrait: '/stella/assets/Test_portrait.png',
+        background: '/stella/assets/Test_background.png',
+        variants: {},
+        description: 'テスト説明',
+        grade: 4,
+        element: 'Ignis',
+        position: 'Vanguard',
+        attackType: 'ranged',
+        style: 'Collector',
+        faction: 'New Star Guild',
+        tags: [],
         // talentsなし
       }
 
@@ -154,6 +255,61 @@ describe('stella-sora-api', () => {
 
       expect(result).toHaveProperty('コハク')
       expect(result).not.toHaveProperty('テスト')
+    })
+
+    it('talentsが空の場合もスキップする', async () => {
+      const mockCharacterList = [
+        {
+          id: 103,
+          name: 'コハク',
+          icon: '/stella/assets/Amber.png',
+          portrait: '/stella/assets/head_10301_XL.png',
+          description: 'テスト説明',
+          grade: 4,
+          element: 'Ignis',
+          position: 'Vanguard',
+          attackType: 'ranged',
+          style: 'Collector',
+          faction: 'New Star Guild',
+          tags: [],
+        },
+      ]
+
+      const mockKohakuDetail = {
+        id: 103,
+        name: 'コハク',
+        icon: '/stella/assets/Amber.png',
+        portrait: '/stella/assets/Amber_portrait.png',
+        background: '/stella/assets/Amber_background.png',
+        variants: {},
+        description: 'テスト説明',
+        grade: 4,
+        element: 'Ignis',
+        position: 'Vanguard',
+        attackType: 'ranged',
+        style: 'Collector',
+        faction: 'New Star Guild',
+        tags: [],
+        talents: {
+          main: [],
+          support: [],
+        },
+      }
+
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockCharacterList),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockKohakuDetail),
+        })
+
+      const { getQualitiesDataFromApi } = await import('lib/stella-sora-api')
+      const result = await getQualitiesDataFromApi()
+
+      expect(result).not.toHaveProperty('コハク')
     })
   })
 })

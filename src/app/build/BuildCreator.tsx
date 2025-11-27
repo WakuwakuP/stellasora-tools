@@ -623,6 +623,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
+                  placeholder="ビルド名を入力"
                   className={`w-full bg-transparent font-bold outline-none ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
               </div>

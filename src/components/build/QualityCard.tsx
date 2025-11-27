@@ -105,13 +105,13 @@ export const QualityCard: FC<QualityCardProps> = ({
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
             />
-            {/* 素質画像 */}
+            {/* 素質画像 - 背景の中央に配置 */}
             <Image
               src={quality.fileName}
               alt={quality.title}
               fill
               sizes="150px"
-              className="relative z-[1] object-cover"
+              className="relative z-[1] object-contain object-center"
             />
           </div>
           <span className="mt-1 line-clamp-1 w-full text-center text-xs">

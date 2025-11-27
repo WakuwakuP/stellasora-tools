@@ -176,10 +176,10 @@ function generatePotentialIconUrl(iconName: string): string {
 
 /**
  * キャラクターアイコンのフルURLを生成する
- * @example "Kohaku" -> "https://api.ennead.cc/stella/assets/Kohaku.png"
+ * @example "Kohaku.png" -> "https://api.ennead.cc/stella/assets/Kohaku.png"
  */
 function generateCharacterIconUrl(iconName: string): string {
-  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}.png`
+  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}`
 }
 
 /**

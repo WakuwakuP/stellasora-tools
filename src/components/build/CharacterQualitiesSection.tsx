@@ -111,7 +111,6 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
             <QualityCard
               key={`${characterName}-${role}-${originalIndex}`}
               quality={quality}
-              index={originalIndex}
               isSelected={selectedTalent !== undefined}
               level={selectedTalent?.level}
               isCore={isCore}

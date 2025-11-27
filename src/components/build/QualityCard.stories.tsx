@@ -45,7 +45,6 @@ const sampleQuality = {
 export const Default: Story = {
   args: {
     quality: sampleQuality,
-    index: 2,
     isSelected: false,
     isCore: false,
   },
@@ -57,7 +56,6 @@ export const Default: Story = {
 export const SelectedLevel1: Story = {
   args: {
     quality: sampleQuality,
-    index: 2,
     isSelected: true,
     level: 1,
     isCore: false,
@@ -70,7 +68,6 @@ export const SelectedLevel1: Story = {
 export const SelectedMaxLevel: Story = {
   args: {
     quality: sampleQuality,
-    index: 2,
     isSelected: true,
     level: 6,
     isCore: false,
@@ -87,7 +84,6 @@ export const CoreUnselected: Story = {
       isCore: true,
       title: 'コア素質',
     },
-    index: 0,
     isSelected: false,
     isCore: true,
   },
@@ -103,7 +99,6 @@ export const CoreSelected: Story = {
       isCore: true,
       title: 'コア素質',
     },
-    index: 0,
     isSelected: true,
     isCore: true,
   },
@@ -115,7 +110,6 @@ export const CoreSelected: Story = {
 export const ComparisonView: Story = {
   args: {
     quality: sampleQuality,
-    index: 0,
     isSelected: false,
     isCore: false,
   },
@@ -125,7 +119,6 @@ export const ComparisonView: Story = {
         <span className="text-sm font-medium">未選択</span>
         <QualityCard
           quality={sampleQuality}
-          index={2}
           isSelected={false}
           isCore={false}
           onClick={() => {}}
@@ -135,7 +128,6 @@ export const ComparisonView: Story = {
         <span className="text-sm font-medium">選択済み (Lv.3)</span>
         <QualityCard
           quality={sampleQuality}
-          index={2}
           isSelected={true}
           level={3}
           isCore={false}
@@ -146,7 +138,6 @@ export const ComparisonView: Story = {
         <span className="text-sm font-medium">コア未選択</span>
         <QualityCard
           quality={{ ...sampleQuality, isCore: true, title: 'コア素質' }}
-          index={0}
           isSelected={false}
           isCore={true}
           onClick={() => {}}
@@ -156,7 +147,6 @@ export const ComparisonView: Story = {
         <span className="text-sm font-medium">コア選択済み</span>
         <QualityCard
           quality={{ ...sampleQuality, isCore: true, title: 'コア素質' }}
-          index={0}
           isSelected={true}
           isCore={true}
           onClick={() => {}}

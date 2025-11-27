@@ -38,13 +38,11 @@ function getBackgroundImageUrl(isCore: boolean, rarity: number): string {
 export interface QualityCardProps {
   /** 素質情報 */
   quality: QualityInfo
-  /** 素質のインデックス */
-  index: number
   /** 選択状態 */
   isSelected: boolean
   /** 素質のレベル（通常素質のみ） */
   level?: number
-  /** コア素質かどうか（非推奨: quality.isCoreを使用） */
+  /** コア素質かどうか（フォールバック用: quality.isCoreを優先使用） */
   isCore: boolean
   /** クリックハンドラー */
   onClick: () => void
@@ -58,7 +56,6 @@ export interface QualityCardProps {
  */
 export const QualityCard: FC<QualityCardProps> = ({
   quality,
-  index,
   isSelected,
   level,
   isCore,

@@ -19,11 +19,12 @@ export const isCoreTalent = (
   index: number,
   quality?: QualityInfo,
 ): boolean => {
-  // QualityInfo に isCore プロパティがあればそれを使用
+  // QualityInfo に isCore プロパティがあればそれを使用（API経由のデータ）
   if (quality?.isCore !== undefined) {
     return quality.isCore
   }
-  // フォールバック: 最初の4つはコア素質
+  // フォールバック: 最初の4つはコア素質（ローカルデータ用）
+  // APIデータ構造: mainCore(4) + mainNormal(9) + common(3) = 16
   return CORE_TALENT_INDICES.includes(index)
 }
 
@@ -85,6 +86,7 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
     const sub = qualitiesWithIndex
       .filter((q) => !isCoreTalent(q.originalIndex, q.quality))
       // レアリティ順でソート（rarity1 → rarity2）
+      // ローカルデータにはrarityがないためデフォルト値1を使用
       .sort((a, b) => (a.quality.rarity ?? 1) - (b.quality.rarity ?? 1))
 
     return { coreQualities: core, subQualities: sub }

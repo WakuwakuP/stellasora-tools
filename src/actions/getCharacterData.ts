@@ -1,3 +1,5 @@
+'use server'
+
 import { unstable_cache } from 'next/cache'
 import {
   type CharacterQualities,
@@ -6,7 +8,7 @@ import {
 } from 'types/quality'
 
 /**
- * StellaSoraAPI クライアント
+ * StellaSoraAPI からキャラクターデータを取得する Server Action
  *
  * APIドキュメント: https://github.com/torikushiii/StellaSoraAPI/tree/main/docs
  *
@@ -240,7 +242,7 @@ function extractCharacterQualities(
 }
 
 // ============================================================================
-// エクスポート関数
+// Server Actions
 // ============================================================================
 
 /**
@@ -280,27 +282,62 @@ async function fetchQualitiesDataFromApiOrFallback(): Promise<QualitiesData> {
 }
 
 /**
- * StellaSoraAPIから全キャラクターの素質データを取得する
+ * StellaSoraAPIから全キャラクターの素質データを取得する Server Action
  *
  * - unstable_cacheを使用して4時間キャッシュする
  * - APIが利用できない場合はローカルのqualities.jsonを使用する
  *
  * @see https://github.com/torikushiii/StellaSoraAPI/blob/main/docs/characters.md
  */
-export const getQualitiesDataFromApi = unstable_cache(
-  fetchQualitiesDataFromApiOrFallback,
-  ['stella-sora-api-qualities-data'],
-  { revalidate: CACHE_REVALIDATE_SECONDS },
-)
+export async function getQualitiesData(): Promise<QualitiesData> {
+  const cachedFetch = unstable_cache(
+    fetchQualitiesDataFromApiOrFallback,
+    ['stella-sora-api-qualities-data'],
+    { revalidate: CACHE_REVALIDATE_SECONDS },
+  )
+
+  return cachedFetch()
+}
 
 /**
- * StellaSoraAPIからキャラクター名一覧を取得する
+ * StellaSoraAPIからキャラクター名一覧を取得する Server Action
  */
-export const getCharacterNamesFromApi = unstable_cache(
-  async (): Promise<string[]> => {
-    const characterList = await fetchCharacterList('JP')
-    return characterList.map((char) => char.name)
-  },
-  ['stella-sora-api-character-names'],
-  { revalidate: CACHE_REVALIDATE_SECONDS },
-)
+export async function getCharacterNames(): Promise<string[]> {
+  const cachedFetch = unstable_cache(
+    async (): Promise<string[]> => {
+      const characterList = await fetchCharacterList('JP')
+      return characterList.map((char) => char.name)
+    },
+    ['stella-sora-api-character-names'],
+    { revalidate: CACHE_REVALIDATE_SECONDS },
+  )
+
+  return cachedFetch()
+}
+
+/**
+ * 利用可能なキャラクターデータのみを抽出
+ * APIから取得したデータはすべて有効なキャラクターデータなので、そのまま返す
+ */
+export async function getAvailableCharacters(): Promise<
+  Record<string, CharacterQualities>
+> {
+  const qualitiesData = await getQualitiesData()
+
+  // APIから取得したデータはすべて有効
+  // main と sub の両方が存在し、かつ要素を持つキャラクターのみを返す
+  return Object.entries(qualitiesData).reduce(
+    (acc, [name, qualities]) => {
+      if (
+        qualities.main &&
+        qualities.main.length > 0 &&
+        qualities.sub &&
+        qualities.sub.length > 0
+      ) {
+        acc[name] = qualities
+      }
+      return acc
+    },
+    {} as Record<string, CharacterQualities>,
+  )
+}

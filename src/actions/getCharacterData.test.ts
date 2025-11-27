@@ -14,7 +14,7 @@ vi.mock('next/cache', () => ({
   unstable_cache: (fn: () => Promise<unknown>) => fn,
 }))
 
-describe('stella-sora-api', () => {
+describe('getCharacterData Server Action', () => {
   const mockFetch = vi.fn()
   const originalFetch = global.fetch
 
@@ -27,7 +27,7 @@ describe('stella-sora-api', () => {
     global.fetch = originalFetch
   })
 
-  describe('getQualitiesDataFromApi', () => {
+  describe('getQualitiesData', () => {
     it('APIからデータを正常に取得できる', async () => {
       // docs/characters.md の例に基づくモックデータ
       const mockCharacterList = [
@@ -127,8 +127,8 @@ describe('stella-sora-api', () => {
         })
 
       // モジュールを再インポート（モックを適用するため）
-      const { getQualitiesDataFromApi } = await import('lib/stella-sora-api')
-      const result = await getQualitiesDataFromApi()
+      const { getQualitiesData } = await import('./getCharacterData')
+      const result = await getQualitiesData()
 
       expect(result).toHaveProperty('コハク')
       expect(result).toHaveProperty('シア')
@@ -159,8 +159,8 @@ describe('stella-sora-api', () => {
       const { readFile } = await import('node:fs/promises')
       vi.mocked(readFile).mockResolvedValue(JSON.stringify(mockLocalData))
 
-      const { getQualitiesDataFromApi } = await import('lib/stella-sora-api')
-      const result = await getQualitiesDataFromApi()
+      const { getQualitiesData } = await import('./getCharacterData')
+      const result = await getQualitiesData()
 
       expect(result).toEqual(mockLocalData)
     })
@@ -250,8 +250,8 @@ describe('stella-sora-api', () => {
           json: () => Promise.resolve(mockTestDetail),
         })
 
-      const { getQualitiesDataFromApi } = await import('lib/stella-sora-api')
-      const result = await getQualitiesDataFromApi()
+      const { getQualitiesData } = await import('./getCharacterData')
+      const result = await getQualitiesData()
 
       expect(result).toHaveProperty('コハク')
       expect(result).not.toHaveProperty('テスト')
@@ -306,8 +306,8 @@ describe('stella-sora-api', () => {
           json: () => Promise.resolve(mockKohakuDetail),
         })
 
-      const { getQualitiesDataFromApi } = await import('lib/stella-sora-api')
-      const result = await getQualitiesDataFromApi()
+      const { getQualitiesData } = await import('./getCharacterData')
+      const result = await getQualitiesData()
 
       expect(result).not.toHaveProperty('コハク')
     })

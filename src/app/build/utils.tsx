@@ -1,36 +1,19 @@
-import { getQualitiesDataFromApi } from 'lib/stella-sora-api'
-import type { CharacterQualities, QualitiesData } from 'types/quality'
+import {
+  getAvailableCharacters as getAvailableCharactersAction,
+  getQualitiesData as getQualitiesDataAction,
+} from 'actions/getCharacterData'
 
 /**
- * StellaSoraAPIから素質データを取得する
+ * StellaSoraAPIから素質データを取得する Server Action
  * 4時間キャッシュで結果を保持
  */
-export const getQualitiesData = getQualitiesDataFromApi
+export const getQualitiesData = getQualitiesDataAction
 
 /**
- * 利用可能なキャラクターデータのみを抽出
+ * 利用可能なキャラクターデータのみを抽出する Server Action
  * APIから取得したデータはすべて有効なキャラクターデータなので、そのまま返す
  */
-export function getAvailableCharacters(
-  qualitiesData: QualitiesData,
-): Record<string, CharacterQualities> {
-  // APIから取得したデータはすべて有効
-  // main と sub の両方が存在し、かつ要素を持つキャラクターのみを返す
-  return Object.entries(qualitiesData).reduce(
-    (acc, [name, qualities]) => {
-      if (
-        qualities.main &&
-        qualities.main.length > 0 &&
-        qualities.sub &&
-        qualities.sub.length > 0
-      ) {
-        acc[name] = qualities
-      }
-      return acc
-    },
-    {} as Record<string, CharacterQualities>,
-  )
-}
+export const getAvailableCharacters = getAvailableCharactersAction
 
 /**
  * ビルドクリエイター読み込み中のフォールバックUI

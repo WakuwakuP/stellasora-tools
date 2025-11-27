@@ -457,15 +457,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
   const [currentUrl, setCurrentUrl] = useState(() => {
     if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      const { characters: decodedChars, selectedTalents: decodedTalents } =
-        decodeBuildFromPath(
-          initialChar1,
-          initialChar2,
-          initialChar3,
-          initialTalents,
-          characterNames,
-        )
-      return encodeBuildToPath(decodedChars, decodedTalents)
+      return `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
     }
     return '/build'
   })

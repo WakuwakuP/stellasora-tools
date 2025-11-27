@@ -283,7 +283,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     role: 'main' | 'sub',
     index: number,
   ) => {
-    const isCore = isCoreTalent(index)
+    // 素質データを取得してコア判定に使用
+    const charData = qualitiesData[characterName]
+    const qualityRole = role === 'main' ? 'main' : 'sub'
+    const quality = charData?.[qualityRole]?.[index]
+    const isCore = isCoreTalent(index, quality)
 
     setSelectedTalents((prev) => {
       const existing = prev.find(
@@ -311,12 +315,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       // 新規選択
       if (isCore) {
         // コア素質の選択数チェック（キャラクター・ロールごとに最大2個）
-        const currentCoreCount = prev.filter(
-          (t) =>
+        const currentCoreCount = prev.filter((t) => {
+          const tCharData = qualitiesData[t.characterName]
+          const tQualityRole = t.role === 'main' ? 'main' : 'sub'
+          const tQuality = tCharData?.[tQualityRole]?.[t.index]
+          return (
             t.characterName === characterName &&
             t.role === role &&
-            isCoreTalent(t.index),
-        ).length
+            isCoreTalent(t.index, tQuality)
+          )
+        }).length
 
         if (currentCoreCount >= MAX_CORE_TALENTS) {
           // 最大数に達している場合は選択不可

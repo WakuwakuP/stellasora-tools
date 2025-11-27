@@ -38,13 +38,11 @@ function getBackgroundImageUrl(isCore: boolean, rarity: number): string {
 export interface QualityCardProps {
   /** 素質情報 */
   quality: QualityInfo
-  /** 素質のインデックス */
-  index: number
   /** 選択状態 */
   isSelected: boolean
   /** 素質のレベル（通常素質のみ） */
   level?: number
-  /** コア素質かどうか（非推奨: quality.isCoreを使用） */
+  /** コア素質かどうか（フォールバック用: quality.isCoreを優先使用） */
   isCore: boolean
   /** クリックハンドラー */
   onClick: () => void
@@ -58,7 +56,6 @@ export interface QualityCardProps {
  */
 export const QualityCard: FC<QualityCardProps> = ({
   quality,
-  index,
   isSelected,
   level,
   isCore,
@@ -76,7 +73,7 @@ export const QualityCard: FC<QualityCardProps> = ({
           type="button"
           onClick={onClick}
           aria-label={`${quality.title}${isSelected ? (isCoreQuality ? '、選択中' : `、レベル${level}選択中`) : ''}`}
-          className={`relative flex min-w-[130px] max-w-[150px] flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-1 transition-colors ${
             isSelected
               ? isCoreQuality
                 ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
@@ -105,13 +102,14 @@ export const QualityCard: FC<QualityCardProps> = ({
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
             />
-            {/* 素質画像 */}
+            {/* 素質画像 - 背景の柄に合わせて上側に配置 */}
             <Image
               src={quality.fileName}
               alt={quality.title}
               fill
               sizes="150px"
-              className="relative z-[1] object-cover"
+              className="relative z-[1] object-contain"
+              style={{ objectPosition: 'center 25%' }}
             />
           </div>
           <span className="mt-1 line-clamp-1 w-full text-center text-xs">

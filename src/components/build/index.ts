@@ -6,7 +6,6 @@ export {
   isCoreTalent,
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
-  QUALITY_GROUPS,
 } from './CharacterQualitiesSection'
 export type {
   CharacterQualitiesSectionProps,

@@ -167,16 +167,11 @@ async function fetchCharacterDetail(
 // ============================================================================
 
 /**
- * フォールバック用のアイコンパスを生成する
- * ローカルの画像パス形式: /datasets/{characterName}/{role}/cropped_image{index:02d}.png
+ * APIのアイコン名からフルURLを生成する
+ * @example "10301_Potential_01" -> "https://api.ennead.cc/stella/assets/10301_Potential_01.png"
  */
-function generateFallbackIconPath(
-  characterName: string,
-  role: 'main' | 'sub',
-  index: number,
-): string {
-  const paddedIndex = String(index).padStart(2, '0')
-  return `/datasets/${characterName}/${role}/cropped_image${paddedIndex}.png`
+function generateIconUrl(iconName: string): string {
+  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}.png`
 }
 
 /**
@@ -184,13 +179,10 @@ function generateFallbackIconPath(
  */
 function convertPotentialToQualityInfo(
   potential: ApiPotentialEntry,
-  index: number,
-  characterName: string,
-  role: 'main' | 'sub',
 ): QualityInfo {
   return {
     description: potential.shortDescription,
-    fileName: generateFallbackIconPath(characterName, role, index),
+    fileName: generateIconUrl(potential.icon),
     title: potential.name,
   }
 }
@@ -222,12 +214,8 @@ function extractCharacterQualities(
   }
 
   return {
-    main: mainPotentials.map((p, i) =>
-      convertPotentialToQualityInfo(p, i, detail.name, 'main'),
-    ),
-    sub: subPotentials.map((p, i) =>
-      convertPotentialToQualityInfo(p, i, detail.name, 'sub'),
-    ),
+    main: mainPotentials.map(convertPotentialToQualityInfo),
+    sub: subPotentials.map(convertPotentialToQualityInfo),
   }
 }
 

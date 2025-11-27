@@ -13,16 +13,14 @@ import type { QualityInfo } from 'types/quality'
 /** 素質画像のアスペクト比 (width / height = 432 / 606) */
 const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606
 
-/** 背景画像のURL */
+/** 背景画像のパス（publicディレクトリ） */
 const BACKGROUND_IMAGES = {
   /** コア素質用背景（ピンク） */
-  core: 'https://github.com/user-attachments/assets/60c9eca0-80d9-4f83-a3bd-8fe388d26065',
+  core: '/backgrounds/core.png',
   /** サブ素質rarity1用背景（青紫グラデーション） */
-  subRarity1:
-    'https://github.com/user-attachments/assets/e42a7da1-db38-48df-a7f4-8a89db2c0290',
+  subRarity1: '/backgrounds/sub-rarity1.png',
   /** サブ素質rarity2用背景（オレンジ黄色グラデーション） */
-  subRarity2:
-    'https://github.com/user-attachments/assets/94a68712-5f03-449e-b181-f852e96d95a2',
+  subRarity2: '/backgrounds/sub-rarity2.png',
 }
 
 /**

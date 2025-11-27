@@ -32,9 +32,11 @@ export default meta
 type Story = StoryObj<typeof QualityCard>
 
 const sampleQuality = {
-  title: 'サンプル素質',
   description: 'これはサンプル素質の説明です。\nホバーで詳細が表示されます。',
   fileName: '/placeholder-character.png',
+  isCore: false,
+  rarity: 1,
+  title: 'サンプル素質',
 }
 
 /**
@@ -82,6 +84,7 @@ export const CoreUnselected: Story = {
   args: {
     quality: {
       ...sampleQuality,
+      isCore: true,
       title: 'コア素質',
     },
     index: 0,
@@ -97,6 +100,7 @@ export const CoreSelected: Story = {
   args: {
     quality: {
       ...sampleQuality,
+      isCore: true,
       title: 'コア素質',
     },
     index: 0,
@@ -141,7 +145,7 @@ export const ComparisonView: Story = {
       <div className="flex flex-col items-center gap-2">
         <span className="text-sm font-medium">コア未選択</span>
         <QualityCard
-          quality={{ ...sampleQuality, title: 'コア素質' }}
+          quality={{ ...sampleQuality, isCore: true, title: 'コア素質' }}
           index={0}
           isSelected={false}
           isCore={true}
@@ -151,7 +155,7 @@ export const ComparisonView: Story = {
       <div className="flex flex-col items-center gap-2">
         <span className="text-sm font-medium">コア選択済み</span>
         <QualityCard
-          quality={{ ...sampleQuality, title: 'コア素質' }}
+          quality={{ ...sampleQuality, isCore: true, title: 'コア素質' }}
           index={0}
           isSelected={true}
           isCore={true}

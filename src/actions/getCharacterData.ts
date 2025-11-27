@@ -168,21 +168,26 @@ async function fetchCharacterDetail(
 
 /**
  * APIのアイコン名からフルURLを生成する
- * @example "10301_Potential_01" -> "https://api.ennead.cc/stella/assets/10301_Potential_01.png"
+ * @example "10301_Potential_01" -> "https://api.ennead.cc/stella/assets/10301_Potential_01_A.png"
  */
 function generateIconUrl(iconName: string): string {
-  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}.png`
+  return `${STELLA_SORA_API_BASE_URL}/stella/assets/${iconName}_A.png`
 }
 
 /**
  * APIのポテンシャルデータをアプリケーションの形式に変換する
+ * @param potential - APIのポテンシャルデータ
+ * @param isCore - コア素質かどうか
  */
 function convertPotentialToQualityInfo(
   potential: ApiPotentialEntry,
+  isCore: boolean,
 ): QualityInfo {
   return {
     description: potential.shortDescription,
     fileName: generateIconUrl(potential.icon),
+    isCore,
+    rarity: potential.rarity,
     title: potential.name,
   }
 }
@@ -200,13 +205,21 @@ function extractCharacterQualities(
     return null
   }
 
-  const { mainCore, mainNormal, common, supportCore, supportNormal } =
+  const { common, mainCore, mainNormal, supportCore, supportNormal } =
     detail.potentials
 
-  // main素質: mainCore + mainNormal + common
-  const mainPotentials = [...mainCore, ...mainNormal, ...common]
-  // sub素質: supportCore + supportNormal + common
-  const subPotentials = [...supportCore, ...supportNormal, ...common]
+  // main素質: mainCore（コア） + mainNormal（通常） + common（通常）
+  const mainPotentials = [
+    ...mainCore.map((p) => convertPotentialToQualityInfo(p, true)),
+    ...mainNormal.map((p) => convertPotentialToQualityInfo(p, false)),
+    ...common.map((p) => convertPotentialToQualityInfo(p, false)),
+  ]
+  // sub素質: supportCore（コア） + supportNormal（通常） + common（通常）
+  const subPotentials = [
+    ...supportCore.map((p) => convertPotentialToQualityInfo(p, true)),
+    ...supportNormal.map((p) => convertPotentialToQualityInfo(p, false)),
+    ...common.map((p) => convertPotentialToQualityInfo(p, false)),
+  ]
 
   // ポテンシャルデータが空の場合はnullを返す
   if (mainPotentials.length === 0 && subPotentials.length === 0) {
@@ -214,8 +227,8 @@ function extractCharacterQualities(
   }
 
   return {
-    main: mainPotentials.map(convertPotentialToQualityInfo),
-    sub: subPotentials.map(convertPotentialToQualityInfo),
+    main: mainPotentials,
+    sub: subPotentials,
   }
 }
 

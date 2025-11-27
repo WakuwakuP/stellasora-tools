@@ -10,6 +10,10 @@ export interface QualityInfo {
   description: string
   /** 素質画像のファイルパス */
   fileName: string
+  /** コア素質かどうか */
+  isCore: boolean
+  /** 素質のレアリティ（1または2） */
+  rarity: number
   /** 素質の名前 */
   title: string
 }

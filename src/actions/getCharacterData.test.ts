@@ -112,8 +112,8 @@ describe('getCharacterData Server Action', () => {
     it('APIエラー時にローカルデータにフォールバックする', async () => {
       const mockLocalData = {
         コハク: {
-          main: [{ description: 'テスト説明', fileName: '/test.png', title: 'テスト' }],
-          sub: [{ description: 'テスト説明2', fileName: '/test2.png', title: 'テスト2' }],
+          main: [{ description: 'テスト説明', fileName: '/test.png', isCore: false, rarity: 1, title: 'テスト' }],
+          sub: [{ description: 'テスト説明2', fileName: '/test2.png', isCore: false, rarity: 1, title: 'テスト2' }],
         },
       }
 

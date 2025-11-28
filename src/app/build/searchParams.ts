@@ -10,6 +10,7 @@
  */
 import {
   createSearchParamsCache,
+  createSerializer,
   parseAsArrayOf,
   parseAsInteger,
   parseAsString,
@@ -56,14 +57,25 @@ export const buildSearchParamKeys = {
 } as const
 
 /**
- * サーバーサイド用のクエリパラメータキャッシュ
+ * クエリパラメータのパーサー定義（アルファベット順）
  */
-export const buildSearchParamsCache = createSearchParamsCache({
-  [buildSearchParamKeys.name]: parseBuildName,
+export const buildSearchParamsParsers = {
   [buildSearchParamKeys.char1]: parseChar,
   [buildSearchParamKeys.char2]: parseChar,
   [buildSearchParamKeys.char3]: parseChar,
-  [buildSearchParamKeys.talents]: parseTalents,
   [buildSearchParamKeys.mainLossRecords]: parseLossRecordIds,
+  [buildSearchParamKeys.name]: parseBuildName,
   [buildSearchParamKeys.subLossRecords]: parseLossRecordIds,
-})
+  [buildSearchParamKeys.talents]: parseTalents,
+}
+
+/**
+ * サーバーサイド用のクエリパラメータキャッシュ
+ */
+export const buildSearchParamsCache = createSearchParamsCache(buildSearchParamsParsers)
+
+/**
+ * URL生成用のシリアライザー
+ * URLSearchParamsの代わりにnuqsのcreateSerializerを使用
+ */
+export const buildSerializer = createSerializer(buildSearchParamsParsers)

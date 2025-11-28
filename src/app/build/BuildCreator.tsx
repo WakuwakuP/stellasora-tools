@@ -1,6 +1,6 @@
 'use client'
 
-import { buildSearchParamKeys } from 'app/build/searchParams'
+import { buildSearchParamKeys, buildSerializer } from 'app/build/searchParams'
 import { SavedBuildList } from 'app/build/SavedBuildList'
 import {
   CharacterAvatar,
@@ -119,7 +119,7 @@ function arrayToSelectedTalents(
 
 /**
  * ビルド情報をURLクエリ文字列に変換
- * パラメータはアルファベット順にソートされる
+ * nuqsのcreateSerializerを使用してパラメータを生成
  */
 function encodeBuildToQueryString(
   buildName: string,
@@ -140,25 +140,18 @@ function encodeBuildToQueryString(
   const bigIntValue = arrayToBase7BigInt(talentsArray)
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
-  const params = new URLSearchParams()
-  params.set(buildSearchParamKeys.char1, char1)
-  params.set(buildSearchParamKeys.char2, char2)
-  params.set(buildSearchParamKeys.char3, char3)
-  if (mainLossRecordIds.length > 0) {
-    params.set(buildSearchParamKeys.mainLossRecords, mainLossRecordIds.join(','))
-  }
-  if (buildName) {
-    params.set(buildSearchParamKeys.name, buildName)
-  }
-  if (subLossRecordIds.length > 0) {
-    params.set(buildSearchParamKeys.subLossRecords, subLossRecordIds.join(','))
-  }
-  params.set(buildSearchParamKeys.talents, talentsCode)
+  // nuqsのcreateSerializerを使用してURL生成
+  const queryString = buildSerializer('/build', {
+    [buildSearchParamKeys.char1]: char1,
+    [buildSearchParamKeys.char2]: char2,
+    [buildSearchParamKeys.char3]: char3,
+    [buildSearchParamKeys.mainLossRecords]: mainLossRecordIds.length > 0 ? mainLossRecordIds : null,
+    [buildSearchParamKeys.name]: buildName || null,
+    [buildSearchParamKeys.subLossRecords]: subLossRecordIds.length > 0 ? subLossRecordIds : null,
+    [buildSearchParamKeys.talents]: talentsCode,
+  })
 
-  // パラメータをソートして一貫性のあるURLを生成
-  params.sort()
-
-  return `/build?${params.toString()}`
+  return queryString
 }
 
 /**

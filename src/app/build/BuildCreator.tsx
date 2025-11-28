@@ -31,7 +31,7 @@ import {
 } from 'lib/encoding-utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
-import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
 
@@ -338,18 +338,18 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     [setSearchParams],
   )
 
-  // 初回レンダリング時にURLパラメータがあるかどうかをチェック
-  const hasInitialUrlParams = useMemo(() => {
-    return !!(
+  // 初回レンダリング時にURLパラメータがあるかどうかをチェック（refで初回値をキャプチャ）
+  const hasInitialUrlParamsRef = useRef(
+    !!(
       searchParams[buildSearchParamKeys.char1] &&
       searchParams[buildSearchParamKeys.char2] &&
       searchParams[buildSearchParamKeys.char3] &&
       searchParams[buildSearchParamKeys.talents]
-    )
-  }, []) // 空の依存配列で初回のみ計算
+    ),
+  )
 
   // ユーザーが変更を加えたかどうかを追跡
-  const [hasUserMadeChanges, setHasUserMadeChanges] = useState(hasInitialUrlParams)
+  const [hasUserMadeChanges, setHasUserMadeChanges] = useState(hasInitialUrlParamsRef.current)
 
   // ステート変更時にURLを更新（ユーザーが変更を加えた場合のみ）
   useEffect(() => {

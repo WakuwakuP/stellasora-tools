@@ -24,8 +24,8 @@ function isValidBuildUrl(url: string): url is `/build?${string}` | `/build/${str
     const params = new URLSearchParams(url.slice('/build?'.length))
     return !!(params.get('c1') && params.get('c2') && params.get('c3') && params.get('t'))
   }
-  // 旧形式: /build/{char1}/{char2}/{char3}/{talents}
-  return /^\/build\/[^/]+\/[^/]+\/[^/]+\/[^/]+/.test(url)
+  // 旧形式: /build/{char1}/{char2}/{char3}/{talents}（クエリパラメータがある場合も許容）
+  return /^\/build\/[^/]+\/[^/]+\/[^/]+\/[^/]+(?:\?.*)?$/.test(url)
 }
 
 export const SavedBuildList: FC<SavedBuildListProps> = ({

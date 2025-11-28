@@ -29,14 +29,11 @@ import {
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, Pencil } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
-
-/** デフォルトのビルドレベル（表示用） */
-const DEFAULT_BUILD_LEVEL = 25
 
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16
@@ -550,9 +547,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           {/* ビルド名 - モバイルではコンパクトに */}
           <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
-              <div className={`flex items-center justify-center rounded-full bg-amber-500 font-bold ${isMobile ? 'h-8 w-8 text-sm' : 'h-10 w-10 text-lg'}`}>
-                {DEFAULT_BUILD_LEVEL}
-              </div>
+              <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
               <div className="flex-1">
                 <input
                   type="text"
@@ -560,7 +555,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
                   placeholder="ビルド名を入力"
-                  className={`w-full bg-transparent font-bold outline-none ${isMobile ? 'text-base' : 'text-xl'}`}
+                  className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
               </div>
             </div>

@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from 'components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
-import { type FC, useMemo, useState } from 'react'
+import { type FC, useEffect, useMemo, useState } from 'react'
 
 /**
  * 多言語対応の属性マッピング（EN, JP, KR, CN, TW）
@@ -106,6 +106,14 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
   const [elementFilter, setElementFilter] = useState<string[]>([])
   const [positionFilter, setPositionFilter] = useState<string[]>([])
 
+  // ダイアログを閉じたときにフィルター状態をリセット
+  useEffect(() => {
+    if (!open) {
+      setElementFilter([])
+      setPositionFilter([])
+    }
+  }, [open])
+
   // フィルタリングされたキャラクターリスト
   const filteredCharacters = useMemo(() => {
     return characters.filter((char) => {
@@ -133,7 +141,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="!flex h-[80vh] max-w-md !flex-col !gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-md flex-col gap-0 overflow-hidden">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>
@@ -148,7 +156,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
                 type="multiple"
                 value={elementFilter}
                 onValueChange={setElementFilter}
-                className="flex flex-wrap gap-0"
+                className="flex gap-0"
               >
                 {ELEMENT_FILTERS.map((element) => (
                   <ToggleGroupItem
@@ -171,7 +179,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
                 type="multiple"
                 value={positionFilter}
                 onValueChange={setPositionFilter}
-                className="flex flex-wrap gap-0"
+                className="flex gap-0"
               >
                 {POSITION_FILTERS.map((position) => (
                   <ToggleGroupItem

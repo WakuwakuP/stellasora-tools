@@ -1,5 +1,6 @@
 'use client'
 
+import { buildSearchParamKeys } from 'app/build/searchParams'
 import { SavedBuildList } from 'app/build/SavedBuildList'
 import {
   CharacterAvatar,
@@ -13,7 +14,6 @@ import {
   SubLossRecordSelectDialog,
 } from 'components/build'
 import type { CharacterInfo, SelectedTalent } from 'components/build'
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import {
   Collapsible,
   CollapsibleContent,
@@ -30,6 +30,7 @@ import {
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
@@ -110,9 +111,9 @@ function arrayToSelectedTalents(
 }
 
 /**
- * ビルド情報をURLパスにエンコード（ロスレコ含む）
+ * ビルド情報をURLクエリ文字列に変換
  */
-function encodeBuildToPath(
+function encodeBuildToQueryString(
   characters: CharacterSlot[],
   selectedTalents: SelectedTalent[],
   mainLossRecordIds: number[],
@@ -130,58 +131,46 @@ function encodeBuildToPath(
   const bigIntValue = arrayToBase7BigInt(talentsArray)
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
-  let path = `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+  const params = new URLSearchParams()
+  params.set(buildSearchParamKeys.char1, char1)
+  params.set(buildSearchParamKeys.char2, char2)
+  params.set(buildSearchParamKeys.char3, char3)
+  params.set(buildSearchParamKeys.talents, talentsCode)
 
-  // ロスレコIDをクエリパラメータに追加
-  const queryParams: string[] = []
   if (mainLossRecordIds.length > 0) {
-    queryParams.push(`main=${mainLossRecordIds.join(',')}`)
+    params.set(buildSearchParamKeys.mainLossRecords, mainLossRecordIds.join(','))
   }
   if (subLossRecordIds.length > 0) {
-    queryParams.push(`sub=${subLossRecordIds.join(',')}`)
-  }
-  if (queryParams.length > 0) {
-    path += `?${queryParams.join('&')}`
+    params.set(buildSearchParamKeys.subLossRecords, subLossRecordIds.join(','))
   }
 
-  return path
+  return `/build?${params.toString()}`
 }
 
 /**
- * ロスレコIDをパースする
+ * URLクエリからビルド情報をデコード
  */
-function parseLossRecordIds(param: string | undefined): number[] {
-  if (!param) return []
-  return param
-    .split(',')
-    .map((id) => Number.parseInt(id, 10))
-    .filter((id) => !Number.isNaN(id) && id > 0)
-}
-
-/**
- * URLパスからビルド情報をデコード
- */
-function decodeBuildFromPath(
-  char1: string,
-  char2: string,
-  char3: string,
-  talentsCode: string,
+function decodeBuildFromQuery(
+  char1: string | null,
+  char2: string | null,
+  char3: string | null,
+  talentsCode: string | null,
   characterNames: string[],
 ): { characters: CharacterSlot[]; selectedTalents: SelectedTalent[] } {
-  const decodedChar1 = decodeURIComponent(char1)
-  const decodedChar2 = decodeURIComponent(char2)
-  const decodedChar3 = decodeURIComponent(char3)
-
   // キャラクター名の検証
-  const validChar1 = characterNames.includes(decodedChar1) ? decodedChar1 : null
-  const validChar2 = characterNames.includes(decodedChar2) ? decodedChar2 : null
-  const validChar3 = characterNames.includes(decodedChar3) ? decodedChar3 : null
+  const validChar1 = char1 && characterNames.includes(char1) ? char1 : null
+  const validChar2 = char2 && characterNames.includes(char2) ? char2 : null
+  const validChar3 = char3 && characterNames.includes(char3) ? char3 : null
 
   const characters: CharacterSlot[] = [
     { name: validChar1, role: 'main', label: '主力' },
     { name: validChar2, role: 'support', label: '支援1' },
     { name: validChar3, role: 'support', label: '支援2' },
   ]
+
+  if (!talentsCode) {
+    return { characters, selectedTalents: [] }
+  }
 
   try {
     const bigIntValue = base64UrlToBigInt(talentsCode)
@@ -197,12 +186,6 @@ function decodeBuildFromPath(
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
   lossRecordData?: LossRecordInfo[]
-  initialChar1?: string
-  initialChar2?: string
-  initialChar3?: string
-  initialTalents?: string
-  initialMainLossRecords?: string
-  initialSubLossRecords?: string
 }
 
 interface CharacterSlot {
@@ -214,13 +197,23 @@ interface CharacterSlot {
 export const BuildCreator: FC<BuildCreatorProps> = ({
   qualitiesData,
   lossRecordData = [],
-  initialChar1,
-  initialChar2,
-  initialChar3,
-  initialTalents,
-  initialMainLossRecords,
-  initialSubLossRecords,
 }) => {
+  // nuqsを使ってクエリパラメータを型安全に管理
+  const [searchParams, setSearchParams] = useQueryStates(
+    {
+      [buildSearchParamKeys.char1]: parseAsString,
+      [buildSearchParamKeys.char2]: parseAsString,
+      [buildSearchParamKeys.char3]: parseAsString,
+      [buildSearchParamKeys.talents]: parseAsString,
+      [buildSearchParamKeys.mainLossRecords]: parseAsArrayOf(parseAsInteger, ','),
+      [buildSearchParamKeys.subLossRecords]: parseAsArrayOf(parseAsInteger, ','),
+    },
+    {
+      history: 'replace',
+      shallow: true,
+    },
+  )
+
   // キャラクター情報（名前、アイコン、属性、ロール）をメモ化してパフォーマンス向上
   const characterInfoList = useMemo<CharacterInfo[]>(
     () =>
@@ -248,65 +241,45 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     [characterInfoList],
   )
 
-  // 初期ステートを計算（遅延初期化パターン）
-  const [characters, setCharacters] = useState<CharacterSlot[]>(() => {
-    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      return decodeBuildFromPath(
-        initialChar1,
-        initialChar2,
-        initialChar3,
-        initialTalents,
-        characterNames,
-      ).characters
-    }
-    return [
-      { name: characterNames[0] || null, role: 'main' as const, label: '主力' },
-      { name: characterNames[1] || null, role: 'support' as const, label: '支援1' },
-      { name: characterNames[2] || null, role: 'support' as const, label: '支援2' },
-    ]
-  })
+  // URLパラメータからキャラクターと素質を復元（初期化時のみ）
+  const initialBuild = useMemo(() => {
+    const char1 = searchParams[buildSearchParamKeys.char1]
+    const char2 = searchParams[buildSearchParamKeys.char2]
+    const char3 = searchParams[buildSearchParamKeys.char3]
+    const talents = searchParams[buildSearchParamKeys.talents]
 
-  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(() => {
-    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      return decodeBuildFromPath(
-        initialChar1,
-        initialChar2,
-        initialChar3,
-        initialTalents,
-        characterNames,
-      ).selectedTalents
+    if (char1 && char2 && char3) {
+      return decodeBuildFromQuery(char1, char2, char3, talents, characterNames)
     }
-    return []
-  })
+
+    // デフォルト値
+    return {
+      characters: [
+        { name: characterNames[0] || null, role: 'main' as const, label: '主力' },
+        { name: characterNames[1] || null, role: 'support' as const, label: '支援1' },
+        { name: characterNames[2] || null, role: 'support' as const, label: '支援2' },
+      ],
+      selectedTalents: [],
+    }
+  }, [searchParams, characterNames])
+
+  // ローカルのUIステート
+  const [characters, setCharacters] = useState<CharacterSlot[]>(initialBuild.characters)
+  const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(
+    initialBuild.selectedTalents,
+  )
 
   const [buildName, setBuildName] = useState('新規ビルド')
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
-  const [currentUrl, setCurrentUrl] = useState(() => {
-    if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      let url = `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
-      const queryParams: string[] = []
-      if (initialMainLossRecords) {
-        queryParams.push(`main=${initialMainLossRecords}`)
-      }
-      if (initialSubLossRecords) {
-        queryParams.push(`sub=${initialSubLossRecords}`)
-      }
-      if (queryParams.length > 0) {
-        url += `?${queryParams.join('&')}`
-      }
-      return url
-    }
-    return '/build'
-  })
 
   // ロスレコ選択状態（初期値をURLパラメータから復元）
-  const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>(() =>
-    parseLossRecordIds(initialMainLossRecords),
+  const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>(
+    searchParams[buildSearchParamKeys.mainLossRecords] ?? [],
   )
-  const [subLossRecordIds, setSubLossRecordIds] = useState<number[]>(() =>
-    parseLossRecordIds(initialSubLossRecords),
+  const [subLossRecordIds, setSubLossRecordIds] = useState<number[]>(
+    searchParams[buildSearchParamKeys.subLossRecords] ?? [],
   )
   const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
   const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
@@ -321,28 +294,54 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 
+  // 現在のURL（保存用）
+  const currentUrl = useMemo(
+    () =>
+      encodeBuildToQueryString(
+        characters,
+        selectedTalents,
+        mainLossRecordIds,
+        subLossRecordIds,
+      ),
+    [characters, selectedTalents, mainLossRecordIds, subLossRecordIds],
+  )
+
   // URLを更新する関数
-  const updateUrl = useCallback(
+  const updateUrlParams = useCallback(
     (
       chars: CharacterSlot[],
       talents: SelectedTalent[],
       mainLrIds: number[],
       subLrIds: number[],
     ) => {
-      const newPath = encodeBuildToPath(chars, talents, mainLrIds, subLrIds)
-      // 全てのキャラクターが選択されている場合のみURLを更新
-      if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
-        window.history.replaceState(null, '', newPath)
-        setCurrentUrl(newPath)
+      const char1 = chars[0]?.name
+      const char2 = chars[1]?.name
+      const char3 = chars[2]?.name
+
+      if (!char1 || !char2 || !char3) {
+        return
       }
+
+      const talentsArray = selectedTalentsToArray(talents, chars)
+      const bigIntValue = arrayToBase7BigInt(talentsArray)
+      const talentsCode = bigIntToBase64Url(bigIntValue)
+
+      setSearchParams({
+        [buildSearchParamKeys.char1]: char1,
+        [buildSearchParamKeys.char2]: char2,
+        [buildSearchParamKeys.char3]: char3,
+        [buildSearchParamKeys.talents]: talentsCode,
+        [buildSearchParamKeys.mainLossRecords]: mainLrIds.length > 0 ? mainLrIds : null,
+        [buildSearchParamKeys.subLossRecords]: subLrIds.length > 0 ? subLrIds : null,
+      })
     },
-    [],
+    [setSearchParams],
   )
 
   // ステート変更時にURLを更新
   useEffect(() => {
-    updateUrl(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
-  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrl])
+    updateUrlParams(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
+  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams])
 
   const handleTalentSelect = (
     characterName: string,

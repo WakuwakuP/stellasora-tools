@@ -1,11 +1,5 @@
-import { Suspense } from 'react'
-
-import { BuildCreator } from 'app/build/BuildCreator'
-import {
-  BuildCreatorFallback,
-  getAvailableCharacters,
-  getLossRecordData,
-} from 'app/build/utils'
+import { buildSearchParamKeys } from 'app/build/searchParams'
+import { redirect } from 'next/navigation'
 
 interface Props {
   params: Promise<{
@@ -20,26 +14,26 @@ interface Props {
   }>
 }
 
+/**
+ * 旧URL形式（パスパラメータ）から新URL形式（クエリパラメータ）にリダイレクト
+ */
 export default async function BuildWithParamsPage({ params, searchParams }: Props) {
   const { char1, char2, char3, talents } = await params
   const { main: mainLossRecords, sub: subLossRecords } = await searchParams
-  const [availableCharacters, lossRecordData] = await Promise.all([
-    getAvailableCharacters(),
-    getLossRecordData().catch(() => []), // API取得失敗時は空配列
-  ])
 
-  return (
-    <Suspense fallback={<BuildCreatorFallback />}>
-      <BuildCreator
-        qualitiesData={availableCharacters}
-        lossRecordData={lossRecordData}
-        initialChar1={char1}
-        initialChar2={char2}
-        initialChar3={char3}
-        initialTalents={talents}
-        initialMainLossRecords={mainLossRecords}
-        initialSubLossRecords={subLossRecords}
-      />
-    </Suspense>
-  )
+  // 新URLにリダイレクト
+  const queryParams = new URLSearchParams()
+  queryParams.set(buildSearchParamKeys.char1, decodeURIComponent(char1))
+  queryParams.set(buildSearchParamKeys.char2, decodeURIComponent(char2))
+  queryParams.set(buildSearchParamKeys.char3, decodeURIComponent(char3))
+  queryParams.set(buildSearchParamKeys.talents, talents)
+
+  if (mainLossRecords) {
+    queryParams.set(buildSearchParamKeys.mainLossRecords, mainLossRecords)
+  }
+  if (subLossRecords) {
+    queryParams.set(buildSearchParamKeys.subLossRecords, subLossRecords)
+  }
+
+  redirect(`/build?${queryParams.toString()}`)
 }

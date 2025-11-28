@@ -1,7 +1,11 @@
 import { Suspense } from 'react'
 
 import { BuildCreator } from 'app/build/BuildCreator'
-import { BuildCreatorFallback, getAvailableCharacters } from 'app/build/utils'
+import {
+  BuildCreatorFallback,
+  getAvailableCharacters,
+  getLossRecordData,
+} from 'app/build/utils'
 
 interface Props {
   params: Promise<{
@@ -14,12 +18,16 @@ interface Props {
 
 export default async function BuildWithParamsPage({ params }: Props) {
   const { char1, char2, char3, talents } = await params
-  const availableCharacters = await getAvailableCharacters()
+  const [availableCharacters, lossRecordData] = await Promise.all([
+    getAvailableCharacters(),
+    getLossRecordData().catch(() => []), // API取得失敗時は空配列
+  ])
 
   return (
     <Suspense fallback={<BuildCreatorFallback />}>
       <BuildCreator
         qualitiesData={availableCharacters}
+        lossRecordData={lossRecordData}
         initialChar1={char1}
         initialChar2={char2}
         initialChar3={char3}

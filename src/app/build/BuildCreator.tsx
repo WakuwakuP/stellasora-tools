@@ -6,10 +6,14 @@ import {
   CharacterQualitiesSection,
   CharacterSelectDialog,
   isCoreTalent,
+  LossRecordSelectDialog,
+  LossRecordSlots,
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
+  SubLossRecordSelectDialog,
 } from 'components/build'
 import type { CharacterInfo, SelectedTalent } from 'components/build'
+import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,6 +31,7 @@ import {
 } from 'lib/encoding-utils'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
+import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
 
 /** デフォルトのビルドレベル（表示用） */
@@ -105,11 +110,13 @@ function arrayToSelectedTalents(
 }
 
 /**
- * ビルド情報をURLパスにエンコード
+ * ビルド情報をURLパスにエンコード（ロスレコ含む）
  */
 function encodeBuildToPath(
   characters: CharacterSlot[],
   selectedTalents: SelectedTalent[],
+  mainLossRecordIds: number[],
+  subLossRecordIds: number[],
 ): string {
   const char1 = characters[0]?.name || ''
   const char2 = characters[1]?.name || ''
@@ -123,7 +130,32 @@ function encodeBuildToPath(
   const bigIntValue = arrayToBase7BigInt(talentsArray)
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
-  return `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+  let path = `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+
+  // ロスレコIDをクエリパラメータに追加
+  const queryParams: string[] = []
+  if (mainLossRecordIds.length > 0) {
+    queryParams.push(`main=${mainLossRecordIds.join(',')}`)
+  }
+  if (subLossRecordIds.length > 0) {
+    queryParams.push(`sub=${subLossRecordIds.join(',')}`)
+  }
+  if (queryParams.length > 0) {
+    path += `?${queryParams.join('&')}`
+  }
+
+  return path
+}
+
+/**
+ * ロスレコIDをパースする
+ */
+function parseLossRecordIds(param: string | undefined): number[] {
+  if (!param) return []
+  return param
+    .split(',')
+    .map((id) => Number.parseInt(id, 10))
+    .filter((id) => !Number.isNaN(id) && id > 0)
 }
 
 /**
@@ -164,10 +196,13 @@ function decodeBuildFromPath(
 
 interface BuildCreatorProps {
   qualitiesData: Record<string, CharacterQualities>
+  lossRecordData?: LossRecordInfo[]
   initialChar1?: string
   initialChar2?: string
   initialChar3?: string
   initialTalents?: string
+  initialMainLossRecords?: string
+  initialSubLossRecords?: string
 }
 
 interface CharacterSlot {
@@ -178,10 +213,13 @@ interface CharacterSlot {
 
 export const BuildCreator: FC<BuildCreatorProps> = ({
   qualitiesData,
+  lossRecordData = [],
   initialChar1,
   initialChar2,
   initialChar3,
   initialTalents,
+  initialMainLossRecords,
+  initialSubLossRecords,
 }) => {
   // キャラクター情報（名前、アイコン、属性、ロール）をメモ化してパフォーマンス向上
   const characterInfoList = useMemo<CharacterInfo[]>(
@@ -247,10 +285,31 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
   const [currentUrl, setCurrentUrl] = useState(() => {
     if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      return `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
+      let url = `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
+      const queryParams: string[] = []
+      if (initialMainLossRecords) {
+        queryParams.push(`main=${initialMainLossRecords}`)
+      }
+      if (initialSubLossRecords) {
+        queryParams.push(`sub=${initialSubLossRecords}`)
+      }
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join('&')}`
+      }
+      return url
     }
     return '/build'
   })
+
+  // ロスレコ選択状態（初期値をURLパラメータから復元）
+  const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>(() =>
+    parseLossRecordIds(initialMainLossRecords),
+  )
+  const [subLossRecordIds, setSubLossRecordIds] = useState<number[]>(() =>
+    parseLossRecordIds(initialSubLossRecords),
+  )
+  const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
+  const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
 
   // モバイル判定
   const isMobile = useIsMobile()
@@ -264,8 +323,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // URLを更新する関数
   const updateUrl = useCallback(
-    (chars: CharacterSlot[], talents: SelectedTalent[]) => {
-      const newPath = encodeBuildToPath(chars, talents)
+    (
+      chars: CharacterSlot[],
+      talents: SelectedTalent[],
+      mainLrIds: number[],
+      subLrIds: number[],
+    ) => {
+      const newPath = encodeBuildToPath(chars, talents, mainLrIds, subLrIds)
       // 全てのキャラクターが選択されている場合のみURLを更新
       if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
         window.history.replaceState(null, '', newPath)
@@ -277,8 +341,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // ステート変更時にURLを更新
   useEffect(() => {
-    updateUrl(characters, selectedTalents)
-  }, [characters, selectedTalents, updateUrl])
+    updateUrl(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
+  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrl])
 
   const handleTalentSelect = (
     characterName: string,
@@ -392,6 +456,40 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     setCharacterDialogOpen(true)
   }
 
+  // ロスレコID -> ロスレコ情報を取得するヘルパー
+  const getLossRecordById = useCallback(
+    (id: number): LossRecordInfo | undefined => {
+      return lossRecordData.find((lr) => lr.id === id)
+    },
+    [lossRecordData],
+  )
+
+  // メインロスレコの選択ハンドラー
+  const handleMainLossRecordSelect = (id: number) => {
+    setMainLossRecordIds((prev) => {
+      if (prev.length >= 3) return prev
+      if (prev.includes(id)) return prev // 重複チェック
+      return [...prev, id]
+    })
+  }
+
+  const handleMainLossRecordDeselect = (id: number) => {
+    setMainLossRecordIds((prev) => prev.filter((lrId) => lrId !== id))
+  }
+
+  // サブロスレコの選択ハンドラー
+  const handleSubLossRecordSelect = (id: number) => {
+    setSubLossRecordIds((prev) => {
+      if (prev.length >= 3) return prev
+      if (prev.includes(id)) return prev // 重複チェック
+      return [...prev, id]
+    })
+  }
+
+  const handleSubLossRecordDeselect = (id: number) => {
+    setSubLossRecordIds((prev) => prev.filter((lrId) => lrId !== id))
+  }
+
   const mainCharacter = characters[0]
   const support1 = characters[1]
   const support2 = characters[2]
@@ -455,20 +553,50 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   </div>
                 </div>
 
-                {/* メインロスレコセクション（プレースホルダー） - コンパクト版 */}
+                {/* メインロスレコセクション - コンパクト版 */}
                 <div>
                   <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
                     <span>⊕</span>
                     メインロスレコ
+                    <button
+                      type="button"
+                      onClick={() => setMainLossRecordDialogOpen(true)}
+                      className="ml-auto text-slate-400 hover:text-slate-600"
+                      aria-label="メインロスレコを選択"
+                    >
+                      🔍
+                    </button>
                   </h3>
-                  <div className="grid grid-cols-3 gap-1">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
-                      />
-                    ))}
-                  </div>
+                  <LossRecordSlots
+                    lossRecordIds={mainLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                    onDeselect={handleMainLossRecordDeselect}
+                    compact
+                  />
+                </div>
+
+                {/* サブロスレコセクション - コンパクト版 */}
+                <div>
+                  <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                    <span>⊖</span>
+                    サブロスレコ
+                    <button
+                      type="button"
+                      onClick={() => setSubLossRecordDialogOpen(true)}
+                      className="ml-auto text-slate-400 hover:text-slate-600"
+                      aria-label="サブロスレコを選択"
+                    >
+                      🔍
+                    </button>
+                  </h3>
+                  <LossRecordSlots
+                    lossRecordIds={subLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                    onDeselect={handleSubLossRecordDeselect}
+                    compact
+                  />
                 </div>
               </CollapsibleContent>
             </Collapsible>
@@ -495,21 +623,48 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 </div>
               </div>
 
-              {/* デスクトップ: メインロスレコセクション（プレースホルダー） */}
+              {/* デスクトップ: メインロスレコセクション */}
               <div className="mb-4">
                 <h3 className="mb-2 flex items-center gap-1 font-bold">
                   <span>⊕</span>
                   メインロスレコ
-                  <span className="ml-auto text-slate-400">🔍</span>
+                  <button
+                    type="button"
+                    onClick={() => setMainLossRecordDialogOpen(true)}
+                    className="ml-auto text-slate-400 hover:text-slate-600"
+                    aria-label="メインロスレコを選択"
+                  >
+                    🔍
+                  </button>
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-700"
-                    />
-                  ))}
-                </div>
+                <LossRecordSlots
+                  lossRecordIds={mainLossRecordIds}
+                  getLossRecordById={getLossRecordById}
+                  onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                  onDeselect={handleMainLossRecordDeselect}
+                />
+              </div>
+
+              {/* デスクトップ: サブロスレコセクション */}
+              <div className="mb-4">
+                <h3 className="mb-2 flex items-center gap-1 font-bold">
+                  <span>⊖</span>
+                  サブロスレコ
+                  <button
+                    type="button"
+                    onClick={() => setSubLossRecordDialogOpen(true)}
+                    className="ml-auto text-slate-400 hover:text-slate-600"
+                    aria-label="サブロスレコを選択"
+                  >
+                    🔍
+                  </button>
+                </h3>
+                <LossRecordSlots
+                  lossRecordIds={subLossRecordIds}
+                  getLossRecordById={getLossRecordById}
+                  onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                  onDeselect={handleSubLossRecordDeselect}
+                />
               </div>
             </>
           )}
@@ -525,6 +680,30 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               slotLabel={characters[editingSlotIndex]?.label ?? ''}
             />
           )}
+
+          {/* メインロスレコ選択ダイアログ */}
+          <LossRecordSelectDialog
+            open={mainLossRecordDialogOpen}
+            onOpenChange={setMainLossRecordDialogOpen}
+            lossRecords={lossRecordData}
+            selectedIds={mainLossRecordIds}
+            onSelect={handleMainLossRecordSelect}
+            onDeselect={handleMainLossRecordDeselect}
+            title="メインロスレコを選択"
+            maxSelection={3}
+          />
+
+          {/* サブロスレコ選択ダイアログ */}
+          <SubLossRecordSelectDialog
+            open={subLossRecordDialogOpen}
+            onOpenChange={setSubLossRecordDialogOpen}
+            lossRecords={lossRecordData}
+            selectedIds={subLossRecordIds}
+            onSelect={handleSubLossRecordSelect}
+            onDeselect={handleSubLossRecordDeselect}
+            title="サブロスレコを選択"
+            maxSelection={3}
+          />
 
           {/* ステータス表示 - モバイルではコンパクトに */}
           <div className={`rounded-lg bg-slate-200 dark:bg-slate-700 ${isMobile ? 'mt-2 p-2' : 'mt-4 p-3'}`}>

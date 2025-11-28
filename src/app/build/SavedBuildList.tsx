@@ -18,10 +18,13 @@ interface SavedBuildListProps {
  * @param url - 検証するURL
  * @returns 有効なビルドURL形式の場合はtrue
  */
-function isValidBuildUrl(
-  url: string,
-): url is `/build/${string}/${string}/${string}/${string}` {
-  return /^\/build\/[^/]+\/[^/]+\/[^/]+\/[^/]+$/.test(url)
+function isValidBuildUrl(url: string): url is `/build?${string}` {
+  // 新形式: /build?c1=...&c2=...&c3=...&t=...
+  if (url.startsWith('/build?')) {
+    const params = new URLSearchParams(url.slice('/build?'.length))
+    return !!(params.get('c1') && params.get('c2') && params.get('c3') && params.get('t'))
+  }
+  return false
 }
 
 export const SavedBuildList: FC<SavedBuildListProps> = ({

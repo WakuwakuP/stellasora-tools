@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import Image from 'next/image'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
+import { sortLossRecords } from 'utils/lossRecordSort'
 import { LossRecordCard } from './LossRecordCard'
 import { STAR_FILTERS } from './LossRecordSelectDialog'
 
@@ -105,25 +106,7 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
       return true
     })
     // ソート: レアリティ（降順）、属性、名前
-    const elementOrder: Record<string, number> = {
-      火: 0,
-      水: 1,
-      風: 2,
-      地: 3,
-      光: 4,
-      闇: 5,
-      なし: 6,
-    }
-    return filtered.sort((a, b) => {
-      // レアリティ降順
-      if (b.star !== a.star) return b.star - a.star
-      // 属性順
-      const elementA = elementOrder[a.element] ?? 99
-      const elementB = elementOrder[b.element] ?? 99
-      if (elementA !== elementB) return elementA - elementB
-      // 名前順
-      return a.name.localeCompare(b.name, 'ja')
-    })
+    return sortLossRecords(filtered)
   }, [lossRecords, noteFilter, starFilter])
 
   const handleClick = (id: number) => {
@@ -138,7 +121,7 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-4xl flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-7xl flex-col gap-0 overflow-hidden sm:max-w-7xl">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-slate-500">
@@ -207,7 +190,12 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
 
         {/* ロスレコリスト（スクロール可能） */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-3 p-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          <div
+            className="grid gap-3 p-2"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+            }}
+          >
             {filteredLossRecords.map((lr) => (
               <LossRecordCard
                 key={lr.id}

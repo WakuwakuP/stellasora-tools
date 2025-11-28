@@ -9,6 +9,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
+import { sortLossRecords } from 'utils/lossRecordSort'
 import { LossRecordCard } from './LossRecordCard'
 
 /** 属性フィルター定義 */
@@ -96,25 +97,7 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
       return true
     })
     // ソート: レアリティ（降順）、属性、名前
-    const elementOrder: Record<string, number> = {
-      火: 0,
-      水: 1,
-      風: 2,
-      地: 3,
-      光: 4,
-      闇: 5,
-      なし: 6,
-    }
-    return filtered.sort((a, b) => {
-      // レアリティ降順
-      if (b.star !== a.star) return b.star - a.star
-      // 属性順
-      const elementA = elementOrder[a.element] ?? 99
-      const elementB = elementOrder[b.element] ?? 99
-      if (elementA !== elementB) return elementA - elementB
-      // 名前順
-      return a.name.localeCompare(b.name, 'ja')
-    })
+    return sortLossRecords(filtered)
   }, [lossRecords, elementFilter, starFilter])
 
   const handleClick = (id: number) => {

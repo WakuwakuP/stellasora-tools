@@ -119,6 +119,7 @@ function arrayToSelectedTalents(
 
 /**
  * ビルド情報をURLクエリ文字列に変換
+ * パラメータはアルファベット順にソートされる
  */
 function encodeBuildToQueryString(
   buildName: string,
@@ -140,20 +141,22 @@ function encodeBuildToQueryString(
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
   const params = new URLSearchParams()
-  if (buildName) {
-    params.set(buildSearchParamKeys.name, buildName)
-  }
   params.set(buildSearchParamKeys.char1, char1)
   params.set(buildSearchParamKeys.char2, char2)
   params.set(buildSearchParamKeys.char3, char3)
-  params.set(buildSearchParamKeys.talents, talentsCode)
-
   if (mainLossRecordIds.length > 0) {
     params.set(buildSearchParamKeys.mainLossRecords, mainLossRecordIds.join(','))
+  }
+  if (buildName) {
+    params.set(buildSearchParamKeys.name, buildName)
   }
   if (subLossRecordIds.length > 0) {
     params.set(buildSearchParamKeys.subLossRecords, subLossRecordIds.join(','))
   }
+  params.set(buildSearchParamKeys.talents, talentsCode)
+
+  // パラメータをソートして一貫性のあるURLを生成
+  params.sort()
 
   return `/build?${params.toString()}`
 }
@@ -212,13 +215,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // nuqsを使ってクエリパラメータを型安全に管理
   const [searchParams, setSearchParams] = useQueryStates(
     {
-      [buildSearchParamKeys.name]: parseAsString,
+      // パラメータはアルファベット順（c1, c2, c3, m, n, s, t）
       [buildSearchParamKeys.char1]: parseAsString,
       [buildSearchParamKeys.char2]: parseAsString,
       [buildSearchParamKeys.char3]: parseAsString,
-      [buildSearchParamKeys.talents]: parseAsString,
       [buildSearchParamKeys.mainLossRecords]: parseAsArrayOf(parseAsInteger, ','),
+      [buildSearchParamKeys.name]: parseAsString,
       [buildSearchParamKeys.subLossRecords]: parseAsArrayOf(parseAsInteger, ','),
+      [buildSearchParamKeys.talents]: parseAsString,
     },
     {
       history: 'replace',
@@ -346,14 +350,15 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       const bigIntValue = arrayToBase7BigInt(talentsArray)
       const talentsCode = bigIntToBase64Url(bigIntValue)
 
+      // パラメータはアルファベット順（c1, c2, c3, m, n, s, t）
       setSearchParams({
-        [buildSearchParamKeys.name]: name || null,
         [buildSearchParamKeys.char1]: char1,
         [buildSearchParamKeys.char2]: char2,
         [buildSearchParamKeys.char3]: char3,
-        [buildSearchParamKeys.talents]: talentsCode,
         [buildSearchParamKeys.mainLossRecords]: mainLrIds.length > 0 ? mainLrIds : null,
+        [buildSearchParamKeys.name]: name || null,
         [buildSearchParamKeys.subLossRecords]: subLrIds.length > 0 ? subLrIds : null,
+        [buildSearchParamKeys.talents]: talentsCode,
       })
     },
     [setSearchParams],

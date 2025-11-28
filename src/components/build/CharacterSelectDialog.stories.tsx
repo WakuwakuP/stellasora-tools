@@ -3,78 +3,79 @@ import { useState } from 'react'
 import type { CharacterInfo } from './CharacterSelectDialog'
 import { CharacterSelectDialog } from './CharacterSelectDialog'
 
+// 日本語APIレスポンスに合わせたテストデータ
 const characters: CharacterInfo[] = [
   {
-    element: 'Fire',
+    element: '火',
     iconUrl: 'https://api.ennead.cc/stella/assets/Kohaku.png',
     name: 'コハク',
-    position: 'Attacker',
+    position: 'アタッカー',
   },
   {
-    element: 'Dark',
+    element: '光',
     iconUrl: 'https://api.ennead.cc/stella/assets/Sia.png',
     name: 'シア',
-    position: 'Supporter',
+    position: 'アタッカー',
   },
   {
-    element: 'Water',
+    element: '水',
     iconUrl: 'https://api.ennead.cc/stella/assets/Chitose.png',
     name: 'チトセ',
-    position: 'Attacker',
+    position: 'アタッカー',
   },
   {
-    element: 'Light',
+    element: '水',
     iconUrl: 'https://api.ennead.cc/stella/assets/Teresa.png',
     name: 'テレサ',
-    position: 'Balancer',
+    position: 'サポーター',
   },
   {
-    element: 'Wind',
+    element: '風',
     iconUrl: 'https://api.ennead.cc/stella/assets/Nanoha.png',
     name: 'ナノハ',
-    position: 'Supporter',
+    position: 'アタッカー',
   },
   {
-    element: 'Water',
+    element: '火',
     iconUrl: 'https://api.ennead.cc/stella/assets/Fuyuka.png',
     name: 'フユカ',
-    position: 'Supporter',
+    position: 'アタッカー',
   },
   {
-    element: 'Light',
+    element: '光',
     iconUrl: 'https://api.ennead.cc/stella/assets/Tiriya.png',
     name: 'ティリア',
-    position: 'Supporter',
+    position: 'サポーター',
   },
   {
-    element: 'Fire',
+    element: '火',
     iconUrl: 'https://api.ennead.cc/stella/assets/Kashimira.png',
     name: 'カシミラ',
-    position: 'Balancer',
+    position: 'バランサー',
   },
   {
-    element: 'Earth',
+    element: '水',
     iconUrl: 'https://api.ennead.cc/stella/assets/Ayame.png',
     name: 'アヤメ',
-    position: 'Attacker',
+    position: 'バランサー',
   },
   {
-    element: 'Dark',
+    element: '風',
     iconUrl: 'https://api.ennead.cc/stella/assets/Seina.png',
     name: 'セイナ',
-    position: 'Attacker',
+    position: 'アタッカー',
   },
   {
-    element: 'Wind',
+    element: '光',
     iconUrl: 'https://api.ennead.cc/stella/assets/Minerva.png',
     name: 'ミネルバ',
-    position: 'Attacker',
+    position: 'バランサー',
   },
   {
-    element: 'Earth',
+    element: '地',
     iconUrl: 'https://api.ennead.cc/stella/assets/Gray.png',
     name: 'グレイ',
-    position: 'Balancer',
+    position: 'アタッカー',
   },
 ]
 const characterNames = characters.map((c) => c.name)

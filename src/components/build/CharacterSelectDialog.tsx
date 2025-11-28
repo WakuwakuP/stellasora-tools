@@ -10,22 +10,60 @@ import {
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import { type FC, useMemo, useState } from 'react'
 
+/**
+ * 多言語対応の属性マッピング（EN, JP, KR, CN, TW）
+ * APIは言語設定によって異なる値を返すため、すべての言語の値をサポート
+ */
+const ELEMENT_VALUE_GROUPS = {
+  fire: ['Ignis', '火', '불'],
+  water: ['Aqua', '水', '물'],
+  wind: ['Ventus', '風', '风', '바람'],
+  earth: ['Terra', '地', '땅'],
+  light: ['Lux', '光', '빛'],
+  dark: ['Umbra', '闇', '暗', '어둠'],
+} as const
+
+/**
+ * 多言語対応のロールマッピング（EN, JP, KR, CN, TW）
+ */
+const POSITION_VALUE_GROUPS = {
+  attacker: ['Vanguard', 'アタッカー', '딜러', '先锋', '先鋒'],
+  balancer: ['Versatile', 'バランサー', '밸런스', '均衡'],
+  supporter: ['Support', 'サポーター', '서포터', '辅助', '輔助'],
+} as const
+
 /** 属性フィルター定義 */
 export const ELEMENT_FILTERS = [
-  { value: 'Fire', label: '火', color: 'text-red-500' },
-  { value: 'Water', label: '水', color: 'text-blue-500' },
-  { value: 'Wind', label: '風', color: 'text-green-500' },
-  { value: 'Earth', label: '地', color: 'text-amber-600' },
-  { value: 'Light', label: '光', color: 'text-yellow-500' },
-  { value: 'Dark', label: '闇', color: 'text-purple-500' },
+  { color: 'text-red-500', label: '火', value: 'fire' },
+  { color: 'text-blue-500', label: '水', value: 'water' },
+  { color: 'text-green-500', label: '風', value: 'wind' },
+  { color: 'text-amber-600', label: '地', value: 'earth' },
+  { color: 'text-yellow-500', label: '光', value: 'light' },
+  { color: 'text-purple-500', label: '闇', value: 'dark' },
 ] as const
 
 /** ロールフィルター定義 */
 export const POSITION_FILTERS = [
-  { value: 'Attacker', label: 'アタッカー' },
-  { value: 'Balancer', label: 'バランサー' },
-  { value: 'Supporter', label: 'サポーター' },
+  { label: 'アタッカー', value: 'attacker' },
+  { label: 'バランサー', value: 'balancer' },
+  { label: 'サポーター', value: 'supporter' },
 ] as const
+
+/**
+ * キャラクターの属性が指定されたフィルターグループに一致するかチェック
+ */
+function matchesElementFilter(charElement: string | undefined, filterKey: keyof typeof ELEMENT_VALUE_GROUPS): boolean {
+  if (!charElement) return false
+  return ELEMENT_VALUE_GROUPS[filterKey].includes(charElement as never)
+}
+
+/**
+ * キャラクターのロールが指定されたフィルターグループに一致するかチェック
+ */
+function matchesPositionFilter(charPosition: string | undefined, filterKey: keyof typeof POSITION_VALUE_GROUPS): boolean {
+  if (!charPosition) return false
+  return POSITION_VALUE_GROUPS[filterKey].includes(charPosition as never)
+}
 
 /** キャラクター情報（名前、アイコンURL、属性、ロール） */
 export interface CharacterInfo {
@@ -73,13 +111,19 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
     return characters.filter((char) => {
       // 属性フィルター（フィルターが選択されている場合、該当する属性のみを表示）
       if (elementFilter.length > 0) {
-        if (!char.element || !elementFilter.includes(char.element)) {
+        const matchesAnyElement = elementFilter.some((filterKey) =>
+          matchesElementFilter(char.element, filterKey as keyof typeof ELEMENT_VALUE_GROUPS)
+        )
+        if (!matchesAnyElement) {
           return false
         }
       }
       // ロールフィルター（フィルターが選択されている場合、該当するロールのみを表示）
       if (positionFilter.length > 0) {
-        if (!char.position || !positionFilter.includes(char.position)) {
+        const matchesAnyPosition = positionFilter.some((filterKey) =>
+          matchesPositionFilter(char.position, filterKey as keyof typeof POSITION_VALUE_GROUPS)
+        )
+        if (!matchesAnyPosition) {
           return false
         }
       }

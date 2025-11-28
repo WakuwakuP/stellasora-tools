@@ -129,7 +129,7 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-4xl flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-7xl flex-col gap-0 overflow-hidden">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-slate-500">

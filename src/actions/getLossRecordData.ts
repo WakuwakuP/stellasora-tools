@@ -119,10 +119,26 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
   // セカンダリスキルの必要音符を集計
   const secondarySkillNotes = extractSecondarySkillNotes(detail)
 
+  // メインスキル情報を作成
+  const mainSkill = {
+    description: detail.mainSkill.description,
+    name: detail.mainSkill.name,
+    params: detail.mainSkill.params,
+  }
+
+  // セカンダリスキル情報を作成
+  const secondarySkills = detail.secondarySkills.map((skill) => ({
+    description: skill.description,
+    name: skill.name,
+    params: skill.params,
+    requirements: skill.requirements,
+  }))
+
   return {
     element: detail.element,
     iconUrl: `${STELLA_SORA_API_BASE_URL}${detail.icon}`,
     id: detail.id,
+    mainSkill,
     mainSkillDescription: replaceSkillParams(
       detail.mainSkill.description,
       maxLevelParams,
@@ -131,6 +147,7 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
     maxStats: maxLevelStats,
     name: detail.name,
     secondarySkillNotes,
+    secondarySkills,
     star: detail.star,
     supportNote: maxLevelSupportNote,
   }

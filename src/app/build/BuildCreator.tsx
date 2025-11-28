@@ -8,6 +8,7 @@ import {
   CharacterSelectDialog,
   isCoreTalent,
   LossRecordSelectDialog,
+  LossRecordSkillSection,
   LossRecordSlots,
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
@@ -929,9 +930,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
             <TabsContent value="lossreco" className="mt-0 min-h-0 flex-1">
               <ScrollArea className="h-full p-4">
-                <div className="flex min-h-64 items-center justify-center text-slate-500">
-                  <p>ロスレコスキル機能は準備中です</p>
-                </div>
+                <LossRecordSkillSection
+                  mainLossRecords={mainLossRecordIds
+                    .map((id) => getLossRecordById(id))
+                    .filter((lr): lr is LossRecordInfo => lr !== undefined)}
+                  subLossRecords={subLossRecordIds
+                    .map((id) => getLossRecordById(id))
+                    .filter((lr): lr is LossRecordInfo => lr !== undefined)}
+                />
               </ScrollArea>
             </TabsContent>
           </Tabs>

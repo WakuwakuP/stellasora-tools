@@ -14,10 +14,15 @@ interface Props {
     char3: string
     talents: string
   }>
+  searchParams: Promise<{
+    main?: string
+    sub?: string
+  }>
 }
 
-export default async function BuildWithParamsPage({ params }: Props) {
+export default async function BuildWithParamsPage({ params, searchParams }: Props) {
   const { char1, char2, char3, talents } = await params
+  const { main: mainLossRecords, sub: subLossRecords } = await searchParams
   const [availableCharacters, lossRecordData] = await Promise.all([
     getAvailableCharacters(),
     getLossRecordData().catch(() => []), // API取得失敗時は空配列
@@ -32,6 +37,8 @@ export default async function BuildWithParamsPage({ params }: Props) {
         initialChar2={char2}
         initialChar3={char3}
         initialTalents={talents}
+        initialMainLossRecords={mainLossRecords}
+        initialSubLossRecords={subLossRecords}
       />
     </Suspense>
   )

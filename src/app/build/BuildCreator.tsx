@@ -109,11 +109,13 @@ function arrayToSelectedTalents(
 }
 
 /**
- * ビルド情報をURLパスにエンコード
+ * ビルド情報をURLパスにエンコード（ロスレコ含む）
  */
 function encodeBuildToPath(
   characters: CharacterSlot[],
   selectedTalents: SelectedTalent[],
+  mainLossRecordIds: number[],
+  subLossRecordIds: number[],
 ): string {
   const char1 = characters[0]?.name || ''
   const char2 = characters[1]?.name || ''
@@ -127,7 +129,32 @@ function encodeBuildToPath(
   const bigIntValue = arrayToBase7BigInt(talentsArray)
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
-  return `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+  let path = `/build/${encodeURIComponent(char1)}/${encodeURIComponent(char2)}/${encodeURIComponent(char3)}/${talentsCode}`
+
+  // ロスレコIDをクエリパラメータに追加
+  const queryParams: string[] = []
+  if (mainLossRecordIds.length > 0) {
+    queryParams.push(`main=${mainLossRecordIds.join(',')}`)
+  }
+  if (subLossRecordIds.length > 0) {
+    queryParams.push(`sub=${subLossRecordIds.join(',')}`)
+  }
+  if (queryParams.length > 0) {
+    path += `?${queryParams.join('&')}`
+  }
+
+  return path
+}
+
+/**
+ * ロスレコIDをパースする
+ */
+function parseLossRecordIds(param: string | undefined): number[] {
+  if (!param) return []
+  return param
+    .split(',')
+    .map((id) => Number.parseInt(id, 10))
+    .filter((id) => !Number.isNaN(id) && id > 0)
 }
 
 /**
@@ -173,6 +200,8 @@ interface BuildCreatorProps {
   initialChar2?: string
   initialChar3?: string
   initialTalents?: string
+  initialMainLossRecords?: string
+  initialSubLossRecords?: string
 }
 
 interface CharacterSlot {
@@ -188,6 +217,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   initialChar2,
   initialChar3,
   initialTalents,
+  initialMainLossRecords,
+  initialSubLossRecords,
 }) => {
   // キャラクター情報（名前、アイコン、属性、ロール）をメモ化してパフォーマンス向上
   const characterInfoList = useMemo<CharacterInfo[]>(
@@ -253,14 +284,29 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
   const [currentUrl, setCurrentUrl] = useState(() => {
     if (initialChar1 && initialChar2 && initialChar3 && initialTalents) {
-      return `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
+      let url = `/build/${encodeURIComponent(initialChar1)}/${encodeURIComponent(initialChar2)}/${encodeURIComponent(initialChar3)}/${initialTalents}`
+      const queryParams: string[] = []
+      if (initialMainLossRecords) {
+        queryParams.push(`main=${initialMainLossRecords}`)
+      }
+      if (initialSubLossRecords) {
+        queryParams.push(`sub=${initialSubLossRecords}`)
+      }
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join('&')}`
+      }
+      return url
     }
     return '/build'
   })
 
-  // ロスレコ選択状態
-  const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>([])
-  const [subLossRecordIds, setSubLossRecordIds] = useState<number[]>([])
+  // ロスレコ選択状態（初期値をURLパラメータから復元）
+  const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>(() =>
+    parseLossRecordIds(initialMainLossRecords),
+  )
+  const [subLossRecordIds, setSubLossRecordIds] = useState<number[]>(() =>
+    parseLossRecordIds(initialSubLossRecords),
+  )
   const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
   const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
 
@@ -276,8 +322,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // URLを更新する関数
   const updateUrl = useCallback(
-    (chars: CharacterSlot[], talents: SelectedTalent[]) => {
-      const newPath = encodeBuildToPath(chars, talents)
+    (
+      chars: CharacterSlot[],
+      talents: SelectedTalent[],
+      mainLrIds: number[],
+      subLrIds: number[],
+    ) => {
+      const newPath = encodeBuildToPath(chars, talents, mainLrIds, subLrIds)
       // 全てのキャラクターが選択されている場合のみURLを更新
       if (chars[0]?.name && chars[1]?.name && chars[2]?.name) {
         window.history.replaceState(null, '', newPath)
@@ -289,8 +340,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // ステート変更時にURLを更新
   useEffect(() => {
-    updateUrl(characters, selectedTalents)
-  }, [characters, selectedTalents, updateUrl])
+    updateUrl(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
+  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrl])
 
   const handleTalentSelect = (
     characterName: string,

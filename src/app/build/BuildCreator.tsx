@@ -304,6 +304,17 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // 共有ボタンのコピー完了状態
   const [isCopied, setIsCopied] = useState(false)
 
+  // コピー完了状態を2秒後にリセットするeffect
+  useEffect(() => {
+    if (!isCopied) return
+
+    const timeoutId = setTimeout(() => {
+      setIsCopied(false)
+    }, 2000)
+
+    return () => clearTimeout(timeoutId)
+  }, [isCopied])
+
   // モバイル判定
   const isMobile = useIsMobile()
 
@@ -543,11 +554,6 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       await navigator.clipboard.writeText(fullUrl)
       setIsCopied(true)
       toast.success('共有URLをコピーしました')
-
-      // 2秒後にコピー完了状態をリセット
-      setTimeout(() => {
-        setIsCopied(false)
-      }, 2000)
     } catch {
       toast.error('URLのコピーに失敗しました')
     }

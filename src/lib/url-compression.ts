@@ -1,10 +1,10 @@
 /**
- * URL圧縮/展開ユーティリティ
+ * URLエンコード/デコードユーティリティ
  *
- * ビルドページのクエリパラメータをBase64URL形式に圧縮し、
+ * ビルドページのクエリパラメータをBase64URL形式にエンコードし、
  * 短縮URL `/b/{code}` を生成する機能を提供します。
  *
- * 圧縮形式:
+ * エンコード形式:
  * - クエリパラメータ文字列をUTF-8バイト配列に変換
  * - Base64URL形式にエンコード
  */
@@ -57,11 +57,10 @@ function base64UrlToBytes(str: string): Uint8Array {
 }
 
 /**
- * クエリ文字列をBase64URL形式に圧縮
- * （軽量な実装: 圧縮なしでBase64URLエンコードのみ）
+ * クエリ文字列をBase64URL形式にエンコード
  *
  * @param queryString - クエリ文字列（例: "?c1=キャラ1&c2=キャラ2&..."）
- * @returns 圧縮されたコード
+ * @returns エンコードされたコード
  */
 export function compressQueryString(queryString: string): string {
   // ?を除去
@@ -74,10 +73,10 @@ export function compressQueryString(queryString: string): string {
 }
 
 /**
- * Base64URL形式のコードからクエリ文字列を展開
+ * Base64URL形式のコードからクエリ文字列をデコード
  *
- * @param code - 圧縮されたコード
- * @returns 展開されたクエリ文字列（?なし）
+ * @param code - エンコードされたコード
+ * @returns デコードされたクエリ文字列（?なし）
  */
 export function decompressToQueryString(code: string): string {
   try {
@@ -87,7 +86,7 @@ export function decompressToQueryString(code: string): string {
     const decoder = new TextDecoder()
     return decoder.decode(bytes)
   } catch {
-    throw new Error('Invalid compressed code')
+    throw new Error('Invalid encoded code')
   }
 }
 

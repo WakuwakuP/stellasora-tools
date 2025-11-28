@@ -71,11 +71,11 @@ describe('url-compression', () => {
       expect(() => generateShareCode(invalidUrl)).toThrow('No query string in URL')
     })
 
-    it('should throw error for invalid compressed code', () => {
+    it('should throw error for invalid encoded code', () => {
       // 不正なBase64URL文字を含むコード
       const invalidCode = '!!!invalid!!!'
 
-      expect(() => expandShareCode(invalidCode)).toThrow('Invalid compressed code')
+      expect(() => expandShareCode(invalidCode)).toThrow('Invalid encoded code')
     })
   })
 

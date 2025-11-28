@@ -138,52 +138,54 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>
 
-        {/* フィルターセクション */}
-        <div className="shrink-0 space-y-2 border-b pb-3">
-          {/* 属性フィルター */}
-          <div>
-            <div className="mb-1 text-xs font-medium text-slate-500">属性</div>
-            <ToggleGroup
-              type="multiple"
-              value={elementFilter}
-              onValueChange={setElementFilter}
-              className="flex flex-wrap gap-1"
-            >
-              {ELEMENT_FILTERS.map((element) => (
-                <ToggleGroupItem
-                  key={element.value}
-                  value={element.value}
-                  aria-label={`${element.label}属性でフィルター`}
-                  className="h-7 px-2 text-xs"
-                  variant="outline"
-                >
-                  <span className={element.color}>{element.label}</span>
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
+        {/* フィルターセクション（左右に並べる） */}
+        <div className="shrink-0 border-b pb-3">
+          <div className="flex gap-4">
+            {/* 属性フィルター */}
+            <div className="flex-1">
+              <div className="mb-1 text-xs font-medium text-slate-500">属性</div>
+              <ToggleGroup
+                type="multiple"
+                value={elementFilter}
+                onValueChange={setElementFilter}
+                className="flex flex-wrap gap-0"
+              >
+                {ELEMENT_FILTERS.map((element) => (
+                  <ToggleGroupItem
+                    key={element.value}
+                    value={element.value}
+                    aria-label={`${element.label}属性でフィルター`}
+                    className="h-7 px-2 text-xs"
+                    variant="outline"
+                  >
+                    <span className={element.color}>{element.label}</span>
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
 
-          {/* ロールフィルター */}
-          <div>
-            <div className="mb-1 text-xs font-medium text-slate-500">ロール</div>
-            <ToggleGroup
-              type="multiple"
-              value={positionFilter}
-              onValueChange={setPositionFilter}
-              className="flex flex-wrap gap-1"
-            >
-              {POSITION_FILTERS.map((position) => (
-                <ToggleGroupItem
-                  key={position.value}
-                  value={position.value}
-                  aria-label={`${position.label}でフィルター`}
-                  className="h-7 px-2 text-xs"
-                  variant="outline"
-                >
-                  {position.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
+            {/* ロールフィルター */}
+            <div className="flex-1">
+              <div className="mb-1 text-xs font-medium text-slate-500">ロール</div>
+              <ToggleGroup
+                type="multiple"
+                value={positionFilter}
+                onValueChange={setPositionFilter}
+                className="flex flex-wrap gap-0"
+              >
+                {POSITION_FILTERS.map((position) => (
+                  <ToggleGroupItem
+                    key={position.value}
+                    value={position.value}
+                    aria-label={`${position.label}でフィルター`}
+                    className="h-7 px-2 text-xs"
+                    variant="outline"
+                  >
+                    {position.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
           </div>
         </div>
 

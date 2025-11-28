@@ -129,7 +129,7 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-7xl flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-7xl flex-col gap-0 overflow-hidden sm:max-w-7xl">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-slate-500">
@@ -190,7 +190,12 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
 
         {/* ロスレコリスト（スクロール可能） */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-3 p-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          <div
+            className="grid gap-3 p-2"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+            }}
+          >
             {filteredLossRecords.map((lr) => (
               <LossRecordCard
                 key={lr.id}

@@ -358,6 +358,34 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     }
   }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams, hasUserMadeChanges])
 
+  // URLパラメータが外部から変更された時（保存済みビルドのクリックなど）にステートを同期
+  useEffect(() => {
+    const urlChar1 = searchParams[buildSearchParamKeys.char1]
+    const urlChar2 = searchParams[buildSearchParamKeys.char2]
+    const urlChar3 = searchParams[buildSearchParamKeys.char3]
+    const urlTalents = searchParams[buildSearchParamKeys.talents]
+    const urlMainLr = searchParams[buildSearchParamKeys.mainLossRecords] ?? []
+    const urlSubLr = searchParams[buildSearchParamKeys.subLossRecords] ?? []
+
+    // URLにパラメータがある場合、ステートを同期
+    if (urlChar1 && urlChar2 && urlChar3 && urlTalents) {
+      const decoded = decodeBuildFromQuery(urlChar1, urlChar2, urlChar3, urlTalents, characterNames)
+      
+      // 現在のステートとURLが異なる場合のみ更新（無限ループ防止）
+      const currentChar1 = characters[0]?.name
+      const currentChar2 = characters[1]?.name
+      const currentChar3 = characters[2]?.name
+      
+      if (urlChar1 !== currentChar1 || urlChar2 !== currentChar2 || urlChar3 !== currentChar3) {
+        setCharacters(decoded.characters)
+        setSelectedTalents(decoded.selectedTalents)
+        setMainLossRecordIds(urlMainLr)
+        setSubLossRecordIds(urlSubLr)
+        setHasUserMadeChanges(true)
+      }
+    }
+  }, [searchParams, characterNames])
+
   const handleTalentSelect = (
     characterName: string,
     role: 'main' | 'sub',

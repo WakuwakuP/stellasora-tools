@@ -81,19 +81,19 @@ async function fetchLossRecordDetail(
 
 /**
  * セカンダリスキルから必要音符を集計する
- * 各スキルの最大レベル時の要件を合算する
+ * Lv1までに必要な音符数を取得し、複数スキルがある場合は各音符のMAXを使用する
  */
 function extractSecondarySkillNotes(detail: LossRecordDetail): SupportNote[] {
   const noteMap = new Map<string, number>()
 
   for (const skill of detail.secondarySkills) {
     if (skill.requirements && skill.requirements.length > 0) {
-      // 最大レベル時の要件を取得
-      const maxLevelReqs =
-        skill.requirements[skill.requirements.length - 1] ?? []
-      for (const req of maxLevelReqs) {
+      // Lv1時の要件を取得（配列の最初の要素）
+      const lv1Reqs = skill.requirements[0] ?? []
+      for (const req of lv1Reqs) {
         const current = noteMap.get(req.name) ?? 0
-        noteMap.set(req.name, current + req.quantity)
+        // 複数スキルがある場合はMAXを使用
+        noteMap.set(req.name, Math.max(current, req.quantity))
       }
     }
   }

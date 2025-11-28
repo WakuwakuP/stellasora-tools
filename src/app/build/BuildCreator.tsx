@@ -338,16 +338,32 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     [setSearchParams],
   )
 
-  // ステート変更時にURLを更新
+  // 初回レンダリング時にURLパラメータがあるかどうかをチェック
+  const hasInitialUrlParams = useMemo(() => {
+    return !!(
+      searchParams[buildSearchParamKeys.char1] &&
+      searchParams[buildSearchParamKeys.char2] &&
+      searchParams[buildSearchParamKeys.char3] &&
+      searchParams[buildSearchParamKeys.talents]
+    )
+  }, []) // 空の依存配列で初回のみ計算
+
+  // ユーザーが変更を加えたかどうかを追跡
+  const [hasUserMadeChanges, setHasUserMadeChanges] = useState(hasInitialUrlParams)
+
+  // ステート変更時にURLを更新（ユーザーが変更を加えた場合のみ）
   useEffect(() => {
-    updateUrlParams(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
-  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams])
+    if (hasUserMadeChanges) {
+      updateUrlParams(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
+    }
+  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams, hasUserMadeChanges])
 
   const handleTalentSelect = (
     characterName: string,
     role: 'main' | 'sub',
     index: number,
   ) => {
+    setHasUserMadeChanges(true)
     // 素質データを取得してコア判定に使用
     const charData = qualitiesData[characterName]
     const qualityRole = role === 'main' ? 'main' : 'sub'
@@ -434,6 +450,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   }
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
+    setHasUserMadeChanges(true)
     // 変更前のキャラクター名とロールを取得
     const prevCharacterName = characters[slotIndex]?.name
     const prevRole = characters[slotIndex]?.role
@@ -465,6 +482,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // メインロスレコの選択ハンドラー
   const handleMainLossRecordSelect = (id: number) => {
+    setHasUserMadeChanges(true)
     setMainLossRecordIds((prev) => {
       if (prev.length >= 3) return prev
       if (prev.includes(id)) return prev // 重複チェック
@@ -473,11 +491,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   }
 
   const handleMainLossRecordDeselect = (id: number) => {
+    setHasUserMadeChanges(true)
     setMainLossRecordIds((prev) => prev.filter((lrId) => lrId !== id))
   }
 
   // サブロスレコの選択ハンドラー
   const handleSubLossRecordSelect = (id: number) => {
+    setHasUserMadeChanges(true)
     setSubLossRecordIds((prev) => {
       if (prev.length >= 3) return prev
       if (prev.includes(id)) return prev // 重複チェック
@@ -486,6 +506,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   }
 
   const handleSubLossRecordDeselect = (id: number) => {
+    setHasUserMadeChanges(true)
     setSubLossRecordIds((prev) => prev.filter((lrId) => lrId !== id))
   }
 

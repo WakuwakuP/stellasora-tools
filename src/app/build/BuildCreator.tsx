@@ -183,12 +183,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   initialChar3,
   initialTalents,
 }) => {
-  // キャラクター情報（名前とアイコン）をメモ化してパフォーマンス向上
+  // キャラクター情報（名前、アイコン、属性、ロール）をメモ化してパフォーマンス向上
   const characterInfoList = useMemo<CharacterInfo[]>(
     () =>
       Object.entries(qualitiesData).map(([name, qualities]) => ({
-        name,
+        element: qualities.element,
         iconUrl: qualities.icon,
+        name,
+        position: qualities.position,
       })),
     [qualitiesData],
   )

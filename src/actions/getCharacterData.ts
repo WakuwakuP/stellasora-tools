@@ -258,8 +258,10 @@ function extractCharacterQualities(
   }
 
   return {
+    element: detail.element,
     icon: generateCharacterIconUrl(detail.icon),
     main: mainPotentials,
+    position: detail.position,
     sub: subPotentials,
   }
 }

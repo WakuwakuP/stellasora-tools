@@ -20,6 +20,9 @@ export const NOTE_FILTERS = [
   { imagePath: NOTE_IMAGE_MAP['爆発の音符'], label: '爆発', value: '爆発' },
   { imagePath: NOTE_IMAGE_MAP['器用の音符'], label: '器用', value: '器用' },
   { imagePath: NOTE_IMAGE_MAP['幸運の音符'], label: '幸運', value: '幸運' },
+  { imagePath: NOTE_IMAGE_MAP['体力の音符'], label: '体力', value: '体力' },
+  { imagePath: NOTE_IMAGE_MAP['集中の音符'], label: '集中', value: '集中' },
+  { imagePath: NOTE_IMAGE_MAP['必殺の音符'], label: '必殺', value: '必殺' },
   { imagePath: NOTE_IMAGE_MAP['火の音符'], label: '火', value: '火' },
   { imagePath: NOTE_IMAGE_MAP['水の音符'], label: '水', value: '水' },
   { imagePath: NOTE_IMAGE_MAP['風の音符'], label: '風', value: '風' },
@@ -82,9 +85,9 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
     }
   }, [open])
 
-  // フィルタリングされたロスレコリスト
+  // フィルタリング・ソートされたロスレコリスト
   const filteredLossRecords = useMemo(() => {
-    return lossRecords.filter((lr) => {
+    const filtered = lossRecords.filter((lr) => {
       // 音符フィルター（いずれかの音符タイプを含む）
       if (noteFilter.length > 0) {
         const hasAnyNote = noteFilter.some((nf) => hasNoteType(lr, nf))
@@ -101,6 +104,26 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
       }
       return true
     })
+    // ソート: レアリティ（降順）、属性、名前
+    const elementOrder: Record<string, number> = {
+      火: 0,
+      水: 1,
+      風: 2,
+      地: 3,
+      光: 4,
+      闇: 5,
+      なし: 6,
+    }
+    return filtered.sort((a, b) => {
+      // レアリティ降順
+      if (b.star !== a.star) return b.star - a.star
+      // 属性順
+      const elementA = elementOrder[a.element] ?? 99
+      const elementB = elementOrder[b.element] ?? 99
+      if (elementA !== elementB) return elementA - elementB
+      // 名前順
+      return a.name.localeCompare(b.name, 'ja')
+    })
   }, [lossRecords, noteFilter, starFilter])
 
   const handleClick = (id: number) => {
@@ -115,7 +138,7 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-2xl flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-4xl flex-col gap-0 overflow-hidden">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-slate-500">
@@ -140,19 +163,18 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
                     key={note.value}
                     value={note.value}
                     aria-label={`${note.label}音符でフィルター`}
-                    className="h-7 px-2 text-xs"
+                    className="h-9 w-9 p-1"
                     variant="outline"
                   >
                     {note.imagePath && (
                       <Image
                         src={note.imagePath}
                         alt={note.label}
-                        width={16}
-                        height={16}
-                        className="mr-0.5 h-4 w-4"
+                        width={24}
+                        height={24}
+                        className="h-6 w-6"
                       />
                     )}
-                    <span>{note.label}</span>
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
@@ -185,7 +207,7 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
 
         {/* ロスレコリスト（スクロール可能） */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-3 p-2 sm:grid-cols-3 md:grid-cols-4">
+          <div className="grid grid-cols-3 gap-3 p-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {filteredLossRecords.map((lr) => (
               <LossRecordCard
                 key={lr.id}

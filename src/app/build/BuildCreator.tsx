@@ -667,6 +667,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     onSlotClick={() => setMainLossRecordDialogOpen(true)}
                     onDeselect={handleMainLossRecordDeselect}
                     compact
+                    showSecondaryNotes
                   />
                 </div>
 
@@ -736,6 +737,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   getLossRecordById={getLossRecordById}
                   onSlotClick={() => setMainLossRecordDialogOpen(true)}
                   onDeselect={handleMainLossRecordDeselect}
+                  showSecondaryNotes
                 />
               </div>
 

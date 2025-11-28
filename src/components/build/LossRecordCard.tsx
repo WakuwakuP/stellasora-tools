@@ -39,21 +39,38 @@ export interface LossRecordCardProps {
   compact?: boolean
 }
 
+/** 音符名から画像パスを取得するマッピング */
+export const NOTE_IMAGE_MAP: Record<string, string> = {
+  強撃の音符: '/notes/note_90011_S.png',
+  幸運の音符: '/notes/note_90012_S.png',
+  爆発の音符: '/notes/note_90013_S.png',
+  体力の音符: '/notes/note_90014_S.png',
+  集中の音符: '/notes/note_90015_S.png',
+  器用の音符: '/notes/note_90016_S.png',
+  必殺の音符: '/notes/note_90017_S.png',
+  水の音符: '/notes/note_90018_S.png',
+  火の音符: '/notes/note_90019_S.png',
+  風の音符: '/notes/note_90020_S.png',
+  地の音符: '/notes/note_90021_S.png',
+  光の音符: '/notes/note_90022_S.png',
+  闇の音符: '/notes/note_90023_S.png',
+}
+
 /**
- * 音符アイコンを取得する
+ * 音符名から画像パスを取得する
  */
-function getNoteIcon(noteName: string): string {
-  if (noteName.includes('火')) return '🔥'
-  if (noteName.includes('水')) return '💧'
-  if (noteName.includes('風')) return '🌀'
-  if (noteName.includes('地')) return '🌍'
-  if (noteName.includes('光')) return '✨'
-  if (noteName.includes('闇')) return '🌑'
-  if (noteName.includes('強撃')) return '⚔️'
-  if (noteName.includes('爆発')) return '💥'
-  if (noteName.includes('器用')) return '🎯'
-  if (noteName.includes('幸運')) return '🍀'
-  return '🎵'
+export function getNoteImagePath(noteName: string): string | null {
+  // 完全一致
+  if (NOTE_IMAGE_MAP[noteName]) {
+    return NOTE_IMAGE_MAP[noteName]
+  }
+  // 部分一致でフォールバック
+  for (const [key, path] of Object.entries(NOTE_IMAGE_MAP)) {
+    if (noteName.includes(key.replace('の音符', ''))) {
+      return path
+    }
+  }
+  return null
 }
 
 /**
@@ -63,16 +80,29 @@ const SupportNoteDisplay: FC<{ notes: SupportNote[] }> = ({ notes }) => {
   if (!notes || notes.length === 0) return null
   return (
     <div className="flex flex-wrap justify-center gap-1">
-      {notes.map((note) => (
-        <span
-          key={note.name}
-          className="inline-flex items-center gap-0.5 text-xs text-slate-600 dark:text-slate-300"
-          title={note.name}
-        >
-          <span>{getNoteIcon(note.name)}</span>
-          <span>{note.quantity}</span>
-        </span>
-      ))}
+      {notes.map((note) => {
+        const imagePath = getNoteImagePath(note.name)
+        return (
+          <span
+            key={note.name}
+            className="inline-flex items-center gap-0.5 text-xs text-slate-600 dark:text-slate-300"
+            title={note.name}
+          >
+            {imagePath ? (
+              <Image
+                src={imagePath}
+                alt={note.name}
+                width={16}
+                height={16}
+                className="h-4 w-4"
+              />
+            ) : (
+              <span>🎵</span>
+            )}
+            <span>{note.quantity}</span>
+          </span>
+        )
+      })}
     </div>
   )
 }

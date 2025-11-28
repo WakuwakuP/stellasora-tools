@@ -7,23 +7,24 @@ import {
   DialogTitle,
 } from 'components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
+import Image from 'next/image'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
-import { LossRecordCard } from './LossRecordCard'
+import { LossRecordCard, NOTE_IMAGE_MAP } from './LossRecordCard'
 import { STAR_FILTERS } from './LossRecordSelectDialog'
 
 /** 音符フィルター定義 */
 export const NOTE_FILTERS = [
-  { icon: '⚔️', label: '強撃', value: '強撃' },
-  { icon: '💥', label: '爆発', value: '爆発' },
-  { icon: '🎯', label: '器用', value: '器用' },
-  { icon: '🍀', label: '幸運', value: '幸運' },
-  { icon: '🔥', label: '火', value: '火' },
-  { icon: '💧', label: '水', value: '水' },
-  { icon: '🌀', label: '風', value: '風' },
-  { icon: '🌍', label: '地', value: '地' },
-  { icon: '✨', label: '光', value: '光' },
-  { icon: '🌑', label: '闇', value: '闇' },
+  { imagePath: NOTE_IMAGE_MAP['強撃の音符'], label: '強撃', value: '強撃' },
+  { imagePath: NOTE_IMAGE_MAP['爆発の音符'], label: '爆発', value: '爆発' },
+  { imagePath: NOTE_IMAGE_MAP['器用の音符'], label: '器用', value: '器用' },
+  { imagePath: NOTE_IMAGE_MAP['幸運の音符'], label: '幸運', value: '幸運' },
+  { imagePath: NOTE_IMAGE_MAP['火の音符'], label: '火', value: '火' },
+  { imagePath: NOTE_IMAGE_MAP['水の音符'], label: '水', value: '水' },
+  { imagePath: NOTE_IMAGE_MAP['風の音符'], label: '風', value: '風' },
+  { imagePath: NOTE_IMAGE_MAP['地の音符'], label: '地', value: '地' },
+  { imagePath: NOTE_IMAGE_MAP['光の音符'], label: '光', value: '光' },
+  { imagePath: NOTE_IMAGE_MAP['闇の音符'], label: '闇', value: '闇' },
 ] as const
 
 export interface SubLossRecordSelectDialogProps {
@@ -141,7 +142,15 @@ export const SubLossRecordSelectDialog: FC<SubLossRecordSelectDialogProps> = ({
                     className="h-7 px-2 text-xs"
                     variant="outline"
                   >
-                    <span className="mr-0.5">{note.icon}</span>
+                    {note.imagePath && (
+                      <Image
+                        src={note.imagePath}
+                        alt={note.label}
+                        width={16}
+                        height={16}
+                        className="mr-0.5 h-4 w-4"
+                      />
+                    )}
                     <span>{note.label}</span>
                   </ToggleGroupItem>
                 ))}

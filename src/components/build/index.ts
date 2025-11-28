@@ -20,7 +20,7 @@ export type {
   CharacterInfo,
   CharacterSelectDialogProps,
 } from './CharacterSelectDialog'
-export { LossRecordCard } from './LossRecordCard'
+export { getNoteImagePath, LossRecordCard, NOTE_IMAGE_MAP } from './LossRecordCard'
 export type { LossRecordCardProps } from './LossRecordCard'
 export {
   ELEMENT_FILTERS as LOSS_RECORD_ELEMENT_FILTERS,

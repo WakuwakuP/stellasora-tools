@@ -10,6 +10,7 @@ import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
 import { LossRecordCard } from './LossRecordCard'
+import { STAR_FILTERS } from './LossRecordSelectDialog'
 
 /** 音符フィルター定義 */
 export const NOTE_FILTERS = [
@@ -23,13 +24,6 @@ export const NOTE_FILTERS = [
   { icon: '🌍', label: '地', value: '地' },
   { icon: '✨', label: '光', value: '光' },
   { icon: '🌑', label: '闇', value: '闇' },
-] as const
-
-/** 星フィルター定義 */
-export const STAR_FILTERS = [
-  { label: '★3', value: '3' },
-  { label: '★4', value: '4' },
-  { label: '★5', value: '5' },
 ] as const
 
 export interface SubLossRecordSelectDialogProps {

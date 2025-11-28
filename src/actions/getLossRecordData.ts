@@ -32,10 +32,11 @@ function replaceSkillParams(description: string, params?: string[]): string {
   if (!params || params.length === 0) {
     return description
   }
-  // HTMLカラータグを削除して、{N}プレースホルダーを置換
+  // HTMLカラータグを削除
   let result = description.replace(/<color=[^>]+>|<\/color>/g, '')
+  // {N}プレースホルダーを置換（replaceAllを使用して効率化）
   for (let i = 0; i < params.length; i++) {
-    result = result.replace(new RegExp(`\\{${i + 1}\\}`, 'g'), params[i])
+    result = result.replaceAll(`{${i + 1}}`, params[i])
   }
   return result
 }

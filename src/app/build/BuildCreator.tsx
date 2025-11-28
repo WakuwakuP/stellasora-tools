@@ -416,6 +416,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const handleMainLossRecordSelect = (id: number) => {
     setMainLossRecordIds((prev) => {
       if (prev.length >= 3) return prev
+      if (prev.includes(id)) return prev // 重複チェック
       return [...prev, id]
     })
   }
@@ -428,6 +429,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const handleSubLossRecordSelect = (id: number) => {
     setSubLossRecordIds((prev) => {
       if (prev.length >= 3) return prev
+      if (prev.includes(id)) return prev // 重複チェック
       return [...prev, id]
     })
   }

@@ -14,11 +14,21 @@ import {
   SubLossRecordSelectDialog,
 } from 'components/build'
 import type { CharacterInfo, SelectedTalent } from 'components/build'
+import { Button } from 'components/ui/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from 'components/ui/collapsible'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from 'components/ui/dialog'
+import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import { useIsMobile } from 'hooks/use-mobile'
@@ -130,7 +140,7 @@ function encodeBuildToQueryString(
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
   const params = new URLSearchParams()
-  if (buildName && buildName !== '新規ビルド') {
+  if (buildName) {
     params.set(buildSearchParamKeys.name, buildName)
   }
   params.set(buildSearchParamKeys.char1, char1)
@@ -272,11 +282,15 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   )
 
   const [buildName, setBuildName] = useState(
-    searchParams[buildSearchParamKeys.name] || '新規ビルド',
+    searchParams[buildSearchParamKeys.name] || '',
   )
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
+
+  // ビルド名入力ダイアログ用のステート
+  const [buildNameDialogOpen, setBuildNameDialogOpen] = useState(false)
+  const [pendingBuildName, setPendingBuildName] = useState('')
 
   // ロスレコ選択状態（初期値をURLパラメータから復元）
   const [mainLossRecordIds, setMainLossRecordIds] = useState<number[]>(
@@ -333,7 +347,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       const talentsCode = bigIntToBase64Url(bigIntValue)
 
       setSearchParams({
-        [buildSearchParamKeys.name]: name && name !== '新規ビルド' ? name : null,
+        [buildSearchParamKeys.name]: name || null,
         [buildSearchParamKeys.char1]: char1,
         [buildSearchParamKeys.char2]: char2,
         [buildSearchParamKeys.char3]: char3,
@@ -384,7 +398,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       const currentChar2 = characters[1]?.name
       const currentChar3 = characters[2]?.name
       const currentName = buildName
-      const newName = urlName || '新規ビルド'
+      const newName = urlName || ''
       
       if (urlChar1 !== currentChar1 || urlChar2 !== currentChar2 || urlChar3 !== currentChar3 || newName !== currentName) {
         setBuildName(newName)
@@ -484,7 +498,32 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   const handleSaveBuild = () => {
     if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
-      addBuild(buildName, currentUrl)
+      if (!buildName.trim()) {
+        // ビルド名が空の場合は入力ダイアログを表示
+        setPendingBuildName('')
+        setBuildNameDialogOpen(true)
+      } else {
+        addBuild(buildName, currentUrl)
+      }
+    }
+  }
+
+  const handleSaveBuildWithName = () => {
+    if (pendingBuildName.trim()) {
+      // ビルド名を設定してURLも更新
+      const trimmedName = pendingBuildName.trim()
+      setBuildName(trimmedName)
+      // 新しい名前でURLを生成
+      const newUrl = encodeBuildToQueryString(
+        trimmedName,
+        characters,
+        selectedTalents,
+        mainLossRecordIds,
+        subLossRecordIds,
+      )
+      addBuild(trimmedName, newUrl)
+      setBuildNameDialogOpen(false)
+      setHasUserMadeChanges(true)
     }
   }
 
@@ -568,7 +607,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
-                  placeholder="ビルド名を入力"
+                  placeholder="新規ビルド"
                   className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
               </div>
@@ -898,6 +937,42 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           </Tabs>
         </div>
       </div>
+
+      {/* ビルド名入力ダイアログ */}
+      <Dialog open={buildNameDialogOpen} onOpenChange={setBuildNameDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ビルド名を入力</DialogTitle>
+            <DialogDescription>
+              保存するビルドの名前を入力してください
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={pendingBuildName}
+            onChange={(e) => setPendingBuildName(e.target.value)}
+            placeholder="ビルド名を入力"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && pendingBuildName.trim()) {
+                handleSaveBuildWithName()
+              }
+            }}
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setBuildNameDialogOpen(false)}
+            >
+              キャンセル
+            </Button>
+            <Button
+              onClick={handleSaveBuildWithName}
+              disabled={!pendingBuildName.trim()}
+            >
+              保存
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

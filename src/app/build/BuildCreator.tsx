@@ -39,7 +39,9 @@ import {
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
-import { ChevronDown, ChevronUp, Pencil } from 'lucide-react'
+import { generateShortUrl } from 'lib/url-compression'
+import { Check, ChevronDown, ChevronUp, Pencil, Share2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
@@ -299,6 +301,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
   const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
 
+  // 共有ボタンのコピー完了状態
+  const [isCopied, setIsCopied] = useState(false)
+
   // モバイル判定
   const isMobile = useIsMobile()
 
@@ -524,6 +529,29 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       setHasUserMadeChanges(true)
     }
   }
+
+  // 共有ボタンのハンドラ
+  const handleShare = useCallback(async () => {
+    if (!characters[0]?.name || !characters[1]?.name || !characters[2]?.name) {
+      return
+    }
+
+    try {
+      const shortUrl = generateShortUrl(currentUrl)
+      const fullUrl = `${window.location.origin}${shortUrl}`
+
+      await navigator.clipboard.writeText(fullUrl)
+      setIsCopied(true)
+      toast.success('共有URLをコピーしました')
+
+      // 2秒後にコピー完了状態をリセット
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    } catch {
+      toast.error('URLのコピーに失敗しました')
+    }
+  }, [currentUrl, characters])
 
   const handleCharacterChange = (slotIndex: number, newName: string) => {
     setHasUserMadeChanges(true)
@@ -811,15 +839,30 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </div>
           </div>
 
-          {/* 登録ボタン */}
-          <div className={isMobile ? 'mt-2' : 'mt-4'}>
+          {/* アクションボタン */}
+          <div className={`flex gap-2 ${isMobile ? 'mt-2' : 'mt-4'}`}>
+            {/* 登録ボタン */}
             <button
               type="button"
               onClick={handleSaveBuild}
               disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-              className={`flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800 ${isMobile ? 'py-1.5 text-sm' : 'py-2'}`}
+              className={`flex flex-1 items-center justify-center gap-1 rounded-lg bg-pink-100 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800 ${isMobile ? 'py-1.5 text-sm' : 'py-2'}`}
             >
               ❤ 登録
+            </button>
+            {/* 共有ボタン */}
+            <button
+              type="button"
+              onClick={handleShare}
+              disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+              className={`flex items-center justify-center gap-1 rounded-lg bg-blue-100 font-medium text-blue-600 transition-colors hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 ${isMobile ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'}`}
+              aria-label="ビルドを共有"
+            >
+              {isCopied ? (
+                <Check className={isMobile ? 'h-4 w-4' : 'h-5 w-5'} />
+              ) : (
+                <Share2 className={isMobile ? 'h-4 w-4' : 'h-5 w-5'} />
+              )}
             </button>
           </div>
 

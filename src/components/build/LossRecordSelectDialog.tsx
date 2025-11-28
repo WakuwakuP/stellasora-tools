@@ -9,6 +9,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
+import { sortLossRecords } from 'utils/lossRecordSort'
 import { LossRecordCard } from './LossRecordCard'
 
 /** 属性フィルター定義 */
@@ -76,9 +77,9 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
     }
   }, [open])
 
-  // フィルタリングされたロスレコリスト
+  // フィルタリング・ソートされたロスレコリスト
   const filteredLossRecords = useMemo(() => {
-    return lossRecords.filter((lr) => {
+    const filtered = lossRecords.filter((lr) => {
       // 属性フィルター
       if (
         elementFilter.length > 0 &&
@@ -95,6 +96,8 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
       }
       return true
     })
+    // ソート: レアリティ（降順）、属性、名前
+    return sortLossRecords(filtered)
   }, [lossRecords, elementFilter, starFilter])
 
   const handleClick = (id: number) => {
@@ -109,7 +112,7 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-2xl flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-7xl flex-col gap-0 overflow-hidden sm:max-w-7xl">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-slate-500">
@@ -170,7 +173,12 @@ export const LossRecordSelectDialog: FC<LossRecordSelectDialogProps> = ({
 
         {/* ロスレコリスト（スクロール可能） */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-3 p-2 sm:grid-cols-3 md:grid-cols-4">
+          <div
+            className="grid gap-3 p-2"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+            }}
+          >
             {filteredLossRecords.map((lr) => (
               <LossRecordCard
                 key={lr.id}

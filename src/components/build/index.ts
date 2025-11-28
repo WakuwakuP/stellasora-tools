@@ -20,7 +20,7 @@ export type {
   CharacterInfo,
   CharacterSelectDialogProps,
 } from './CharacterSelectDialog'
-export { getNoteImagePath, LossRecordCard, NOTE_IMAGE_MAP } from './LossRecordCard'
+export { LossRecordCard } from './LossRecordCard'
 export type { LossRecordCardProps } from './LossRecordCard'
 export {
   ELEMENT_FILTERS as LOSS_RECORD_ELEMENT_FILTERS,
@@ -28,6 +28,8 @@ export {
   STAR_FILTERS,
 } from './LossRecordSelectDialog'
 export type { LossRecordSelectDialogProps } from './LossRecordSelectDialog'
+export { LossRecordSlots } from './LossRecordSlots'
+export type { LossRecordSlotsProps } from './LossRecordSlots'
 export { QualityCard } from './QualityCard'
 export type { QualityCardProps } from './QualityCard'
 export {

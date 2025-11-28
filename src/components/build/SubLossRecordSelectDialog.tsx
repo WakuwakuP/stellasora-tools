@@ -1,5 +1,6 @@
 'use client'
 
+import { NOTE_IMAGE_MAP } from 'constants/noteImageMap'
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import Image from 'next/image'
 import { type FC, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
-import { LossRecordCard, NOTE_IMAGE_MAP } from './LossRecordCard'
+import { LossRecordCard } from './LossRecordCard'
 import { STAR_FILTERS } from './LossRecordSelectDialog'
 
 /** 音符フィルター定義 */

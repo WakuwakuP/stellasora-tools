@@ -140,20 +140,44 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
  * 全ロスレコデータを取得する
  */
 async function fetchAllLossRecordData(): Promise<LossRecordInfo[]> {
+  let lossRecordList: LossRecordListItem[]
   try {
     // Step 1: ロスレコ一覧を取得
-    const lossRecordList = await fetchLossRecordList('JP')
+    lossRecordList = await fetchLossRecordList('JP')
+  } catch (error) {
+    console.error(
+      'Failed to fetch loss record list:',
+      error instanceof Error ? error.message : 'Unknown error',
+      error,
+    )
+    throw error
+  }
 
+  let lossRecordDetails: LossRecordDetail[]
+  try {
     // Step 2: 各ロスレコの詳細を並行して取得
     const detailPromises = lossRecordList.map((lr) =>
       fetchLossRecordDetail(lr.id, 'JP'),
     )
-    const lossRecordDetails = await Promise.all(detailPromises)
+    lossRecordDetails = await Promise.all(detailPromises)
+  } catch (error) {
+    console.error(
+      'Failed to fetch loss record details:',
+      error instanceof Error ? error.message : 'Unknown error',
+      error,
+    )
+    throw error
+  }
 
+  try {
     // Step 3: アプリケーション用に変換
     return lossRecordDetails.map(convertToLossRecordInfo)
   } catch (error) {
-    console.error('Failed to fetch loss record data:', error)
+    console.error(
+      'Failed to convert loss record details:',
+      error instanceof Error ? error.message : 'Unknown error',
+      error,
+    )
     throw error
   }
 }

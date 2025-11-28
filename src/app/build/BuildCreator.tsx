@@ -7,6 +7,7 @@ import {
   CharacterSelectDialog,
   isCoreTalent,
   LossRecordSelectDialog,
+  LossRecordSlots,
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
   SubLossRecordSelectDialog,
@@ -28,7 +29,7 @@ import {
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
-import { ChevronDown, ChevronUp, Plus, X } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
@@ -566,46 +567,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                       🔍
                     </button>
                   </h3>
-                  <div className="grid grid-cols-3 gap-1">
-                    {[0, 1, 2].map((slotIndex) => {
-                      const lrId = mainLossRecordIds[slotIndex]
-                      const lr = lrId ? getLossRecordById(lrId) : undefined
-                      return (
-                        <button
-                          key={slotIndex}
-                          type="button"
-                          onClick={() => setMainLossRecordDialogOpen(true)}
-                          className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
-                        >
-                          {lr ? (
-                            <>
-                              <Avatar className="h-full w-full rounded-lg">
-                                <AvatarImage src={lr.iconUrl} alt={lr.name} />
-                                <AvatarFallback className="rounded-lg text-xs">
-                                  {lr.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleMainLossRecordDeselect(lr.id)
-                                }}
-                                className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                                aria-label={`${lr.name}を削除`}
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </>
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-slate-400">
-                              <Plus className="h-4 w-4" />
-                            </div>
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
+                  <LossRecordSlots
+                    lossRecordIds={mainLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                    onDeselect={handleMainLossRecordDeselect}
+                    compact
+                  />
                 </div>
 
                 {/* サブロスレコセクション - コンパクト版 */}
@@ -622,46 +590,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                       🔍
                     </button>
                   </h3>
-                  <div className="grid grid-cols-3 gap-1">
-                    {[0, 1, 2].map((slotIndex) => {
-                      const lrId = subLossRecordIds[slotIndex]
-                      const lr = lrId ? getLossRecordById(lrId) : undefined
-                      return (
-                        <button
-                          key={slotIndex}
-                          type="button"
-                          onClick={() => setSubLossRecordDialogOpen(true)}
-                          className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
-                        >
-                          {lr ? (
-                            <>
-                              <Avatar className="h-full w-full rounded-lg">
-                                <AvatarImage src={lr.iconUrl} alt={lr.name} />
-                                <AvatarFallback className="rounded-lg text-xs">
-                                  {lr.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleSubLossRecordDeselect(lr.id)
-                                }}
-                                className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                                aria-label={`${lr.name}を削除`}
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </>
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center text-slate-400">
-                              <Plus className="h-4 w-4" />
-                            </div>
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
+                  <LossRecordSlots
+                    lossRecordIds={subLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                    onDeselect={handleSubLossRecordDeselect}
+                    compact
+                  />
                 </div>
               </CollapsibleContent>
             </Collapsible>
@@ -702,46 +637,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     🔍
                   </button>
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {[0, 1, 2].map((slotIndex) => {
-                    const lrId = mainLossRecordIds[slotIndex]
-                    const lr = lrId ? getLossRecordById(lrId) : undefined
-                    return (
-                      <button
-                        key={slotIndex}
-                        type="button"
-                        onClick={() => setMainLossRecordDialogOpen(true)}
-                        className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
-                      >
-                        {lr ? (
-                          <>
-                            <Avatar className="h-full w-full rounded-lg">
-                              <AvatarImage src={lr.iconUrl} alt={lr.name} />
-                              <AvatarFallback className="rounded-lg text-xs">
-                                {lr.name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleMainLossRecordDeselect(lr.id)
-                              }}
-                              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                              aria-label={`${lr.name}を削除`}
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-slate-400">
-                            <Plus className="h-6 w-6" />
-                          </div>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
+                <LossRecordSlots
+                  lossRecordIds={mainLossRecordIds}
+                  getLossRecordById={getLossRecordById}
+                  onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                  onDeselect={handleMainLossRecordDeselect}
+                />
               </div>
 
               {/* デスクトップ: サブロスレコセクション */}
@@ -758,46 +659,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     🔍
                   </button>
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {[0, 1, 2].map((slotIndex) => {
-                    const lrId = subLossRecordIds[slotIndex]
-                    const lr = lrId ? getLossRecordById(lrId) : undefined
-                    return (
-                      <button
-                        key={slotIndex}
-                        type="button"
-                        onClick={() => setSubLossRecordDialogOpen(true)}
-                        className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
-                      >
-                        {lr ? (
-                          <>
-                            <Avatar className="h-full w-full rounded-lg">
-                              <AvatarImage src={lr.iconUrl} alt={lr.name} />
-                              <AvatarFallback className="rounded-lg text-xs">
-                                {lr.name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleSubLossRecordDeselect(lr.id)
-                              }}
-                              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                              aria-label={`${lr.name}を削除`}
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-slate-400">
-                            <Plus className="h-6 w-6" />
-                          </div>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
+                <LossRecordSlots
+                  lossRecordIds={subLossRecordIds}
+                  getLossRecordById={getLossRecordById}
+                  onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                  onDeselect={handleSubLossRecordDeselect}
+                />
               </div>
             </>
           )}

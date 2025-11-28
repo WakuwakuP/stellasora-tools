@@ -98,7 +98,12 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
   ) => (
     <div key={groupName}>
       <div className="mb-1 font-medium text-slate-500 text-xs">{groupName}</div>
-      <div className="grid grid-cols-4 gap-2 md:grid-cols-8">
+      <div
+        className="grid gap-2"
+        style={{
+          gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+        }}
+      >
         {items.map(({ quality, originalIndex }) => {
           const selectedTalent = selectedTalents.find(
             (t) =>

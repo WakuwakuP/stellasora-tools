@@ -111,6 +111,7 @@ function arrayToSelectedTalents(
  * ビルド情報をURLクエリ文字列に変換
  */
 function encodeBuildToQueryString(
+  buildName: string,
   characters: CharacterSlot[],
   selectedTalents: SelectedTalent[],
   mainLossRecordIds: number[],
@@ -129,6 +130,9 @@ function encodeBuildToQueryString(
   const talentsCode = bigIntToBase64Url(bigIntValue)
 
   const params = new URLSearchParams()
+  if (buildName && buildName !== '新規ビルド') {
+    params.set(buildSearchParamKeys.name, buildName)
+  }
   params.set(buildSearchParamKeys.char1, char1)
   params.set(buildSearchParamKeys.char2, char2)
   params.set(buildSearchParamKeys.char3, char3)
@@ -198,6 +202,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // nuqsを使ってクエリパラメータを型安全に管理
   const [searchParams, setSearchParams] = useQueryStates(
     {
+      [buildSearchParamKeys.name]: parseAsString,
       [buildSearchParamKeys.char1]: parseAsString,
       [buildSearchParamKeys.char2]: parseAsString,
       [buildSearchParamKeys.char3]: parseAsString,
@@ -266,7 +271,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     initialBuild.selectedTalents,
   )
 
-  const [buildName, setBuildName] = useState('新規ビルド')
+  const [buildName, setBuildName] = useState(
+    searchParams[buildSearchParamKeys.name] || '新規ビルド',
+  )
   const [activeTab, setActiveTab] = useState('qualities')
   const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
   const [editingSlotIndex, setEditingSlotIndex] = useState<number | null>(null)
@@ -295,17 +302,19 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const currentUrl = useMemo(
     () =>
       encodeBuildToQueryString(
+        buildName,
         characters,
         selectedTalents,
         mainLossRecordIds,
         subLossRecordIds,
       ),
-    [characters, selectedTalents, mainLossRecordIds, subLossRecordIds],
+    [buildName, characters, selectedTalents, mainLossRecordIds, subLossRecordIds],
   )
 
   // URLを更新する関数
   const updateUrlParams = useCallback(
     (
+      name: string,
       chars: CharacterSlot[],
       talents: SelectedTalent[],
       mainLrIds: number[],
@@ -324,6 +333,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       const talentsCode = bigIntToBase64Url(bigIntValue)
 
       setSearchParams({
+        [buildSearchParamKeys.name]: name && name !== '新規ビルド' ? name : null,
         [buildSearchParamKeys.char1]: char1,
         [buildSearchParamKeys.char2]: char2,
         [buildSearchParamKeys.char3]: char3,
@@ -351,12 +361,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // ステート変更時にURLを更新（ユーザーが変更を加えた場合のみ）
   useEffect(() => {
     if (hasUserMadeChanges) {
-      updateUrlParams(characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
+      updateUrlParams(buildName, characters, selectedTalents, mainLossRecordIds, subLossRecordIds)
     }
-  }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams, hasUserMadeChanges])
+  }, [buildName, characters, selectedTalents, mainLossRecordIds, subLossRecordIds, updateUrlParams, hasUserMadeChanges])
 
   // URLパラメータが外部から変更された時（保存済みビルドのクリックなど）にステートを同期
   useEffect(() => {
+    const urlName = searchParams[buildSearchParamKeys.name]
     const urlChar1 = searchParams[buildSearchParamKeys.char1]
     const urlChar2 = searchParams[buildSearchParamKeys.char2]
     const urlChar3 = searchParams[buildSearchParamKeys.char3]
@@ -372,8 +383,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       const currentChar1 = characters[0]?.name
       const currentChar2 = characters[1]?.name
       const currentChar3 = characters[2]?.name
+      const currentName = buildName
+      const newName = urlName || '新規ビルド'
       
-      if (urlChar1 !== currentChar1 || urlChar2 !== currentChar2 || urlChar3 !== currentChar3) {
+      if (urlChar1 !== currentChar1 || urlChar2 !== currentChar2 || urlChar3 !== currentChar3 || newName !== currentName) {
+        setBuildName(newName)
         setCharacters(decoded.characters)
         setSelectedTalents(decoded.selectedTalents)
         setMainLossRecordIds(urlMainLr)

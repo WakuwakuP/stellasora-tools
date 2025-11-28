@@ -2,6 +2,7 @@
  * ビルドページのクエリパラメータ定義（nuqs使用）
  *
  * 短いパラメータ名で型安全なURL状態管理を提供:
+ * - n: ビルド名
  * - c1, c2, c3: キャラクター名（主力、支援1、支援2）
  * - t: 素質レベル配列（Base64URLエンコード）
  * - m: メインロスレコID配列（カンマ区切り）
@@ -13,6 +14,11 @@ import {
   parseAsInteger,
   parseAsString,
 } from 'nuqs/server'
+
+/**
+ * ビルド名のパーサー
+ */
+export const parseBuildName = parseAsString
 
 /**
  * キャラクター名のパーサー（null許容）
@@ -33,6 +39,8 @@ export const parseLossRecordIds = parseAsArrayOf(parseAsInteger, ',')
  * ビルドページのクエリパラメータキー（短縮形）
  */
 export const buildSearchParamKeys = {
+  /** ビルド名 */
+  name: 'n',
   /** 主力キャラクター名 */
   char1: 'c1',
   /** 支援1キャラクター名 */
@@ -51,6 +59,7 @@ export const buildSearchParamKeys = {
  * サーバーサイド用のクエリパラメータキャッシュ
  */
 export const buildSearchParamsCache = createSearchParamsCache({
+  [buildSearchParamKeys.name]: parseBuildName,
   [buildSearchParamKeys.char1]: parseChar,
   [buildSearchParamKeys.char2]: parseChar,
   [buildSearchParamKeys.char3]: parseChar,

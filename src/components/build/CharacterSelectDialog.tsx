@@ -141,7 +141,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[80vh] max-w-md flex-col gap-0 overflow-hidden">
+      <DialogContent className="flex h-[80vh] max-w-4xl flex-col gap-0 overflow-hidden sm:max-w-4xl">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>
@@ -199,7 +199,12 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
 
         {/* キャラクターリスト（スクロール可能） */}
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-3 p-2">
+          <div
+            className="grid gap-3 p-2"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+            }}
+          >
             {filteredCharacters.map((char) => (
               <button
                 key={char.name}
@@ -223,7 +228,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
               </button>
             ))}
             {filteredCharacters.length === 0 && (
-              <div className="col-span-3 py-8 text-center text-sm text-slate-500">
+              <div className="col-span-full py-8 text-center text-sm text-slate-500">
                 該当するキャラクターがいません
               </div>
             )}

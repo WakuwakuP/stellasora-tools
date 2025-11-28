@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from 'components/ui/dialog'
-import { ScrollArea } from 'components/ui/scroll-area'
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
 import { type FC, useMemo, useState } from 'react'
 
@@ -90,8 +89,8 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[80vh] max-w-md flex-col">
-        <DialogHeader className="shrink-0">
+      <DialogContent className="!flex h-[80vh] max-w-md !flex-col !gap-0 overflow-hidden">
+        <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>
 
@@ -145,7 +144,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
         </div>
 
         {/* キャラクターリスト（スクロール可能） */}
-        <ScrollArea className="min-h-0 flex-1">
+        <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="grid grid-cols-3 gap-3 p-2">
             {filteredCharacters.map((char) => (
               <button
@@ -175,7 +174,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
               </div>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   )

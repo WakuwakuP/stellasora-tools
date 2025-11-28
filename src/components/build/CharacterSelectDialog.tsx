@@ -138,11 +138,11 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>
 
-        {/* フィルターセクション（左右に並べる） */}
+        {/* フィルターセクション（モバイルは縦並び、PCは横並び） */}
         <div className="shrink-0 border-b pb-3">
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
             {/* 属性フィルター */}
-            <div className="flex-1">
+            <div className="sm:flex-1">
               <div className="mb-1 text-xs font-medium text-slate-500">属性</div>
               <ToggleGroup
                 type="multiple"
@@ -165,7 +165,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
             </div>
 
             {/* ロールフィルター */}
-            <div className="flex-1">
+            <div className="sm:flex-1">
               <div className="mb-1 text-xs font-medium text-slate-500">ロール</div>
               <ToggleGroup
                 type="multiple"

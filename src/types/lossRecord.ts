@@ -125,8 +125,10 @@ export interface LossRecordInfo {
   mainSkillName: string
   /** メインスキル説明（最大レベル時） */
   mainSkillDescription: string
-  /** サポート音符（最大レベル時） */
+  /** サポート音符（最大レベル時） - サブロスレコ用 */
   supportNote: SupportNote[]
+  /** セカンダリスキルの必要音符（最大レベル時） - メインロスレコ用 */
+  secondarySkillNotes: SupportNote[]
   /** 最大レベル時のステータス */
   maxStats: StatInfo[]
 }

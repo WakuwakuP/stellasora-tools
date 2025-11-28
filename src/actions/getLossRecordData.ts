@@ -5,6 +5,7 @@ import {
   type LossRecordDetail,
   type LossRecordInfo,
   type LossRecordListItem,
+  type SupportNote,
 } from 'types/lossRecord'
 
 /**
@@ -79,6 +80,32 @@ async function fetchLossRecordDetail(
 }
 
 /**
+ * セカンダリスキルから必要音符を集計する
+ * 各スキルの最大レベル時の要件を合算する
+ */
+function extractSecondarySkillNotes(detail: LossRecordDetail): SupportNote[] {
+  const noteMap = new Map<string, number>()
+
+  for (const skill of detail.secondarySkills) {
+    if (skill.requirements && skill.requirements.length > 0) {
+      // 最大レベル時の要件を取得
+      const maxLevelReqs =
+        skill.requirements[skill.requirements.length - 1] ?? []
+      for (const req of maxLevelReqs) {
+        const current = noteMap.get(req.name) ?? 0
+        noteMap.set(req.name, current + req.quantity)
+      }
+    }
+  }
+
+  // Mapを配列に変換
+  return Array.from(noteMap.entries()).map(([name, quantity]) => ({
+    name,
+    quantity,
+  }))
+}
+
+/**
  * ロスレコ詳細データをアプリケーション用に変換する
  */
 function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
@@ -88,6 +115,9 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
   const maxLevelSupportNote =
     detail.supportNote[detail.supportNote.length - 1] ?? []
   const maxLevelStats = detail.stats[detail.stats.length - 1] ?? []
+
+  // セカンダリスキルの必要音符を集計
+  const secondarySkillNotes = extractSecondarySkillNotes(detail)
 
   return {
     element: detail.element,
@@ -100,6 +130,7 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
     mainSkillName: detail.mainSkill.name,
     maxStats: maxLevelStats,
     name: detail.name,
+    secondarySkillNotes,
     star: detail.star,
     supportNote: maxLevelSupportNote,
   }

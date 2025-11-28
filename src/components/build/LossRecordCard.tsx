@@ -62,7 +62,7 @@ function getNoteIcon(noteName: string): string {
 const SupportNoteDisplay: FC<{ notes: SupportNote[] }> = ({ notes }) => {
   if (!notes || notes.length === 0) return null
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap justify-center gap-1">
       {notes.map((note) => (
         <span
           key={note.name}
@@ -92,6 +92,12 @@ export const LossRecordCard: FC<LossRecordCardProps> = ({
   const starColor = STAR_COLORS[lossRecord.star] ?? 'text-slate-400'
   const elementColor = ELEMENT_COLORS[lossRecord.element] ?? 'text-slate-400'
 
+  // メインロスレコ用: セカンダリスキルの必要音符
+  // サブロスレコ用: サポート音符
+  const displayNotes = compact
+    ? lossRecord.supportNote
+    : lossRecord.secondarySkillNotes
+
   return (
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
@@ -99,7 +105,7 @@ export const LossRecordCard: FC<LossRecordCardProps> = ({
           type="button"
           onClick={onClick}
           aria-label={`${lossRecord.name}${isSelected ? '、選択中' : ''}`}
-          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-2 transition-colors ${
             isSelected
               ? 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
               : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
@@ -112,19 +118,19 @@ export const LossRecordCard: FC<LossRecordCardProps> = ({
             </Badge>
           )}
 
-          {/* アイコン */}
+          {/* アイコン - サイズを大きく */}
           <div className="relative aspect-square w-full overflow-hidden rounded-md bg-slate-100 dark:bg-slate-700">
             <Image
               src={lossRecord.iconUrl}
               alt={lossRecord.name}
               fill
-              sizes={compact ? '80px' : '120px'}
+              sizes={compact ? '100px' : '140px'}
               className="object-contain p-1"
             />
           </div>
 
           {/* 名前 */}
-          <span className="mt-1 line-clamp-1 w-full text-center text-xs font-medium">
+          <span className="mt-1.5 line-clamp-1 w-full text-center text-sm font-medium">
             {lossRecord.name}
           </span>
 
@@ -140,10 +146,10 @@ export const LossRecordCard: FC<LossRecordCardProps> = ({
             )}
           </div>
 
-          {/* コンパクトモードでない場合、音符を表示 */}
-          {!compact && (
-            <div className="mt-1">
-              <SupportNoteDisplay notes={lossRecord.supportNote} />
+          {/* 音符を表示（メイン: セカンダリスキル音符、サブ: サポート音符） */}
+          {displayNotes && displayNotes.length > 0 && (
+            <div className="mt-1.5 w-full">
+              <SupportNoteDisplay notes={displayNotes} />
             </div>
           )}
         </button>
@@ -186,11 +192,22 @@ export const LossRecordCard: FC<LossRecordCardProps> = ({
             </div>
           )}
 
-          {/* 音符要件 */}
+          {/* サポート音符 */}
           <div>
-            <p className="text-xs font-medium text-slate-500">必要音符</p>
+            <p className="text-xs font-medium text-slate-500">サポート音符</p>
             <SupportNoteDisplay notes={lossRecord.supportNote} />
           </div>
+
+          {/* セカンダリスキル必要音符 */}
+          {lossRecord.secondarySkillNotes &&
+            lossRecord.secondarySkillNotes.length > 0 && (
+              <div>
+                <p className="text-xs font-medium text-slate-500">
+                  サブスキル必要音符
+                </p>
+                <SupportNoteDisplay notes={lossRecord.secondarySkillNotes} />
+              </div>
+            )}
         </div>
       </HoverCardContent>
     </HoverCard>

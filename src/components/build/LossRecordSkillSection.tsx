@@ -188,8 +188,8 @@ export const LossRecordSkillSection: FC<LossRecordSkillSectionProps> = ({
             <span>⊖</span>
             サブロスレコ初期取得音符
           </h3>
-          <Card className="gap-3 py-4">
-            <CardContent>
+          <Card className="py-4">
+            <CardContent className="flex flex-col gap-3">
               <div className="flex flex-wrap gap-3">
                 {totalSupportNotes.map((note) => {
                   const imagePath = getNoteImagePath(note.name)
@@ -216,7 +216,9 @@ export const LossRecordSkillSection: FC<LossRecordSkillSectionProps> = ({
                 })}
               </div>
               {totalSupportNotes.length === 0 && (
-                <p className="text-slate-500 text-sm">サポート音符がありません</p>
+                <p className="text-slate-500 text-sm">
+                  サブロスレコに初期取得音符がありません
+                </p>
               )}
             </CardContent>
           </Card>

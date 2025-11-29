@@ -3,47 +3,17 @@
 import { Badge } from 'components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card'
 import { Slider } from 'components/ui/slider'
+import { ELEMENT_COLORS, STAR_COLORS } from 'constants/lossRecordColors'
 import { getNoteImagePath } from 'constants/noteImageMap'
 import Image from 'next/image'
 import { type FC, useMemo, useState } from 'react'
 import type { LossRecordInfo, SkillRequirement, SupportNote } from 'types/lossRecord'
-
-/** 星の色 */
-const STAR_COLORS: Record<number, string> = {
-  3: 'text-blue-400',
-  4: 'text-purple-400',
-  5: 'text-amber-400',
-}
-
-/** 属性の色 */
-const ELEMENT_COLORS: Record<string, string> = {
-  火: 'text-red-500',
-  水: 'text-blue-500',
-  風: 'text-green-500',
-  地: 'text-amber-600',
-  光: 'text-yellow-500',
-  闇: 'text-purple-500',
-  なし: 'text-slate-400',
-}
-
-/**
- * スキル説明文のプレースホルダーを置換する
- */
-function replaceSkillParams(description: string, params?: string[]): string {
-  if (!params || params.length === 0) {
-    return description
-  }
-  // HTMLカラータグを削除
-  let result = description.replace(/<color=[^>]+>|<\/color>/g, '')
-  // {N}プレースホルダーを置換
-  for (let i = 0; i < params.length; i++) {
-    result = result.replaceAll(`{${i + 1}}`, params[i])
-  }
-  return result
-}
+import { replaceSkillParams } from 'utils/skillUtils'
 
 /**
  * 複数のロスレコのサポート音符を合計する
+ * @param lossRecords - 合計対象のロスレコ情報配列
+ * @returns 合計されたサポート音符の配列
  */
 function sumSupportNotes(lossRecords: LossRecordInfo[]): SupportNote[] {
   const noteMap = new Map<string, number>()
@@ -83,8 +53,9 @@ const SkillRequirementDisplay: FC<{ requirements: SkillRequirement[] }> = ({
         return (
           <span
             key={req.name}
+            role="img"
+            aria-label={`${req.name} ${req.quantity}個必要`}
             className="inline-flex items-center gap-0.5 text-xs text-slate-600 dark:text-slate-300"
-            title={req.name}
           >
             {imagePath ? (
               <Image
@@ -196,8 +167,9 @@ export const LossRecordSkillSection: FC<LossRecordSkillSectionProps> = ({
                   return (
                     <div
                       key={note.name}
+                      role="img"
+                      aria-label={`${note.name} ${note.quantity}個`}
                       className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-800"
-                      title={note.name}
                     >
                       {imagePath ? (
                         <Image
@@ -241,6 +213,80 @@ interface LossRecordSkillCardProps {
     skillIndex: number,
     level: number,
   ) => void
+}
+
+interface SecondarySkillItemProps {
+  skill: LossRecordInfo['secondarySkills'][number]
+  index: number
+  lossRecordId: number
+  getSkillLevel: LossRecordSkillCardProps['getSkillLevel']
+  onSkillLevelChange: LossRecordSkillCardProps['onSkillLevelChange']
+}
+
+/**
+ * セカンダリスキルアイテムコンポーネント
+ * useMemoを使用してスキル説明文の置換をキャッシュする
+ */
+const SecondarySkillItem: FC<SecondarySkillItemProps> = ({
+  skill,
+  index,
+  lossRecordId,
+  getSkillLevel,
+  onSkillLevelChange,
+}) => {
+  const maxLevel = skill.params.length
+  const currentLevel = getSkillLevel(lossRecordId, index, maxLevel)
+  const currentParams = skill.params[currentLevel] ?? []
+  const currentRequirements = skill.requirements[currentLevel] ?? []
+
+  const description = useMemo(
+    () => replaceSkillParams(skill.description, currentParams),
+    [skill.description, currentParams],
+  )
+
+  return (
+    <div
+      key={`${lossRecordId}-secondary-${skill.name}`}
+      className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/50"
+    >
+      <div className="mb-1 flex items-center gap-2">
+        <Badge variant="outline" className="text-xs">
+          サブスキル {index + 1}
+        </Badge>
+        <span className="font-medium text-sm">{skill.name}</span>
+      </div>
+
+      {/* レベルスライダー */}
+      {maxLevel > 1 && (
+        <div className="mb-3 mt-2">
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-xs text-slate-500">スキルレベル</span>
+            <span className="font-medium text-xs">
+              Lv.{currentLevel + 1} / {maxLevel}
+            </span>
+          </div>
+          <Slider
+            value={[currentLevel]}
+            onValueChange={(values) =>
+              onSkillLevelChange(lossRecordId, index, values[0])
+            }
+            min={0}
+            max={maxLevel - 1}
+            step={1}
+            className="w-full"
+            aria-label={`${skill.name}のスキルレベル`}
+          />
+        </div>
+      )}
+
+      <p className="whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">
+        {description}
+      </p>
+
+      {/* 必要音符 */}
+      <SkillRequirementDisplay requirements={currentRequirements} />
+    </div>
+  )
 }
 
 /**
@@ -298,57 +344,16 @@ const LossRecordSkillCard: FC<LossRecordSkillCardProps> = ({
         </div>
 
         {/* セカンダリスキル */}
-        {lossRecord.secondarySkills.map((skill, index) => {
-          const maxLevel = skill.params.length
-          const currentLevel = getSkillLevel(lossRecord.id, index, maxLevel)
-          const currentParams = skill.params[currentLevel] ?? []
-          const currentRequirements = skill.requirements[currentLevel] ?? []
-          const description = replaceSkillParams(skill.description, currentParams)
-
-          return (
-            <div
-              key={`${lossRecord.id}-secondary-${skill.name}`}
-              className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/50"
-            >
-              <div className="mb-1 flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  サブスキル {index + 1}
-                </Badge>
-                <span className="font-medium text-sm">{skill.name}</span>
-              </div>
-
-              {/* レベルスライダー */}
-              {maxLevel > 1 && (
-                <div className="mb-3 mt-2">
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-xs text-slate-500">スキルレベル</span>
-                    <span className="font-medium text-xs">
-                      Lv.{currentLevel + 1} / {maxLevel}
-                    </span>
-                  </div>
-                  <Slider
-                    value={[currentLevel]}
-                    onValueChange={(values) =>
-                      onSkillLevelChange(lossRecord.id, index, values[0])
-                    }
-                    min={0}
-                    max={maxLevel - 1}
-                    step={1}
-                    className="w-full"
-                    aria-label={`${skill.name}のスキルレベル`}
-                  />
-                </div>
-              )}
-
-              <p className="whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">
-                {description}
-              </p>
-
-              {/* 必要音符 */}
-              <SkillRequirementDisplay requirements={currentRequirements} />
-            </div>
-          )
-        })}
+        {lossRecord.secondarySkills.map((skill, index) => (
+          <SecondarySkillItem
+            key={`${lossRecord.id}-secondary-${skill.name}`}
+            skill={skill}
+            index={index}
+            lossRecordId={lossRecord.id}
+            getSkillLevel={getSkillLevel}
+            onSkillLevelChange={onSkillLevelChange}
+          />
+        ))}
       </CardContent>
     </Card>
   )

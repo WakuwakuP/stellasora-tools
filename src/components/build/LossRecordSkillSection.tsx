@@ -239,16 +239,16 @@ const SecondarySkillItem: FC<SecondarySkillItemProps> = ({
   const currentParams = skill.params[currentLevel] ?? []
   const currentRequirements = skill.requirements[currentLevel] ?? []
 
+  // currentParamsを文字列化してメモ化の依存配列として使用
+  const paramsKey = currentParams.join(',')
   const description = useMemo(
     () => replaceSkillParams(skill.description, currentParams),
-    [skill.description, currentParams],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [skill.description, paramsKey],
   )
 
   return (
-    <div
-      key={`${lossRecordId}-secondary-${skill.name}`}
-      className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/50"
-    >
+    <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/50">
       <div className="mb-1 flex items-center gap-2">
         <Badge variant="outline" className="text-xs">
           サブスキル {index + 1}

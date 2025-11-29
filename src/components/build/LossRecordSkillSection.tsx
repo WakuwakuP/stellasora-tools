@@ -6,7 +6,7 @@ import { Slider } from 'components/ui/slider'
 import { getNoteImagePath } from 'constants/noteImageMap'
 import Image from 'next/image'
 import { type FC, useMemo, useState } from 'react'
-import type { LossRecordInfo, SkillRequirement } from 'types/lossRecord'
+import type { LossRecordInfo, SkillRequirement, SupportNote } from 'types/lossRecord'
 
 /** 星の色 */
 const STAR_COLORS: Record<number, string> = {
@@ -40,6 +40,25 @@ function replaceSkillParams(description: string, params?: string[]): string {
     result = result.replaceAll(`{${i + 1}}`, params[i])
   }
   return result
+}
+
+/**
+ * 複数のロスレコのサポート音符を合計する
+ */
+function sumSupportNotes(lossRecords: LossRecordInfo[]): SupportNote[] {
+  const noteMap = new Map<string, number>()
+
+  for (const lr of lossRecords) {
+    for (const note of lr.supportNote) {
+      const current = noteMap.get(note.name) ?? 0
+      noteMap.set(note.name, current + note.quantity)
+    }
+  }
+
+  return Array.from(noteMap.entries()).map(([name, quantity]) => ({
+    name,
+    quantity,
+  }))
 }
 
 export interface LossRecordSkillSectionProps {
@@ -125,6 +144,12 @@ export const LossRecordSkillSection: FC<LossRecordSkillSectionProps> = ({
     [mainLossRecords, subLossRecords],
   )
 
+  // サブロスレコの初期取得音符を合計
+  const totalSupportNotes = useMemo(
+    () => sumSupportNotes(subLossRecords),
+    [subLossRecords],
+  )
+
   if (allLossRecords.length === 0) {
     return (
       <div className="flex min-h-64 items-center justify-center text-slate-500">
@@ -156,24 +181,45 @@ export const LossRecordSkillSection: FC<LossRecordSkillSectionProps> = ({
         </div>
       )}
 
-      {/* サブロスレコセクション */}
+      {/* サブロスレコセクション - 初期取得音符の合計を表示 */}
       {subLossRecords.length > 0 && (
         <div>
           <h3 className="mb-3 flex items-center gap-2 font-bold text-lg">
             <span>⊖</span>
-            サブロスレコ
+            サブロスレコ初期取得音符
           </h3>
-          <div className="grid gap-4">
-            {subLossRecords.map((lr) => (
-              <LossRecordSkillCard
-                key={lr.id}
-                lossRecord={lr}
-                skillLevels={skillLevels}
-                getSkillLevel={getSkillLevel}
-                onSkillLevelChange={handleSkillLevelChange}
-              />
-            ))}
-          </div>
+          <Card className="gap-3 py-4">
+            <CardContent>
+              <div className="flex flex-wrap gap-3">
+                {totalSupportNotes.map((note) => {
+                  const imagePath = getNoteImagePath(note.name)
+                  return (
+                    <div
+                      key={note.name}
+                      className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-800"
+                      title={note.name}
+                    >
+                      {imagePath ? (
+                        <Image
+                          src={imagePath}
+                          alt={note.name}
+                          width={24}
+                          height={24}
+                          className="h-6 w-6"
+                        />
+                      ) : (
+                        <span className="text-lg">🎵</span>
+                      )}
+                      <span className="font-medium text-lg">{note.quantity}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              {totalSupportNotes.length === 0 && (
+                <p className="text-slate-500 text-sm">サポート音符がありません</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

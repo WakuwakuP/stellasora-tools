@@ -28,12 +28,33 @@ vi.mock('next-auth/react', async () => {
 })
 
 describe('Landing Page', () => {
-  it('renders the landing page for unauthenticated users', () => {
+  it('renders the landing page with title', () => {
     render(
       <SessionProvider session={null}>
         <LandingPage />
       </SessionProvider>,
     )
-    expect(screen.getByText('Welcome to Our Landing Page')).toBeInTheDocument()
+    expect(screen.getByText('Stellasora Tools')).toBeInTheDocument()
+    expect(screen.getByText('Stellasoraツール集')).toBeInTheDocument()
+  })
+
+  it('renders the build maker card', () => {
+    render(
+      <SessionProvider session={null}>
+        <LandingPage />
+      </SessionProvider>,
+    )
+    expect(screen.getByText('ビルドメーカー')).toBeInTheDocument()
+    expect(screen.getByText('ビルドを作成 →')).toBeInTheDocument()
+  })
+
+  it('has a link to the build page', () => {
+    render(
+      <SessionProvider session={null}>
+        <LandingPage />
+      </SessionProvider>,
+    )
+    const buildLink = screen.getByRole('link', { name: /ビルドメーカー/i })
+    expect(buildLink).toHaveAttribute('href', '/build')
   })
 })

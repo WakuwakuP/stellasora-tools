@@ -28,6 +28,8 @@ export {
   STAR_FILTERS,
 } from './LossRecordSelectDialog'
 export type { LossRecordSelectDialogProps } from './LossRecordSelectDialog'
+export { LossRecordSkillSection } from './LossRecordSkillSection'
+export type { LossRecordSkillSectionProps } from './LossRecordSkillSection'
 export { LossRecordSlots } from './LossRecordSlots'
 export type { LossRecordSlotsProps } from './LossRecordSlots'
 export { QualityCard } from './QualityCard'

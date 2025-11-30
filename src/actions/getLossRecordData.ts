@@ -7,6 +7,7 @@ import {
   type LossRecordListItem,
   type SupportNote,
 } from 'types/lossRecord'
+import { replaceSkillParams } from 'utils/skillUtils'
 
 /**
  * StellaSoraAPI からロスレコデータを取得する Server Action
@@ -23,24 +24,6 @@ const STELLA_SORA_API_BASE_URL = 'https://api.ennead.cc'
 
 /** キャッシュ時間（4時間 = 14400秒） */
 const CACHE_REVALIDATE_SECONDS = 14400
-
-/**
- * スキル説明文のプレースホルダーを置換する
- * @param description - スキル説明（{1}, {2}等のプレースホルダーを含む）
- * @param params - パラメータ配列
- */
-function replaceSkillParams(description: string, params?: string[]): string {
-  if (!params || params.length === 0) {
-    return description
-  }
-  // HTMLカラータグを削除
-  let result = description.replace(/<color=[^>]+>|<\/color>/g, '')
-  // {N}プレースホルダーを置換（replaceAllを使用して効率化）
-  for (let i = 0; i < params.length; i++) {
-    result = result.replaceAll(`{${i + 1}}`, params[i])
-  }
-  return result
-}
 
 /**
  * ロスレコ一覧を取得する
@@ -119,10 +102,26 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
   // セカンダリスキルの必要音符を集計
   const secondarySkillNotes = extractSecondarySkillNotes(detail)
 
+  // メインスキル情報を作成
+  const mainSkill = {
+    description: detail.mainSkill.description,
+    name: detail.mainSkill.name,
+    params: detail.mainSkill.params,
+  }
+
+  // セカンダリスキル情報を作成
+  const secondarySkills = detail.secondarySkills.map((skill) => ({
+    description: skill.description,
+    name: skill.name,
+    params: skill.params,
+    requirements: skill.requirements,
+  }))
+
   return {
     element: detail.element,
     iconUrl: `${STELLA_SORA_API_BASE_URL}${detail.icon}`,
     id: detail.id,
+    mainSkill,
     mainSkillDescription: replaceSkillParams(
       detail.mainSkill.description,
       maxLevelParams,
@@ -131,6 +130,7 @@ function convertToLossRecordInfo(detail: LossRecordDetail): LossRecordInfo {
     maxStats: maxLevelStats,
     name: detail.name,
     secondarySkillNotes,
+    secondarySkills,
     star: detail.star,
     supportNote: maxLevelSupportNote,
   }

@@ -6,28 +6,11 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from 'components/ui/hover-card'
+import { ELEMENT_COLORS, STAR_COLORS } from 'constants/lossRecordColors'
 import { getNoteImagePath } from 'constants/noteImageMap'
 import Image from 'next/image'
 import type { FC } from 'react'
 import type { LossRecordInfo, SupportNote } from 'types/lossRecord'
-
-/** 星の色 */
-const STAR_COLORS: Record<number, string> = {
-  3: 'text-blue-400',
-  4: 'text-purple-400',
-  5: 'text-amber-400',
-}
-
-/** 属性の色 */
-const ELEMENT_COLORS: Record<string, string> = {
-  火: 'text-red-500',
-  水: 'text-blue-500',
-  風: 'text-green-500',
-  地: 'text-amber-600',
-  光: 'text-yellow-500',
-  闇: 'text-purple-500',
-  なし: 'text-slate-400',
-}
 
 export interface LossRecordCardProps {
   /** ロスレコ情報 */

@@ -109,6 +109,28 @@ export interface LossRecordData {
   [id: number]: LossRecordDetail
 }
 
+/** アプリケーション内で使用するセカンダリスキル情報 */
+export interface SecondarySkillInfo {
+  /** スキル名 */
+  name: string
+  /** スキル説明（{1}, {2}等のプレースホルダーを含む） */
+  description: string
+  /** パラメータ配列（レベルごと） */
+  params: string[][]
+  /** 要件配列（レベルごと） */
+  requirements: SkillRequirement[][]
+}
+
+/** アプリケーション内で使用するメインスキル情報 */
+export interface MainSkillInfo {
+  /** スキル名 */
+  name: string
+  /** スキル説明（{1}, {2}等のプレースホルダーを含む） */
+  description: string
+  /** パラメータ配列（レベルごと） */
+  params: string[][]
+}
+
 /** アプリケーション内で使用するロスレコ情報（簡略化） */
 export interface LossRecordInfo {
   /** ロスレコID */
@@ -131,4 +153,8 @@ export interface LossRecordInfo {
   secondarySkillNotes: SupportNote[]
   /** 最大レベル時のステータス */
   maxStats: StatInfo[]
+  /** メインスキル情報（レベル別パラメータを含む） */
+  mainSkill: MainSkillInfo
+  /** セカンダリスキル情報（レベル別パラメータを含む） */
+  secondarySkills: SecondarySkillInfo[]
 }

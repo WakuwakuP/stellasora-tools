@@ -35,7 +35,7 @@ const LandingPage: FC = () => (
       {/* ツールカード */}
       <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* ビルドメーカーカード */}
-        <Link className="group" href="/build">
+        <Link aria-label="ビルドメーカー" className="group" href="/build">
           <Card className="hover:-translate-y-1 h-full cursor-pointer transition-all hover:shadow-lg">
             <CardHeader>
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900">
@@ -59,7 +59,7 @@ const LandingPage: FC = () => (
     {/* フッター */}
     <footer className="border-slate-200 border-t bg-white/80 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
       <div className="container mx-auto px-4 py-4 text-center text-muted-foreground text-sm">
-        © 2024 Stellasora Tools
+        © {new Date().getFullYear()} Stellasora Tools
       </div>
     </footer>
   </div>

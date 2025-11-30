@@ -57,4 +57,29 @@ describe('Landing Page', () => {
     const buildLink = screen.getByRole('link', { name: /ビルドメーカー/i })
     expect(buildLink).toHaveAttribute('href', '/build')
   })
+
+  it('renders header with proper heading structure', () => {
+    render(
+      <SessionProvider session={null}>
+        <LandingPage />
+      </SessionProvider>,
+    )
+    const heading = screen.getByRole('heading', {
+      level: 1,
+      name: /Stellasora Tools/i,
+    })
+    expect(heading).toBeInTheDocument()
+  })
+
+  it('renders footer with copyright information', () => {
+    render(
+      <SessionProvider session={null}>
+        <LandingPage />
+      </SessionProvider>,
+    )
+    const currentYear = new Date().getFullYear()
+    expect(
+      screen.getByText(`© ${currentYear} Stellasora Tools`),
+    ).toBeInTheDocument()
+  })
 })

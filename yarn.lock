@@ -5637,18 +5637,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zenstackhq/language@npm:2.22.0":
-  version: 2.22.0
-  resolution: "@zenstackhq/language@npm:2.22.0"
+"@zenstackhq/language@npm:2.22.1":
+  version: 2.22.1
+  resolution: "@zenstackhq/language@npm:2.22.1"
   dependencies:
     langium: "npm:1.3.1"
-  checksum: 10c0/089996200fb74cba90a54954fe705831c25ef3315c09bda32a3cca1e359641c9106734e6753e5f02ab0e5fcb2f089a314b01215279d8c6925c0da5a2411ef279
+  checksum: 10c0/9f885dcc39a404af6ba1776f2aa1ce3cdb36fc8f63dc59768724f7fd722472c81f7ac198f9bc1fe45cc7d4f26ee6ec08696393ef3284562f07fbac4cb07493cb
   languageName: node
   linkType: hard
 
-"@zenstackhq/runtime@npm:2.22.0":
-  version: 2.22.0
-  resolution: "@zenstackhq/runtime@npm:2.22.0"
+"@zenstackhq/runtime@npm:2.22.1":
+  version: 2.22.1
+  resolution: "@zenstackhq/runtime@npm:2.22.1"
   dependencies:
     bcryptjs: "npm:^2.4.3"
     buffer: "npm:^6.0.3"
@@ -5666,23 +5666,23 @@ __metadata:
   peerDependencies:
     "@prisma/client": 5.0.0 - 7.x
     zod: ^3.25.0 || ^4.0.0
-  checksum: 10c0/52f67d2b7b64cef10d2bba2feaa72f7d952f3e402be78f5e79dd3d6df06c1d0ca66571d745627fec78ef8baf7d3bb923a26df5c33d7ccaac7c2f0daeaabd035c
+  checksum: 10c0/2b50da61d59011fc6ff5660cfce37910946dadbaff54ea2930270ea798fb638adcab9023e4251c275bb042a245917614046060704a34e34b9cb9a97e4bc30f7d
   languageName: node
   linkType: hard
 
-"@zenstackhq/sdk@npm:2.22.0":
-  version: 2.22.0
-  resolution: "@zenstackhq/sdk@npm:2.22.0"
+"@zenstackhq/sdk@npm:2.22.1":
+  version: 2.22.1
+  resolution: "@zenstackhq/sdk@npm:2.22.1"
   dependencies:
     "@prisma/generator-helper": "npm:6.19.x"
     "@prisma/internals": "npm:6.19.x"
-    "@zenstackhq/language": "npm:2.22.0"
-    "@zenstackhq/runtime": "npm:2.22.0"
+    "@zenstackhq/language": "npm:2.22.1"
+    "@zenstackhq/runtime": "npm:2.22.1"
     langium: "npm:1.3.1"
     semver: "npm:^7.5.2"
     ts-morph: "npm:^26.0.0"
     ts-pattern: "npm:^4.3.0"
-  checksum: 10c0/182a120bc6ee6bac5cb2879282dab82a3804f96bb70cf2f5a85a62c3b36c4c7354ff1525adc55e9c204d7381b39345ee204228b106bedb676fc12a184b5fbff4
+  checksum: 10c0/cc4b5a5f76fc943ba11b83cc82fc4b6e15726e13b70b59e0da30437f3c2121ce9b1c08288b029a613b599ec37edd04bc6fec3a9f17c21d6859d9a7e4c7feee56
   languageName: node
   linkType: hard
 
@@ -8002,15 +8002,6 @@ __metadata:
   version: 1.0.3
   resolution: "escape-html@npm:1.0.3"
   checksum: 10c0/524c739d776b36c3d29fa08a22e03e8824e3b2fd57500e5e44ecf3cc4707c34c60f9ca0781c0e33d191f2991161504c295e98f68c78fe7baa6e57081ec6ac0a3
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-react-perf@npm:^3.3.3":
-  version: 3.3.3
-  resolution: "eslint-plugin-react-perf@npm:3.3.3"
-  peerDependencies:
-    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-  checksum: 10c0/88baad65b1b14178bfc6877385ce214e3b1ca1f03b0562a9bbb45b605ecad5c4b42b1ed55ddba06bd1459ac81f16710632a215b566cca08b15e4f929585e2e09
   languageName: node
   linkType: hard
 
@@ -10743,9 +10734,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nuqs@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "nuqs@npm:2.8.1"
+"nuqs@npm:^2.8.3":
+  version: 2.8.3
+  resolution: "nuqs@npm:2.8.3"
   dependencies:
     "@standard-schema/spec": "npm:1.0.0"
   peerDependencies:
@@ -10766,7 +10757,7 @@ __metadata:
       optional: true
     react-router-dom:
       optional: true
-  checksum: 10c0/7e8d4e2ef6bd0a3eb642747a5feb30da0e5c1525de151d92765862eb08cacbf95c8630f9c7e7dbaf30f0f9dc9ff0b31effb4c682c68d54affd919c032a4d7030
+  checksum: 10c0/0c5afb50f2e3e776800e95a3d4c74ba6f8a3c3934da2c64e521c03470081e9f1f39fd4555ebc511ce9f732fe1a517cf4581fdbde727f0d806ac64a3dc4ffc27f
   languageName: node
   linkType: hard
 
@@ -11752,16 +11743,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-day-picker@npm:^9.11.2":
-  version: 9.11.2
-  resolution: "react-day-picker@npm:9.11.2"
+"react-day-picker@npm:^9.12.0":
+  version: 9.12.0
+  resolution: "react-day-picker@npm:9.12.0"
   dependencies:
     "@date-fns/tz": "npm:^1.4.1"
     date-fns: "npm:^4.1.0"
     date-fns-jalali: "npm:^4.1.0-0"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: 10c0/aadd49c46d8569f146a85341171b3d71a88d6dc85e2d8b16b381a4a95501b4354dc2e9a6589d4b5cd086fcba2cc219d282d0872faf569702a9457592ddb5f40a
+  checksum: 10c0/dd83b8f783a86be7d3cddd7f66fd4dfcdcbb70670c9e9e141fe4a99c1010e8611d8370ccdc48240f4767799663f17b44b54fda14c00b5b71ddc03a032bedaf5a
   languageName: node
   linkType: hard
 
@@ -11821,12 +11812,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.66.1":
-  version: 7.66.1
-  resolution: "react-hook-form@npm:7.66.1"
+"react-hook-form@npm:^7.68.0":
+  version: 7.68.0
+  resolution: "react-hook-form@npm:7.68.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/f82238249d44111b377116bdfb6063045e3e81fef4c73d7f487160554fa4b43ff0970dec1f4d031e57bc2dfbdd974bdfba5608bc8c5785998a7b8a39a566428f
+  checksum: 10c0/5fb500fe60077185ab6de32a2371d05bf75ae335ef62993f0359dbb42bb0c95e0c28d4f7d70c4382995486c82715295c87fc44f2ced5de1ae353aa1f23398f47
   languageName: node
   linkType: hard
 
@@ -11997,15 +11988,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "recharts@npm:3.5.0"
+"recharts@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "recharts@npm:3.5.1"
   dependencies:
     "@reduxjs/toolkit": "npm:1.x.x || 2.x.x"
     clsx: "npm:^2.1.1"
     decimal.js-light: "npm:^2.5.1"
     es-toolkit: "npm:^1.39.3"
-    eslint-plugin-react-perf: "npm:^3.3.3"
     eventemitter3: "npm:^5.0.1"
     immer: "npm:^10.1.1"
     react-redux: "npm:8.x.x || 9.x.x"
@@ -12017,7 +12007,7 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-is: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/4f4cb7979d6c7551e356f9e62195127b21f0bff381c95bbb970b5bf371b47ca712cb18602c61903f80b0d42a427f06cbf4463437101cd6a054a4ef95c90c7136
+  checksum: 10c0/19351a9faae8879283177e26a2fd4b26c3a89c6a0c727431b530d45fc4d69af89dcb0d2b54f740011b7ea4958c7f9f36362f953990d35af1e94c13fefbec9703
   languageName: node
   linkType: hard
 
@@ -12320,15 +12310,15 @@ __metadata:
     next-auth: "npm:4.24.13"
     next-router-mock: "npm:1.0.4"
     next-themes: "npm:^0.4.6"
-    nuqs: "npm:^2.8.1"
+    nuqs: "npm:^2.8.3"
     prisma: "npm:6.19.0"
     react: "npm:19.2.0"
-    react-day-picker: "npm:^9.11.2"
+    react-day-picker: "npm:^9.12.0"
     react-dom: "npm:19.2.0"
-    react-hook-form: "npm:^7.66.1"
+    react-hook-form: "npm:^7.68.0"
     react-resizable-panels: "npm:3.0.6"
-    recharts: "npm:^3.5.0"
-    shadcn: "npm:3.5.0"
+    recharts: "npm:^3.5.1"
+    shadcn: "npm:^3.5.1"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.1.4"
     tailwind-merge: "npm:3.4.0"
@@ -12339,7 +12329,7 @@ __metadata:
     vaul: "npm:^1.1.2"
     vite: "npm:^7.2.7"
     vitest: "npm:^4.0.15"
-    zenstack: "npm:2.22.0"
+    zenstack: "npm:^2.22.1"
     zod: "npm:4.1.13"
   languageName: unknown
   linkType: soft
@@ -12671,9 +12661,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shadcn@npm:3.5.0":
-  version: 3.5.0
-  resolution: "shadcn@npm:3.5.0"
+"shadcn@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "shadcn@npm:3.5.1"
   dependencies:
     "@antfu/ni": "npm:^25.0.0"
     "@babel/core": "npm:^7.28.0"
@@ -12707,7 +12697,7 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.6"
   bin:
     shadcn: dist/index.js
-  checksum: 10c0/6026bf9da6f7dfe2a3b438fc256fc0a95bfa8479a5c76d77b7e22e936559b1ae6ef77b18f228f0593059c94e2d6dd46c2516c0531eb83dfe157aaaa466eb82d3
+  checksum: 10c0/d426494b7b2c56549d5bc3a56401aa50fe1a6e813bb139059129cdd50d6245bc6a49a6d7dd71ddae4875b81de5a3f7f878b9276f2e6ecedd6730c64938442921
   languageName: node
   linkType: hard
 
@@ -14628,13 +14618,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zenstack@npm:2.22.0":
-  version: 2.22.0
-  resolution: "zenstack@npm:2.22.0"
+"zenstack@npm:^2.22.1":
+  version: 2.22.1
+  resolution: "zenstack@npm:2.22.1"
   dependencies:
     "@paralleldrive/cuid2": "npm:^2.2.0"
-    "@zenstackhq/language": "npm:2.22.0"
-    "@zenstackhq/sdk": "npm:2.22.0"
+    "@zenstackhq/language": "npm:2.22.1"
+    "@zenstackhq/sdk": "npm:2.22.1"
     async-exit-hook: "npm:^2.0.1"
     colors: "npm:1.4.0"
     commander: "npm:^8.3.0"
@@ -14662,7 +14652,7 @@ __metadata:
     zod: ^3.25.0 || ^4.0.0
   bin:
     zenstack: bin/cli
-  checksum: 10c0/ac67cac282088c0244d38a0a40083d41fd8f3aaaf9c1285ecd8d5152bb0997b3dbafb44de198faf43fe953ff5dd116d44258facfe6cbbf7c5dec12d886bd4908
+  checksum: 10c0/2ef7cedb1e745c707721ed58888269f67c149a403951fb65fd3aa97d82ea6f21e91c41bdb70f7dc3879ac32a784843a3fe62f6485be7b32dc7bffe469d02df2c
   languageName: node
   linkType: hard
 

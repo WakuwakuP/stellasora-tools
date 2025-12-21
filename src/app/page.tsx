@@ -36,7 +36,7 @@ const LandingPage: FC = () => (
       <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* ビルドメーカーカード */}
         <Link aria-label="ビルドメーカー" className="group" href="/build">
-          <Card className="hover:-translate-y-1 h-full cursor-pointer transition-all hover:shadow-lg">
+          <Card className="h-full cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg">
             <CardHeader>
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900">
                 <Hammer className="h-6 w-6 text-amber-600 dark:text-amber-400" />

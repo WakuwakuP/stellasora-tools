@@ -49,7 +49,7 @@
     "react-day-picker": "^9.12.0",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.68.0",
-    "react-resizable-panels": "3.0.6",
+    "react-resizable-panels": "^4.0.14",
     "recharts": "^3.5.1",
     "shadcn": "^3.6.1",
     "sonner": "^2.0.7",

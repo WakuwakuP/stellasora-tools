@@ -79,7 +79,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "chromatic": "^13.3.4",
     "husky": "^9.1.7",
-    "jsdom": "^27.3.0",
+    "jsdom": "^27.4.0",
     "lint-staged": "^16.2.7",
     "next-router-mock": "1.0.4",
     "storybook": "^10.1.10",

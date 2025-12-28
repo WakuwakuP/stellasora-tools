@@ -2828,15 +2828,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/third-parties@npm:^16.1.0":
-  version: 16.1.0
-  resolution: "@next/third-parties@npm:16.1.0"
+"@next/third-parties@npm:^16.1.1":
+  version: 16.1.1
+  resolution: "@next/third-parties@npm:16.1.1"
   dependencies:
     third-party-capital: "npm:1.0.20"
   peerDependencies:
     next: ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0-beta.0
     react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
-  checksum: 10c0/ba026370568301f829f3df44862ebc09593b11831bdea95e720acaa8828bbeaf68e4ea8ce4b2f642c59262c86428dae038466aa84ec7189999779c9f8751f3cd
+  checksum: 10c0/a07c7c7e81974d132e646d83f69d4e66588c927505b0a09d6f3da188bba8ece18c62fa13614153c1566cc63422aad5b7faf86b8765aa21d0ab49eb21642d9471
   languageName: node
   linkType: hard
 
@@ -12707,7 +12707,7 @@ __metadata:
     "@google/model-viewer": "npm:^4.1.0"
     "@hookform/resolvers": "npm:5.2.2"
     "@next-auth/prisma-adapter": "npm:^1.0.7"
-    "@next/third-parties": "npm:^16.1.0"
+    "@next/third-parties": "npm:^16.1.1"
     "@prisma/client": "npm:6.19.0"
     "@radix-ui/react-accordion": "npm:^1.2.12"
     "@radix-ui/react-alert-dialog": "npm:^1.1.15"

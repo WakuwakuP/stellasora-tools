@@ -10896,13 +10896,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-router-mock@npm:1.0.4":
-  version: 1.0.4
-  resolution: "next-router-mock@npm:1.0.4"
+"next-router-mock@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "next-router-mock@npm:1.0.5"
   peerDependencies:
     next: ">=10.0.0"
     react: ">=17.0.0"
-  checksum: 10c0/25a0ab88d8e0d1eb78c80804b2e5b578206a582bc66cb90587c938f3f63e5d5e3ddfcf03e9c6e35f10c876d001153805012e36859c4d551ed97ef6e63b82f937
+  checksum: 10c0/ca37d925e2cff24968de6221606c06be6ddebd1d590861ed5136cbd27a38bcb81a7e31c0dd3074f39d34ae3278a3427c63746fd303f60d3474ec0fed1b5d4897
   languageName: node
   linkType: hard
 
@@ -12777,7 +12777,7 @@ __metadata:
     lucide-react: "npm:^0.562.0"
     next: "npm:^16.1.1"
     next-auth: "npm:4.24.13"
-    next-router-mock: "npm:1.0.4"
+    next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"
     nuqs: "npm:^2.8.6"
     prisma: "npm:6.19.0"

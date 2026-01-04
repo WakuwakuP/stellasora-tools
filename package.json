@@ -60,7 +60,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
+    "@biomejs/biome": "^2.3.11",
     "@eslint/eslintrc": "^3.3.3",
     "@storybook/addon-docs": "^10.1.10",
     "@storybook/addon-onboarding": "^10.1.10",

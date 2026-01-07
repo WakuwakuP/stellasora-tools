@@ -8,12 +8,12 @@ import {
   compareBuilds,
   evaluateBuild,
   suggestStatPriority,
-} from '@/lib/build-evaluator'
-import { calculateDps, calculateFinalDamage } from '@/lib/damage-calculator'
+} from 'lib/build-evaluator'
+import { calculateDps, calculateFinalDamage } from 'lib/damage-calculator'
 import {
   type DamageCalculationInput,
   type DpsCalculationInput,
-} from '@/types/damage-calculation'
+} from 'types/damage-calculation'
 
 /**
  * 例1: 基本的なダメージ計算

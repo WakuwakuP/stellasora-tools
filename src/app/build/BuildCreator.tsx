@@ -33,6 +33,7 @@ import {
 import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { getCharacterIdsByNames } from 'constants/characterIdMap'
 import { useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
@@ -415,6 +416,66 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
       }
     }
   }, [searchParams, characterNames])
+
+  // ビルドスコアを計算する（デバウンス付き）
+  useEffect(() => {
+    // キャラクターが3人揃っていて、かつロスレコまたは素質が選択されている場合のみ計算
+    const char1 = characters[0]?.name
+    const char2 = characters[1]?.name
+    const char3 = characters[2]?.name
+    
+    if (!char1 || !char2 || !char3) {
+      setBuildScore(null)
+      return
+    }
+
+    // ロスレコまたは素質が選択されていない場合はスキップ
+    if (mainLossRecordIds.length === 0 && selectedTalents.length === 0) {
+      setBuildScore(null)
+      return
+    }
+
+    // ロスレコが3つ揃っていない場合はスキップ
+    if (mainLossRecordIds.length < 3) {
+      setBuildScore(null)
+      return
+    }
+
+    // キャラクターIDを取得
+    const characterIds = getCharacterIdsByNames([char1, char2, char3])
+    if (characterIds.length !== 3) {
+      console.warn('キャラクターIDの取得に失敗しました')
+      setBuildScore(null)
+      return
+    }
+
+    // ディスクIDを取得（メインロスレコのみ）
+    const discIds = mainLossRecordIds.slice(0, 3)
+    if (discIds.length !== 3) {
+      setBuildScore(null)
+      return
+    }
+
+    // デバウンス: ユーザーが入力を止めてから500ms後に計算
+    const timer = setTimeout(async () => {
+      setIsBuildScoreLoading(true)
+      try {
+        const { calculateBuildScoreAction } = await import('actions/calculateBuildScore')
+        const result = await calculateBuildScoreAction({
+          characterIds: [characterIds[0]!, characterIds[1]!, characterIds[2]!],
+          discIds: [discIds[0]!, discIds[1]!, discIds[2]!],
+        })
+        setBuildScore(result)
+      } catch (error) {
+        console.error('ビルドスコアの計算に失敗しました:', error)
+        setBuildScore(null)
+      } finally {
+        setIsBuildScoreLoading(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [characters, mainLossRecordIds, selectedTalents])
 
   const handleTalentSelect = (
     characterName: string,

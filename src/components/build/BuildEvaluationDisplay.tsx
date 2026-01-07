@@ -6,16 +6,39 @@ import type { FC } from 'react'
 interface BuildEvaluationDisplayProps {
 	metrics: BuildEvaluationMetrics | null
 	isCalculating?: boolean
+	calculationDetails?: CalculationDetails | null
 }
 
 export type { BuildEvaluationDisplayProps }
 
 /**
+ * 計算の詳細情報（実際の数値を表示するため）
+ */
+export interface CalculationDetails {
+	atk?: number
+	baselineAtk?: number
+	critRate?: number
+	critDmg?: number
+	dps?: number
+	baselineDps?: number
+	damageBonusTotal?: number
+	defPenValue?: number
+	buffs?: Array<{
+		type: string
+		amount: number
+		duration: number
+		cooldown: number
+		uptime: number
+	}>
+}
+
+/**
  * ビルド評価スコアを表示するコンポーネント
  */
 export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
-	metrics,
+	calculationDetails,
 	isCalculating = false,
+	metrics,
 }) => {
 	if (isCalculating) {
 		return (
@@ -92,31 +115,31 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 			{/* 個別スコア */}
 			<div className="space-y-2">
 				<ScoreItem
-					formula="(ATK / 基準ATK) × 50\n基準ATK = 3000\n2倍で100点"
+					formula={getAttackFormula(calculationDetails)}
 					icon="⚔️"
 					label="攻撃力"
 					score={metrics.attackScore}
 				/>
 				<ScoreItem
-					formula="基本 = (会心率 × 会心ダメージ / 0.5) / 1.5 × 100\n会心率100%超過: 1%毎に-0.5点\n理想値: 会心率50% × 会心ダメージ100%"
+					formula={getCritEfficiencyFormula(calculationDetails)}
 					icon="💥"
 					label="会心効率"
 					score={metrics.critEfficiencyScore}
 				/>
 				<ScoreItem
-					formula="(ダメージボーナス合計 + 防御貫通価値) / 150 × 100\n防御%無視 × 200 + 固定貫通 / 10"
+					formula={getElementalDamageFormula(calculationDetails)}
 					icon="✨"
 					label="属性ダメージ"
 					score={metrics.elementalDamageScore}
 				/>
 				<ScoreItem
-					formula="(DPS / 基準DPS) × 50\n基準DPS = 5000\n2倍で100点"
+					formula={getDpsFormula(calculationDetails)}
 					icon="⚡"
 					label="DPS"
 					score={metrics.dpsScore}
 				/>
 				<ScoreItem
-					formula="各バフタイプ毎: Σ(バフ量 × 稼働率)\n稼働率 = 継続時間 / (継続時間 + CD)\n攻撃力50%=50点, ダメージ100%=30点, 会心系=20点"
+					formula={getBuffUptimeFormula(calculationDetails)}
 					icon="🔥"
 					label="バフ稼働率"
 					score={metrics.buffUptimeScore}
@@ -124,6 +147,92 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 			</div>
 		</div>
 	)
+}
+
+/**
+ * 攻撃力スコアの計算式を生成
+ */
+function getAttackFormula(details?: CalculationDetails | null): string {
+	if (!details?.atk) {
+		return '(ATK / 基準ATK) × 50\n基準ATK = 3000\n2倍で100点'
+	}
+	const baselineAtk = details.baselineAtk || 3000
+	const ratio = details.atk / baselineAtk
+	const score = Math.min(ratio * 50, 100)
+	return `(${details.atk} / ${baselineAtk}) × 50\n= ${ratio.toFixed(3)} × 50\n= ${score.toFixed(1)}点`
+}
+
+/**
+ * 会心効率スコアの計算式を生成
+ */
+function getCritEfficiencyFormula(details?: CalculationDetails | null): string {
+	if (!details?.critRate || !details?.critDmg) {
+		return '基本 = (会心率 × 会心ダメージ / 0.5) / 1.5 × 100\n会心率100%超過: 1%毎に-0.5点\n理想値: 会心率50% × 会心ダメージ100%'
+	}
+	const critRatePercent = (details.critRate * 100).toFixed(1)
+	const critDmgPercent = (details.critDmg * 100).toFixed(1)
+	const critValue = details.critRate * details.critDmg
+	const idealValue = 0.5 * 1.0
+	const baseScore = ((critValue / idealValue) / 1.5) * 100
+	
+	let formula = `(${critRatePercent}% × ${critDmgPercent}% / 50%) / 1.5 × 100\n`
+	formula += `= (${critValue.toFixed(3)} / 0.5) / 1.5 × 100\n`
+	formula += `= ${baseScore.toFixed(1)}点`
+	
+	if (details.critRate > 1) {
+		const excess = ((details.critRate - 1) * 100).toFixed(1)
+		const penalty = (details.critRate - 1) * 50
+		formula += `\n\n会心率超過ペナルティ:\n${excess}% × 0.5 = -${penalty.toFixed(1)}点`
+		formula += `\n最終スコア: ${(baseScore - penalty).toFixed(1)}点`
+	}
+	
+	return formula
+}
+
+/**
+ * 属性ダメージスコアの計算式を生成
+ */
+function getElementalDamageFormula(details?: CalculationDetails | null): string {
+	if (!details?.damageBonusTotal && !details?.defPenValue) {
+		return '(ダメージボーナス合計 + 防御貫通価値) / 150 × 100\n防御%無視 × 200 + 固定貫通 / 10'
+	}
+	const bonusTotal = details.damageBonusTotal || 0
+	const penValue = details.defPenValue || 0
+	const totalValue = bonusTotal + penValue
+	const score = Math.min((totalValue / 150) * 100, 100)
+	return `(${bonusTotal.toFixed(1)} + ${penValue.toFixed(1)}) / 150 × 100\n= ${totalValue.toFixed(1)} / 150 × 100\n= ${score.toFixed(1)}点`
+}
+
+/**
+ * DPSスコアの計算式を生成
+ */
+function getDpsFormula(details?: CalculationDetails | null): string {
+	if (!details?.dps) {
+		return '(DPS / 基準DPS) × 50\n基準DPS = 5000\n2倍で100点'
+	}
+	const baselineDps = details.baselineDps || 5000
+	const ratio = details.dps / baselineDps
+	const score = Math.min(ratio * 50, 100)
+	return `(${details.dps.toFixed(1)} / ${baselineDps}) × 50\n= ${ratio.toFixed(3)} × 50\n= ${score.toFixed(1)}点`
+}
+
+/**
+ * バフ稼働率スコアの計算式を生成
+ */
+function getBuffUptimeFormula(details?: CalculationDetails | null): string {
+	if (!details?.buffs || details.buffs.length === 0) {
+		return '各バフタイプ毎: Σ(バフ量 × 稼働率)\n稼働率 = 継続時間 / (継続時間 + CD)\n攻撃力50%=50点, ダメージ100%=30点, 会心系=20点'
+	}
+	
+	let formula = '各バフの稼働率計算:\n\n'
+	for (const buff of details.buffs) {
+		const uptimePercent = (buff.uptime * 100).toFixed(1)
+		const contribution = buff.amount * buff.uptime
+		formula += `${buff.type}: ${buff.amount}% × ${uptimePercent}% = ${contribution.toFixed(1)}\n`
+		formula += `  (${buff.duration}s / (${buff.duration}s + ${buff.cooldown}s))\n`
+	}
+	
+	return formula.trim()
 }
 
 interface ScoreItemProps {

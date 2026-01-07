@@ -1,4 +1,5 @@
 import { type SelectedTalent } from 'components/build'
+import { type CalculationDetails } from 'components/build/BuildEvaluationDisplay'
 import { useMemo } from 'react'
 import { type BuildEvaluationMetrics } from 'types/damage-calculation'
 
@@ -11,6 +12,11 @@ interface BuildEvaluationInput {
   subLossRecordIds: number[]
 }
 
+export interface BuildEvaluationResult {
+  metrics: BuildEvaluationMetrics | null
+  details: CalculationDetails | null
+}
+
 /**
  * ビルド評価メトリクスを計算するカスタムフック
  *
@@ -19,7 +25,7 @@ interface BuildEvaluationInput {
  */
 export function useBuildEvaluation(
   input: BuildEvaluationInput,
-): BuildEvaluationMetrics | null {
+): BuildEvaluationResult {
   return useMemo(() => {
     const {
       mainCharacterName,
@@ -34,7 +40,7 @@ export function useBuildEvaluation(
     if (
       !(mainCharacterName && support1CharacterName && support2CharacterName)
     ) {
-      return null
+      return { details: null, metrics: null }
     }
 
     // 簡易的な評価計算
@@ -82,20 +88,63 @@ export function useBuildEvaluation(
       dpsScore * 0.25 +
       buffUptimeScore * 0.15
 
-    return {
-      attackScore,
-      breakdown: {
-        attack: attackScore * 0.2,
-        buffUptime: buffUptimeScore * 0.15,
-        critEfficiency: critEfficiencyScore * 0.25,
-        dps: dpsScore * 0.25,
-        elementalDamage: elementalDamageScore * 0.15,
+    // 仮の計算詳細データ（実装例）
+    const atk = 2500 + totalTalentLevel * 15 + mainLossRecordCount * 200
+    const baselineAtk = 3000
+    const critRate = 0.45 + lossRecordScore * 0.005
+    const critDmg = 0.8 + talentScore * 0.01
+    const dps = 4000 + totalTalentLevel * 30 + lossRecordScore * 100
+    const baselineDps = 5000
+    const damageBonusTotal = 40 + talentScore * 0.8
+    const defPenValue = 15 + lossRecordScore * 0.3
+
+    // サンプルバフデータ
+    const buffs = [
+      {
+        amount: 30,
+        cooldown: 10,
+        duration: 8,
+        type: '攻撃力バフ',
+        uptime: 8 / (8 + 10),
       },
-      buffUptimeScore,
-      critEfficiencyScore,
-      dpsScore,
-      elementalDamageScore,
-      totalScore,
+      {
+        amount: 25,
+        cooldown: 15,
+        duration: 12,
+        type: 'スキルダメージバフ',
+        uptime: 12 / (12 + 15),
+      },
+    ]
+
+    const details: CalculationDetails = {
+      atk,
+      baselineAtk,
+      baselineDps,
+      buffs,
+      critDmg,
+      critRate,
+      damageBonusTotal,
+      defPenValue,
+      dps,
+    }
+
+    return {
+      details,
+      metrics: {
+        attackScore,
+        breakdown: {
+          attack: attackScore * 0.2,
+          buffUptime: buffUptimeScore * 0.15,
+          critEfficiency: critEfficiencyScore * 0.25,
+          dps: dpsScore * 0.25,
+          elementalDamage: elementalDamageScore * 0.15,
+        },
+        buffUptimeScore,
+        critEfficiencyScore,
+        dpsScore,
+        elementalDamageScore,
+        totalScore,
+      },
     }
   }, [input])
 }

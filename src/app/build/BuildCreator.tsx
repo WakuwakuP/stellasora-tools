@@ -313,13 +313,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 
   // ビルド評価メトリクスを計算
-  const buildEvaluationMetrics = useBuildEvaluation({
+  const buildEvaluationResult = useBuildEvaluation({
     mainCharacterName: characters[0]?.name ?? null,
+    mainLossRecordIds,
+    selectedTalents,
+    subLossRecordIds,
     support1CharacterName: characters[1]?.name ?? null,
     support2CharacterName: characters[2]?.name ?? null,
-    selectedTalents,
-    mainLossRecordIds,
-    subLossRecordIds,
   })
 
   // 現在のURL（保存用）
@@ -826,7 +826,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
           {/* ビルド評価表示 */}
           <div className={isMobile ? 'mt-2' : 'mt-4'}>
-            <BuildEvaluationDisplay metrics={buildEvaluationMetrics} />
+            <BuildEvaluationDisplay
+              calculationDetails={buildEvaluationResult.details}
+              metrics={buildEvaluationResult.metrics}
+            />
           </div>
 
           {/* 登録ボタン */}

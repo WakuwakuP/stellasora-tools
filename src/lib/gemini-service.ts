@@ -174,7 +174,7 @@ export async function convertDescriptionToJSON(
     await throttleRequest()
 
     const ai = getGenAI()
-    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+    const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
 
     const prompt = generatePrompt(request)
     const result = await model.generateContent(prompt)

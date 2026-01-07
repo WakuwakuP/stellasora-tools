@@ -48,10 +48,8 @@ function aggregateEffectsByType(
 
   for (const evaluation of evaluations) {
     const current = typeMap.get(evaluation.effectType) ?? 0
-    typeMap.set(
-      evaluation.effectType,
-      current + evaluation.averageDamageIncrease,
-    )
+    const increase = evaluation.averageDamageIncrease ?? 0
+    typeMap.set(evaluation.effectType, current + increase)
   }
 
   return Array.from(typeMap.entries())
@@ -106,7 +104,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
         <CardTitle className="flex items-center justify-between">
           <span>ビルドスコア</span>
           <Badge variant="default" className="text-lg px-4 py-1">
-            {buildScore.buildScore.toFixed(1)}%
+            {buildScore.buildScore?.toFixed(1) ?? '0.0'}%
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -126,7 +124,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
                   {effect.label}
                 </span>
                 <span className="font-semibold text-sm text-primary">
-                  +{effect.totalIncrease.toFixed(1)}%
+                  +{effect.totalIncrease?.toFixed(1) ?? '0.0'}%
                 </span>
               </div>
             ))}
@@ -141,7 +139,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
           <div className="space-y-2">
             {buildScore.characterEvaluations.map((charEval) => {
               const totalCharIncrease = charEval.talentEvaluations.reduce(
-                (sum, e) => sum + e.averageDamageIncrease,
+                (sum, e) => sum + (e.averageDamageIncrease ?? 0),
                 0,
               )
               return (
@@ -151,7 +149,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
                 >
                   <span className="text-sm">{charEval.characterName}</span>
                   <span className="font-semibold text-sm text-primary">
-                    +{totalCharIncrease.toFixed(1)}%
+                    +{totalCharIncrease?.toFixed(1) ?? '0.0'}%
                   </span>
                 </div>
               )
@@ -167,7 +165,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
           <div className="space-y-2">
             {buildScore.discEvaluations.map((discEval) => {
               const totalDiscIncrease = discEval.skillEvaluations.reduce(
-                (sum, e) => sum + e.averageDamageIncrease,
+                (sum, e) => sum + (e.averageDamageIncrease ?? 0),
                 0,
               )
               return (
@@ -177,7 +175,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
                 >
                   <span className="text-sm">{discEval.discName}</span>
                   <span className="font-semibold text-sm text-primary">
-                    +{totalDiscIncrease.toFixed(1)}%
+                    +{totalDiscIncrease?.toFixed(1) ?? '0.0'}%
                   </span>
                 </div>
               )
@@ -202,7 +200,7 @@ export interface DamageIncreaseBadgeProps {
 export const DamageIncreaseBadge: FC<DamageIncreaseBadgeProps> = ({
   damageIncrease,
 }) => {
-  if (damageIncrease === 0) {
+  if (!damageIncrease || damageIncrease === 0) {
     return null
   }
 

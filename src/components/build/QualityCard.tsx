@@ -119,7 +119,7 @@ export const QualityCard: FC<QualityCardProps> = ({
             {quality.title}
           </span>
           {/* ダメージ増加率表示 */}
-          {isSelected && damageIncrease !== undefined && damageIncrease > 0 && (
+          {isSelected && damageIncrease && damageIncrease > 0 && (
             <span className="mt-0.5 text-center text-[10px] font-semibold text-primary">
               +{damageIncrease.toFixed(1)}%
             </span>

@@ -137,8 +137,8 @@ export function extractRequiredNotes(
   for (const disc of mainDiscs) {
     if (disc.harmonySkill) {
       for (const req of disc.harmonySkill.requiredNotes) {
-        // 重複する属性要件は最大値を採用
-        required[req.type] = Math.max(required[req.type], req.count)
+        // 同じ属性の要件は合計する（複数のハーモニーを同時発動させるため）
+        required[req.type] += req.count
       }
     }
   }
@@ -213,7 +213,10 @@ export function optimizeSupportDiscs(
   let bestScore = -1
 
   // 3つのサポートディスクの組み合わせを評価
-  // 注: 実際の実装では、より効率的なアルゴリズム（遺伝的アルゴリズムなど）を使用すべき
+  // 注1: j starts from i and k starts from j to avoid duplicate combinations (e.g., [A,B,C] vs [B,A,C])
+  // 注2: このロジックでは同じディスクを複数スロットに装備できません。
+  //      ゲーム内で同じディスクの複数装備が可能な場合は、j=0, k=0 から開始してください。
+  // 注3: 実際の実装では、より効率的なアルゴリズム（遺伝的アルゴリズムなど）を使用すべき
   for (let i = 0; i < candidateDiscs.length; i++) {
     for (let j = i; j < candidateDiscs.length; j++) {
       for (let k = j; k < candidateDiscs.length; k++) {
@@ -235,10 +238,15 @@ export function optimizeSupportDiscs(
 
   // 最適解が見つからない場合のフォールバック
   if (!bestResult) {
+    // candidateDiscsが空の場合は、3つのダミーディスクを作成
+    // candidateDiscsに要素がある場合でも、各スロットに個別のディスクを割り当てる
     const emptySupports: [Disc, Disc, Disc] = [
       candidateDiscs[0] || createDummyDisc(),
-      candidateDiscs[0] || createDummyDisc(),
-      candidateDiscs[0] || createDummyDisc(),
+      candidateDiscs[1] || candidateDiscs[0] || createDummyDisc(),
+      candidateDiscs[2] ||
+        candidateDiscs[1] ||
+        candidateDiscs[0] ||
+        createDummyDisc(),
     ]
     return evaluateSupportCombination(mainDiscs, emptySupports)
   }

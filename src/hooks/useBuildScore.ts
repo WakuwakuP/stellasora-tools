@@ -1,25 +1,35 @@
 'use client'
 
+import { calculateBuildPerformance } from 'actions/calculateBuildScore'
 import { type SelectedTalent } from 'components/build'
 import { useEffect, useState } from 'react'
 
-/** コア素質のベーススコア（%） */
-const CORE_TALENT_SCORE = 5
+/**
+ * キャラクター名からIDを取得する
+ * API経由でキャラクター一覧を取得してマッピング
+ */
+async function getCharacterIdByName(name: string): Promise<number | null> {
+  try {
+    const response = await fetch(
+      'https://api.ennead.cc/stella/characters?lang=JP',
+    )
+    if (!response.ok) return null
 
-/** 通常素質のレベルあたりのスコア（%） */
-const TALENT_SCORE_PER_LEVEL = 5
-
-/** ロスレコあたりのスコア（%） */
-const LOSS_RECORD_SCORE = 15
-
-/** スコア計算の遅延時間（ミリ秒） */
-const CALCULATION_DELAY_MS = 300
+    const characters = await response.json()
+    const character = characters.find(
+      (c: { name: string; id: number }) => c.name === name,
+    )
+    return character?.id ?? null
+  } catch {
+    return null
+  }
+}
 
 /**
- * ビルドスコアを計算するフック（簡易版）
+ * ビルドスコアを計算するフック
  *
- * 現在は素質数に基づく簡易計算を行います。
- * 将来的にはServer Actionを呼び出して実際のLLM計算を行う予定です。
+ * キャラクター、素質、ロスレコの選択状態から
+ * LLMベースのスコア計算を実行します。
  */
 export function useBuildScore(
   characters: Array<{ name: string | null }>,
@@ -46,36 +56,57 @@ export function useBuildScore(
       return
     }
 
-    // 簡易的なスコア計算（デモ用）
-    // 実際の実装では calculateBuildPerformance を呼び出します
-    const calculateDemoScore = () => {
+    // LLMベースのスコア計算を実行
+    const calculateRealScore = async () => {
       setIsCalculating(true)
 
-      // 非同期処理をシミュレート
-      setTimeout(() => {
-        // 簡易計算：素質1つあたり約10%、ロスレコ1つあたり約15%のダメージ増加と仮定
-        const talentScore = selectedTalents.reduce((sum, talent) => {
-          // コア素質（レベル1固定）は5%
-          // 通常素質はレベルに応じて5-30%
-          const baseScore =
-            talent.level === 1
-              ? CORE_TALENT_SCORE
-              : talent.level * TALENT_SCORE_PER_LEVEL
-          return sum + baseScore
-        }, 0)
+      try {
+        // キャラクター名からIDを取得
+        const characterIds = await Promise.all(
+          characters.map((c) => getCharacterIdByName(c.name!)),
+        )
 
-        const lossRecordScore =
-          (mainLossRecordIds.length + subLossRecordIds.length) *
-          LOSS_RECORD_SCORE
+        // IDが取得できなかった場合はエラー
+        if (characterIds.some((id) => id === null)) {
+          console.error('Failed to fetch character IDs')
+          setScore(undefined)
+          setIsCalculating(false)
+          return
+        }
 
-        const totalScore = talentScore + lossRecordScore
+        // 正確に3つのキャラクターIDが必要
+        if (characterIds.length !== 3) {
+          setScore(undefined)
+          setIsCalculating(false)
+          return
+        }
 
-        setScore(totalScore)
+        // ロスレコIDを結合
+        const allDiscIds = [...mainLossRecordIds, ...subLossRecordIds]
+
+        // 正確に3つのロスレコが必要
+        if (allDiscIds.length < 3) {
+          setScore(undefined)
+          setIsCalculating(false)
+          return
+        }
+
+        // ビルドスコアを計算
+        const result = await calculateBuildPerformance({
+          characterIds: characterIds as [number, number, number],
+          discIds: allDiscIds.slice(0, 3) as [number, number, number],
+        })
+
+        setScore(result.totalScore)
+      } catch (error) {
+        console.error('Failed to calculate build score:', error)
+        setScore(undefined)
+      } finally {
         setIsCalculating(false)
-      }, CALCULATION_DELAY_MS) // 短い遅延でリアルな感じを出す
+      }
     }
 
-    calculateDemoScore()
+    calculateRealScore()
   }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds])
 
   return { isCalculating, score }

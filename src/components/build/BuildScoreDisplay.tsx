@@ -149,20 +149,32 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
     return null
   }
 
-  // 全ての効果評価を集約
-  const allEvaluations: EffectEvaluation[] = []
-  for (const charEval of buildScore.characterEvaluations) {
-    allEvaluations.push(...charEval.talentEvaluations)
-  }
-  for (const discEval of buildScore.discEvaluations) {
-    allEvaluations.push(...discEval.skillEvaluations)
-  }
-
-  // 効果タイプごとに集計
-  const effectsMap = aggregateEffectsByType(allEvaluations)
+  // 新しいクライアント計算結果からaggregatedEffectsを使用
+  let effectsMap = new Map<string, AggregatedEffect>()
   
-  // 新しい総合スコアを計算
-  const totalScore = calculateTotalScore(effectsMap)
+  if (buildScore.aggregatedEffects) {
+    // 新しい形式（クライアント計算）
+    for (const [type, totalIncrease] of Object.entries(buildScore.aggregatedEffects)) {
+      effectsMap.set(type, {
+        type,
+        label: EFFECT_TYPE_LABELS[type] ?? type,
+        totalIncrease,
+      })
+    }
+  } else {
+    // 旧形式（バックエンド計算）- 後方互換性のため
+    const allEvaluations: EffectEvaluation[] = []
+    for (const charEval of buildScore.characterEvaluations) {
+      allEvaluations.push(...charEval.talentEvaluations)
+    }
+    for (const discEval of buildScore.discEvaluations) {
+      allEvaluations.push(...discEval.skillEvaluations)
+    }
+    effectsMap = aggregateEffectsByType(allEvaluations)
+  }
+  
+  // 新しい総合スコアを計算（buildScoreから取得、なければ計算）
+  const totalScore = buildScore.buildScore ?? calculateTotalScore(effectsMap)
   
   // 属性ダメージグループ
   const elementalDamages = [

@@ -460,11 +460,23 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     const timer = setTimeout(async () => {
       setIsBuildScoreLoading(true)
       try {
-        const { calculateBuildScoreAction } = await import('actions/calculateBuildScore')
-        const result = await calculateBuildScoreAction({
+        // 新しいフロー: バックエンドからJSON効果データを取得
+        const { getBuildEffectsAction } = await import('actions/getBuildEffects')
+        const { calculateBuildScoreFromEffects } = await import('lib/build-score-client')
+        
+        const effectsData = await getBuildEffectsAction({
           characterIds: [characterIds[0]!, characterIds[1]!, characterIds[2]!],
           discIds: [discIds[0]!, discIds[1]!, discIds[2]!],
+          selectedTalents: selectedTalents.map((t) => ({
+            characterName: t.characterName,
+            role: t.role,
+            index: t.index,
+            level: t.level === 0 ? 1 : t.level, // コア素質はlevel=1として扱う
+          })),
         })
+        
+        // クライアントサイドで計算
+        const result = calculateBuildScoreFromEffects(effectsData)
         setBuildScore(result)
       } catch (error) {
         console.error('ビルドスコアの計算に失敗しました:', error)
@@ -476,6 +488,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
     return () => clearTimeout(timer)
   }, [characters, mainLossRecordIds, selectedTalents])
+
 
   const handleTalentSelect = (
     characterName: string,

@@ -17,6 +17,7 @@
       "constants/*": ["./src/constants/*"],
       "hooks/*": ["./src/hooks/*"],
       "lib/*": ["./src/lib/*"],
+      "tests/*": ["./src/tests/*"],
       "types/*": ["./src/types/*"],
       "utils/*": ["./src/utils/*"]
     },

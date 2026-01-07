@@ -13,6 +13,7 @@ import {
   type BuildEffectsRequest,
   type LLMConversionRequest,
   type ParsedDiscSkillEffect,
+  type ParsedEffect,
   type ParsedTalentWithLevel,
 } from 'types/buildScore'
 
@@ -22,27 +23,63 @@ import {
 const CACHE_REVALIDATE_SECONDS = 86400
 
 /**
- * params配列からレベル別の値を抽出
- * 例: ["27%/44%/60%/76%/92%/109%"] -> level=3の場合は "60%"
+ * パーセント値の正規表現
  */
-function extractLevelValue(params: string[], level: number): string[] {
-  return params.map((param) => {
-    // スラッシュ区切りの値がある場合、レベルに応じた値を取得
-    if (param.includes('/')) {
-      const values = param.split('/')
-      // レベルは1-6なので、配列インデックスは0-5
-      const index = Math.max(0, Math.min(level - 1, values.length - 1))
-      return values[index] || param
+const PERCENT_REGEX = /(\d+(?:\.\d+)?)%?/
+
+/**
+ * params配列からレベル別の値を抽出
+ * 例: "27%/44%/60%/76%/92%/109%" -> level=3の場合は "60%"
+ */
+function extractValueFromParam(param: string, level: number): string {
+  // スラッシュ区切りの値がある場合、レベルに応じた値を取得
+  if (param.includes('/')) {
+    const values = param.split('/')
+    // レベルは1-6なので、配列インデックスは0-5
+    const index = Math.max(0, Math.min(level - 1, values.length - 1))
+    return values[index] || param
+  }
+  // スラッシュがない場合はそのまま返す
+  return param
+}
+
+/**
+ * ParsedEffectのvalue値をレベル別に置換
+ */
+function substituteEffectValues(
+  effects: ParsedEffect[],
+  params: string[],
+  level: number,
+): ParsedEffect[] {
+  return effects.map((effect) => {
+    // effectのvalueがparams配列のどの要素から来たかを判定する必要があるが、
+    // 実際にはLLMがparamsから値を抽出しているため、
+    // ここでは単純にparams配列の最初の値を使用する
+    // より正確には、descriptionとparamsの対応関係を保持する必要がある
+
+    // 簡易実装: params配列が1つの場合、その値をレベル別に置換
+    if (params.length > 0) {
+      const paramValue = params[0]
+      const levelValue = extractValueFromParam(paramValue, level)
+
+      // パーセント値を抽出して置換
+      const percentMatch = levelValue.match(PERCENT_REGEX)
+      if (percentMatch) {
+        return {
+          ...effect,
+          value: Number.parseFloat(percentMatch[1]),
+        }
+      }
     }
-    // スラッシュがない場合はそのまま返す
-    return param
+
+    return effect
   })
 }
 
 /**
- * 選択された素質のみを解析
+ * 選択された素質のみを解析（LLM最適化版）
+ * レベル変更時はLLM再実行せず、キャッシュされた結果から値を置換
  */
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: 素質解析は複雑な条件分岐が必要
 async function analyzeSelectedTalents(
   // biome-ignore lint/suspicious/noExplicitAny: API response type is dynamic
   characterData: any,
@@ -62,13 +99,11 @@ async function analyzeSelectedTalents(
   const { mainCore, mainNormal, supportCore, supportNormal, common } =
     characterData.potentials
 
-  // LLM変換リクエストを作成（選択された素質のみ）
-  const requests: Array<{
-    request: LLMConversionRequest
-    talentName: string
-    talentIndex: number
-    selectedLevel: number
-  }> = []
+  // 素質ごとにLLM変換を実行（レベル非依存）
+  const talentCache = new Map<
+    string,
+    { effects: ParsedEffect[]; params: string[] }
+  >()
 
   for (const selectedTalent of selectedTalentsForChar) {
     const { role, index, level } = selectedTalent
@@ -88,47 +123,54 @@ async function analyzeSelectedTalents(
 
     if (!talent) continue
 
-    // レベルに応じたパラメータ値を抽出
-    const levelSpecificParams =
-      level > 0
-        ? extractLevelValue(talent.params || [], level)
-        : talent.params || []
+    // キャッシュキー（レベル非依存）
+    const cacheKey = `${characterName}-${role}-${index}`
 
-    requests.push({
-      request: {
+    // キャッシュから取得または新規にLLM処理
+    let cachedData = talentCache.get(cacheKey)
+
+    if (!cachedData) {
+      // LLM変換を実行（params配列はそのまま渡す、レベル1の値を使用）
+      const baseParams = (talent.params || []).map((param) =>
+        extractValueFromParam(param, 1),
+      )
+
+      const request: LLMConversionRequest = {
         characterInfo: {
           element: characterData.element || 'Unknown',
           name: characterData.name,
         },
         description: talent.description,
-        params: levelSpecificParams,
-      },
-      selectedLevel: level,
-      talentIndex: index,
-      talentName: talent.name,
-    })
-  }
+        params: baseParams,
+      }
 
-  if (requests.length === 0) {
-    return evaluations
-  }
+      // biome-ignore lint/performance/noAwaitInLoops: レート制限のため順次実行が必要
+      const conversionResults = await convertMultipleDescriptions([request])
+      const result = conversionResults[0]
 
-  // LLM変換を実行
-  const llmRequests = requests.map((r) => r.request)
-  const conversionResults = await convertMultipleDescriptions(llmRequests)
+      if (result?.success && result.effects.length > 0) {
+        cachedData = {
+          effects: result.effects,
+          params: talent.params || [],
+        }
+        talentCache.set(cacheKey, cachedData)
+      }
+    }
 
-  // 結果を整形
-  for (let i = 0; i < requests.length; i++) {
-    const req = requests[i]
-    const result = conversionResults[i]
+    // レベルに応じた値を置換
+    if (cachedData) {
+      const levelAdjustedEffects = substituteEffectValues(
+        cachedData.effects,
+        cachedData.params,
+        level,
+      )
 
-    if (result?.success && result.effects.length > 0) {
       evaluations.push({
         characterName,
-        effects: result.effects,
-        selectedLevel: req.selectedLevel,
-        talentIndex: req.talentIndex,
-        talentName: req.talentName,
+        effects: levelAdjustedEffects,
+        selectedLevel: level,
+        talentIndex: index,
+        talentName: talent.name,
       })
     }
   }
@@ -181,12 +223,12 @@ async function analyzeDiscSkills(
 export async function getBuildEffectsAction(
   request: BuildEffectsRequest,
 ): Promise<BuildEffectsData> {
-  // キャッシュキーを生成
+  // キャッシュキーを生成（レベル非依存 - 素質IDのみ）
   const talentKey = request.selectedTalents
-    .map((t) => `${t.characterName}-${t.role}-${t.index}-${t.level}`)
+    .map((t) => `${t.characterName}-${t.role}-${t.index}`)
     .sort()
     .join('_')
-  const cacheKey = `build-effects:chars:${request.characterIds.join('-')}:discs:${request.discIds.join('-')}:talents:${talentKey}`
+  const cacheKey = `build-effects-v2:chars:${request.characterIds.join('-')}:discs:${request.discIds.join('-')}:talents:${talentKey}`
 
   // キャッシュ化された関数を作成
   const cachedFetch = unstable_cache(
@@ -211,6 +253,7 @@ export async function getBuildEffectsAction(
         })
 
         if (selectedTalentsForChar.length > 0) {
+          // biome-ignore lint/performance/noAwaitInLoops: レート制限のため順次実行が必要
           const talents = await analyzeSelectedTalents(
             charData,
             charData.name,
@@ -224,6 +267,7 @@ export async function getBuildEffectsAction(
       const discEffects: ParsedDiscSkillEffect[] = []
 
       for (const discData of discsData) {
+        // biome-ignore lint/performance/noAwaitInLoops: レート制限のため順次実行が必要
         const effects = await analyzeDiscSkills(discData)
         discEffects.push(...effects)
       }

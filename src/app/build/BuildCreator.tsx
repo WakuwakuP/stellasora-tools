@@ -609,26 +609,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
               <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
-              <div className="flex-1 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={buildName}
-                  onChange={(e) => setBuildName(e.target.value)}
-                  aria-label="ビルド名"
-                  placeholder="新規ビルド"
-                  className={`flex-1 bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
-                />
-                {isCalculatingScore && (
-                  <span className="shrink-0 text-slate-400 font-bold text-sm bg-slate-800/50 px-2 py-1 rounded animate-pulse">
-                    計算中...
-                  </span>
-                )}
-                {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
-                  <span className="shrink-0 text-emerald-400 font-bold text-sm bg-slate-800/50 px-2 py-1 rounded">
-                    +{totalBuildScore.toFixed(1)}%
-                  </span>
-                )}
-              </div>
+              <input
+                type="text"
+                value={buildName}
+                onChange={(e) => setBuildName(e.target.value)}
+                aria-label="ビルド名"
+                placeholder="新規ビルド"
+                className={`flex-1 bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
+              />
             </div>
           </div>
 
@@ -643,11 +631,23 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   <span>🏆</span>
                   巡遊者・ロスレコ
                 </span>
-                {isBuildInfoOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+                <div className="flex items-center gap-2">
+                  {isCalculatingScore && (
+                    <span className="text-slate-400 font-bold text-xs bg-slate-300/50 px-2 py-0.5 rounded animate-pulse dark:bg-slate-600/50">
+                      計算中...
+                    </span>
+                  )}
+                  {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
+                    <span className="text-emerald-600 font-bold text-xs bg-emerald-100/50 px-2 py-0.5 rounded dark:bg-emerald-900/30 dark:text-emerald-400">
+                      +{totalBuildScore.toFixed(1)}%
+                    </span>
+                  )}
+                  {isBuildInfoOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-2">
                 {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
@@ -719,9 +719,23 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             <>
               {/* デスクトップ: 巡遊者（キャラクター）セクション */}
               <div className="mb-4">
-                <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-                  <span className="text-lg">🏆</span>
-                  巡遊者
+                <h3 className="mb-2 flex items-center justify-between font-bold text-amber-600">
+                  <span className="flex items-center gap-1">
+                    <span className="text-lg">🏆</span>
+                    巡遊者
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {isCalculatingScore && (
+                      <span className="text-slate-400 font-bold text-xs bg-slate-200 px-2 py-1 rounded animate-pulse dark:bg-slate-700">
+                        計算中...
+                      </span>
+                    )}
+                    {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
+                      <span className="text-emerald-600 font-bold text-sm bg-emerald-100 px-2 py-1 rounded dark:bg-emerald-900/30 dark:text-emerald-400">
+                        +{totalBuildScore.toFixed(1)}%
+                      </span>
+                    )}
+                  </div>
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
                   {characters.map((char, index) => (

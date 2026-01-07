@@ -77,6 +77,11 @@ export function calculateDefenseScore(
  * 会心率と会心ダメージのバランスを評価
  * 会心率100%を最大とし、超える場合はマイナス評価
  *
+ * 計算式:
+ * - 基本スコア = (会心率 × 会心ダメージ / 理想値) / 1.5 × 100
+ * - 理想値 = 0.5 (50%) × 1.0 (100%)
+ * - 会心率が100%超過: 1%超過ごとに-0.5点
+ *
  * @param critRate - 会心率 (0-1以上)
  * @param critDmg - 会心ダメージ倍率
  * @returns クリティカル効率スコア (0-100、会心率が100%超過でマイナス評価)
@@ -90,10 +95,9 @@ export function calculateCritEfficiencyScore(
   let penalty = 0
 
   if (critRate > 1) {
-    // 100%超過分に対してペナルティ
-    // 超過10%ごとに-10点
+    // 100%超過分に対してペナルティ: 1%超過ごとに-0.5点
     const excessRate = critRate - 1
-    penalty = excessRate * 100 // 超過分を%に変換してペナルティ化
+    penalty = excessRate * 50 // 超過分を%に変換 (1% = 0.01 * 50 = 0.5点)
     effectiveCritRate = 1 // 計算には100%でキャップ
   }
 
@@ -154,38 +158,91 @@ export function calculateDpsScore(dps: number, baselineDps = 5000): number {
 }
 
 /**
+ * バフの種類
+ */
+export type BuffType =
+  | 'attack' // 攻撃力バフ
+  | 'normalAttackDmg' // 通常攻撃ダメージバフ
+  | 'skillDmg' // スキルダメージバフ
+  | 'ultimateDmg' // 必殺技ダメージバフ
+  | 'elementalDmg' // 属性ダメージバフ
+  | 'totalDmg' // 全ダメージバフ
+  | 'critRate' // 会心率バフ
+  | 'critDmg' // 会心ダメージバフ
+  | 'other' // その他
+
+/**
+ * バフ情報
+ */
+export interface BuffInfo {
+  type: BuffType
+  amount: number // バフ量（%値 or 固定値）
+  duration: number // 継続時間（秒）
+  cooldown: number // クールダウン時間（秒）
+}
+
+/**
  * バフ稼働率スコアを計算
  * バフ・デバフの継続時間と再発動時間からアクティブ割合を評価
+ * バフ種類ごとに (バフ量 × 稼働率) を合計して評価
  *
- * @param buffs - バフ情報の配列（各バフの継続時間とクールダウン）
+ * 計算式:
+ * - 各バフタイプ毎の合計 = Σ(バフ量 × 稼働率)
+ * - 稼働率 = 継続時間 / (継続時間 + クールダウン)
+ * - 総合スコア = 全タイプの合計を正規化して0-100点に変換
+ *
+ * @param buffs - バフ情報の配列
  * @returns バフ稼働率スコア (0-100)
  */
-export function calculateBuffUptimeScore(
-  buffs?: Array<{ duration: number; cooldown: number; impactWeight?: number }>,
-): number {
+export function calculateBuffUptimeScore(buffs?: BuffInfo[]): number {
   if (!buffs || buffs.length === 0) {
     // バフがない場合は中立的な50点
     return 50
   }
 
-  // 各バフの稼働率を計算
-  let totalWeightedUptime = 0
-  let totalWeight = 0
+  // バフタイプごとに (バフ量 × 稼働率) を合計
+  const buffTypeScores: Record<BuffType, number> = {
+    attack: 0,
+    critDmg: 0,
+    critRate: 0,
+    elementalDmg: 0,
+    normalAttackDmg: 0,
+    other: 0,
+    skillDmg: 0,
+    totalDmg: 0,
+    ultimateDmg: 0,
+  }
 
   for (const buff of buffs) {
     // 稼働率 = 継続時間 / (継続時間 + クールダウン)
     const uptime = buff.duration / (buff.duration + buff.cooldown)
-    const weight = buff.impactWeight || 1
-
-    totalWeightedUptime += uptime * weight
-    totalWeight += weight
+    // バフ量 × 稼働率を該当タイプに加算
+    buffTypeScores[buff.type] += buff.amount * uptime
   }
 
-  // 平均稼働率
-  const averageUptime = totalWeightedUptime / totalWeight
+  // 各タイプのスコアを合計
+  // 攻撃力バフとダメージバフで基準値が異なる
+  let totalScore = 0
 
-  // 稼働率100%で100点
-  return Math.min(averageUptime * 100, 100)
+  // 攻撃力バフ: 50%で50点満点
+  totalScore += Math.min((buffTypeScores.attack / 50) * 50, 50)
+
+  // ダメージバフ各種: 合計100%で50点満点
+  const totalDmgBuffs =
+    buffTypeScores.normalAttackDmg +
+    buffTypeScores.skillDmg +
+    buffTypeScores.ultimateDmg +
+    buffTypeScores.elementalDmg +
+    buffTypeScores.totalDmg
+  totalScore += Math.min((totalDmgBuffs / 100) * 30, 30)
+
+  // 会心系バフ: 会心率25% + 会心ダメージ50%で20点満点
+  const critScore =
+    Math.min((buffTypeScores.critRate / 25) * 10, 10) +
+    Math.min((buffTypeScores.critDmg / 50) * 10, 10)
+  totalScore += critScore
+
+  return Math.min(totalScore, 100)
 }
 
 /**
@@ -204,7 +261,7 @@ export function evaluateBuild(
   damageBonus: DamageBonus,
   defensePen: DefensePenetration,
   dps: number,
-  buffs?: Array<{ duration: number; cooldown: number; impactWeight?: number }>,
+  buffs?: BuffInfo[],
   weights: ScoreWeights = DEFAULT_WEIGHTS,
 ): BuildEvaluationMetrics {
   const attackScore = calculateAttackScore(stats.atk)

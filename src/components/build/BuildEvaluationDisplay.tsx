@@ -92,24 +92,33 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 			{/* 個別スコア */}
 			<div className="space-y-2">
 				<ScoreItem
-					label="攻撃力"
+					formula="(ATK / 基準ATK) × 50\n基準ATK = 3000\n2倍で100点"
 					icon="⚔️"
+					label="攻撃力"
 					score={metrics.attackScore}
 				/>
 				<ScoreItem
-					label="会心効率"
+					formula="基本 = (会心率 × 会心ダメージ / 0.5) / 1.5 × 100\n会心率100%超過: 1%毎に-0.5点\n理想値: 会心率50% × 会心ダメージ100%"
 					icon="💥"
+					label="会心効率"
 					score={metrics.critEfficiencyScore}
 				/>
 				<ScoreItem
-					label="属性ダメージ"
+					formula="(ダメージボーナス合計 + 防御貫通価値) / 150 × 100\n防御%無視 × 200 + 固定貫通 / 10"
 					icon="✨"
+					label="属性ダメージ"
 					score={metrics.elementalDamageScore}
 				/>
-				<ScoreItem label="DPS" icon="⚡" score={metrics.dpsScore} />
 				<ScoreItem
-					label="バフ稼働率"
+					formula="(DPS / 基準DPS) × 50\n基準DPS = 5000\n2倍で100点"
+					icon="⚡"
+					label="DPS"
+					score={metrics.dpsScore}
+				/>
+				<ScoreItem
+					formula="各バフタイプ毎: Σ(バフ量 × 稼働率)\n稼働率 = 継続時間 / (継続時間 + CD)\n攻撃力50%=50点, ダメージ100%=30点, 会心系=20点"
 					icon="🔥"
+					label="バフ稼働率"
 					score={metrics.buffUptimeScore}
 				/>
 			</div>
@@ -118,12 +127,13 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 }
 
 interface ScoreItemProps {
-	label: string
 	icon: string
+	label: string
 	score: number
+	formula?: string
 }
 
-const ScoreItem: FC<ScoreItemProps> = ({ label, icon, score }) => {
+const ScoreItem: FC<ScoreItemProps> = ({ formula, icon, label, score }) => {
 	const getScoreBarColor = (score: number): string => {
 		if (score >= 80) return 'bg-green-500'
 		if (score >= 60) return 'bg-blue-500'
@@ -132,7 +142,7 @@ const ScoreItem: FC<ScoreItemProps> = ({ label, icon, score }) => {
 	}
 
 	return (
-		<div className="rounded bg-white p-2 dark:bg-slate-800">
+		<div className="group relative rounded bg-white p-2 dark:bg-slate-800">
 			<div className="mb-1 flex items-center justify-between">
 				<span className="flex items-center gap-1 text-xs font-medium text-slate-600 dark:text-slate-300">
 					<span>{icon}</span>
@@ -148,6 +158,14 @@ const ScoreItem: FC<ScoreItemProps> = ({ label, icon, score }) => {
 					style={{ width: `${Math.min(score, 100)}%` }}
 				/>
 			</div>
+			{formula && (
+				<div className="absolute bottom-full left-0 z-10 mb-1 hidden w-full min-w-[200px] rounded bg-slate-800 p-2 text-xs text-white shadow-lg group-hover:block dark:bg-slate-700">
+					<div className="font-bold">計算式:</div>
+					<div className="mt-1 whitespace-pre-wrap font-mono text-[10px]">
+						{formula}
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }

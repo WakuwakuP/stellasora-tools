@@ -278,6 +278,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(
     initialBuild.selectedTalents,
   )
+  const [totalBuildScore, setTotalBuildScore] = useState<number | undefined>(undefined)
 
   const [buildName, setBuildName] = useState(
     searchParams[buildSearchParamKeys.name] || '',
@@ -502,7 +503,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         setPendingBuildName('')
         setBuildNameDialogOpen(true)
       } else {
-        addBuild(buildName, currentUrl)
+        addBuild(buildName, currentUrl, totalBuildScore)
       }
     }
   }
@@ -520,7 +521,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         mainLossRecordIds,
         subLossRecordIds,
       )
-      addBuild(trimmedName, newUrl)
+      addBuild(trimmedName, newUrl, totalBuildScore)
       setBuildNameDialogOpen(false)
       setHasUserMadeChanges(true)
     }
@@ -600,15 +601,20 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
               <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
-              <div className="flex-1">
+              <div className="flex-1 flex items-center gap-2">
                 <input
                   type="text"
                   value={buildName}
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
                   placeholder="新規ビルド"
-                  className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
+                  className={`flex-1 bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
+                {totalBuildScore !== undefined && totalBuildScore > 0 && (
+                  <span className="shrink-0 text-emerald-400 font-bold text-sm bg-slate-800/50 px-2 py-1 rounded">
+                    +{totalBuildScore.toFixed(1)}%
+                  </span>
+                )}
               </div>
             </div>
           </div>

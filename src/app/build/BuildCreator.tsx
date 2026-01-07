@@ -3,6 +3,7 @@
 import { buildSearchParamKeys, buildSerializer } from 'app/build/searchParams'
 import { SavedBuildList } from 'app/build/SavedBuildList'
 import {
+  BuildEvaluationDisplay,
   CharacterAvatar,
   CharacterQualitiesSection,
   CharacterSelectDialog,
@@ -33,6 +34,7 @@ import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import { useIsMobile } from 'hooks/use-mobile'
+import { useBuildEvaluation } from 'hooks/useBuildEvaluation'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
@@ -309,6 +311,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
+
+  // ビルド評価メトリクスを計算
+  const buildEvaluationMetrics = useBuildEvaluation({
+    mainCharacterName: characters[0]?.name ?? null,
+    support1CharacterName: characters[1]?.name ?? null,
+    support2CharacterName: characters[2]?.name ?? null,
+    selectedTalents,
+    mainLossRecordIds,
+    subLossRecordIds,
+  })
 
   // 現在のURL（保存用）
   const currentUrl = useMemo(
@@ -810,6 +822,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
               </span>
             </div>
+          </div>
+
+          {/* ビルド評価表示 */}
+          <div className={isMobile ? 'mt-2' : 'mt-4'}>
+            <BuildEvaluationDisplay metrics={buildEvaluationMetrics} />
           </div>
 
           {/* 登録ボタン */}

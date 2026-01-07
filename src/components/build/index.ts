@@ -39,3 +39,5 @@ export {
   SubLossRecordSelectDialog,
 } from './SubLossRecordSelectDialog'
 export type { SubLossRecordSelectDialogProps } from './SubLossRecordSelectDialog'
+export { BuildEvaluationDisplay } from './BuildEvaluationDisplay'
+export type { BuildEvaluationDisplayProps } from './BuildEvaluationDisplay'

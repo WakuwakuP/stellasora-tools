@@ -32,6 +32,7 @@ import {
 import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { useBuildScore } from 'hooks/useBuildScore'
 import { useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
@@ -278,7 +279,6 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [selectedTalents, setSelectedTalents] = useState<SelectedTalent[]>(
     initialBuild.selectedTalents,
   )
-  const [totalBuildScore, setTotalBuildScore] = useState<number | undefined>(undefined)
 
   const [buildName, setBuildName] = useState(
     searchParams[buildSearchParamKeys.name] || '',
@@ -300,6 +300,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   )
   const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
   const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
+
+  // ビルドスコアの計算
+  const { score: totalBuildScore, isCalculating: isCalculatingScore } = useBuildScore(
+    characters,
+    selectedTalents,
+    mainLossRecordIds,
+    subLossRecordIds,
+  )
 
   // モバイル判定
   const isMobile = useIsMobile()
@@ -610,7 +618,12 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   placeholder="新規ビルド"
                   className={`flex-1 bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
                 />
-                {totalBuildScore !== undefined && totalBuildScore > 0 && (
+                {isCalculatingScore && (
+                  <span className="shrink-0 text-slate-400 font-bold text-sm bg-slate-800/50 px-2 py-1 rounded animate-pulse">
+                    計算中...
+                  </span>
+                )}
+                {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
                   <span className="shrink-0 text-emerald-400 font-bold text-sm bg-slate-800/50 px-2 py-1 rounded">
                     +{totalBuildScore.toFixed(1)}%
                   </span>

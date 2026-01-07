@@ -157,23 +157,23 @@ export interface DpsCalculationResult extends DamageCalculationResult {
 export interface BuildEvaluationMetrics {
   /** 攻撃力スコア */
   attackScore: number
-  /** 防御力スコア */
-  defenseScore: number
   /** クリティカル効率スコア */
   critEfficiencyScore: number
   /** 属性ダメージスコア */
   elementalDamageScore: number
   /** DPSスコア */
   dpsScore: number
+  /** バフ稼働率スコア */
+  buffUptimeScore: number
   /** 総合スコア */
   totalScore: number
   /** スコアの内訳 */
   breakdown: {
     attack: number
-    defense: number
     critEfficiency: number
     elementalDamage: number
     dps: number
+    buffUptime: number
   }
 }
 
@@ -188,7 +188,7 @@ export interface BuildComparisonResult {
   /** 差分（A - B） */
   difference: {
     attackScore: number
-    defenseScore: number
+    buffUptimeScore: number
     critEfficiencyScore: number
     elementalDamageScore: number
     dpsScore: number

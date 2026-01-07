@@ -189,18 +189,18 @@ export function exampleBuildEvaluation() {
 
   console.log('=== ビルドA評価 ===')
   console.log('攻撃力スコア:', metricsA.attackScore.toFixed(1))
-  console.log('防御力スコア:', metricsA.defenseScore.toFixed(1))
   console.log('会心効率スコア:', metricsA.critEfficiencyScore.toFixed(1))
   console.log('属性ダメージスコア:', metricsA.elementalDamageScore.toFixed(1))
   console.log('DPSスコア:', metricsA.dpsScore.toFixed(1))
+  console.log('バフ稼働率スコア:', metricsA.buffUptimeScore.toFixed(1))
   console.log('総合スコア:', metricsA.totalScore.toFixed(1))
 
   console.log('\n=== ビルドB評価 ===')
   console.log('攻撃力スコア:', metricsB.attackScore.toFixed(1))
-  console.log('防御力スコア:', metricsB.defenseScore.toFixed(1))
   console.log('会心効率スコア:', metricsB.critEfficiencyScore.toFixed(1))
   console.log('属性ダメージスコア:', metricsB.elementalDamageScore.toFixed(1))
   console.log('DPSスコア:', metricsB.dpsScore.toFixed(1))
+  console.log('バフ稼働率スコア:', metricsB.buffUptimeScore.toFixed(1))
   console.log('総合スコア:', metricsB.totalScore.toFixed(1))
 
   // 比較

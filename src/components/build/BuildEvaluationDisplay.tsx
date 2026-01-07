@@ -97,11 +97,6 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 					score={metrics.attackScore}
 				/>
 				<ScoreItem
-					label="防御力"
-					icon="🛡️"
-					score={metrics.defenseScore}
-				/>
-				<ScoreItem
 					label="会心効率"
 					icon="💥"
 					score={metrics.critEfficiencyScore}
@@ -111,10 +106,11 @@ export const BuildEvaluationDisplay: FC<BuildEvaluationDisplayProps> = ({
 					icon="✨"
 					score={metrics.elementalDamageScore}
 				/>
+				<ScoreItem label="DPS" icon="⚡" score={metrics.dpsScore} />
 				<ScoreItem
-					label="DPS"
-					icon="⚡"
-					score={metrics.dpsScore}
+					label="バフ稼働率"
+					icon="🔥"
+					score={metrics.buffUptimeScore}
 				/>
 			</div>
 		</div>

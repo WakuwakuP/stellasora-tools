@@ -66,32 +66,33 @@ export function useBuildEvaluation(
 
     // 各スコアを計算
     const attackScore = baseScore + talentScore * 0.8 + lossRecordScore * 0.7
-    const defenseScore = baseScore + talentScore * 0.5 + lossRecordScore * 0.5
     const critEfficiencyScore =
       baseScore + talentScore * 0.7 + lossRecordScore * 0.8
     const elementalDamageScore =
       baseScore + talentScore * 0.9 + lossRecordScore * 0.9
     const dpsScore = baseScore + talentScore * 0.85 + lossRecordScore * 0.85
+    const buffUptimeScore =
+      baseScore + talentScore * 0.6 + lossRecordScore * 0.7
 
     // 総合スコア（重み付き平均）
     const totalScore =
       attackScore * 0.2 +
-      defenseScore * 0.1 +
       critEfficiencyScore * 0.25 +
-      elementalDamageScore * 0.2 +
-      dpsScore * 0.25
+      elementalDamageScore * 0.15 +
+      dpsScore * 0.25 +
+      buffUptimeScore * 0.15
 
     return {
       attackScore,
       breakdown: {
         attack: attackScore * 0.2,
+        buffUptime: buffUptimeScore * 0.15,
         critEfficiency: critEfficiencyScore * 0.25,
-        defense: defenseScore * 0.1,
         dps: dpsScore * 0.25,
-        elementalDamage: elementalDamageScore * 0.2,
+        elementalDamage: elementalDamageScore * 0.15,
       },
+      buffUptimeScore,
       critEfficiencyScore,
-      defenseScore,
       dpsScore,
       elementalDamageScore,
       totalScore,

@@ -16,10 +16,10 @@ import {
  */
 export interface ScoreWeights {
   attack: number
-  defense: number
   critEfficiency: number
   elementalDamage: number
   dps: number
+  buffUptime: number
 }
 
 /**
@@ -27,10 +27,10 @@ export interface ScoreWeights {
  */
 export const DEFAULT_WEIGHTS: ScoreWeights = {
   attack: 0.2,
+  buffUptime: 0.15,
   critEfficiency: 0.25,
-  defense: 0.1,
   dps: 0.25,
-  elementalDamage: 0.2,
+  elementalDamage: 0.15,
 }
 
 /**
@@ -75,27 +75,40 @@ export function calculateDefenseScore(
 /**
  * クリティカル効率スコアを計算
  * 会心率と会心ダメージのバランスを評価
+ * 会心率100%を最大とし、超える場合はマイナス評価
  *
- * @param critRate - 会心率 (0-1)
+ * @param critRate - 会心率 (0-1以上)
  * @param critDmg - 会心ダメージ倍率
- * @returns クリティカル効率スコア (0-100)
+ * @returns クリティカル効率スコア (0-100、会心率が100%超過でマイナス評価)
  */
 export function calculateCritEfficiencyScore(
   critRate: number,
   critDmg: number,
 ): number {
-  // 会心率は100%でキャップ
-  const cappedCritRate = Math.min(critRate, 1)
+  // 会心率が100%を超える場合はペナルティを適用
+  let effectiveCritRate = critRate
+  let penalty = 0
+
+  if (critRate > 1) {
+    // 100%超過分に対してペナルティ
+    // 超過10%ごとに-10点
+    const excessRate = critRate - 1
+    penalty = excessRate * 100 // 超過分を%に変換してペナルティ化
+    effectiveCritRate = 1 // 計算には100%でキャップ
+  }
 
   // クリティカル期待値増加率 = CritRate × CritDmg
-  const critValue = cappedCritRate * critDmg
+  const critValue = effectiveCritRate * critDmg
 
   // 理想的なバランス（会心率50%, 会心ダメージ100%）を基準に評価
   const idealCritValue = 0.5 * 1.0
   const ratio = critValue / idealCritValue
 
   // 1.5倍で100点
-  return Math.min((ratio / 1.5) * 100, 100)
+  const baseScore = Math.min((ratio / 1.5) * 100, 100)
+
+  // ペナルティを適用
+  return Math.max(baseScore - penalty, 0)
 }
 
 /**
@@ -141,12 +154,48 @@ export function calculateDpsScore(dps: number, baselineDps = 5000): number {
 }
 
 /**
+ * バフ稼働率スコアを計算
+ * バフ・デバフの継続時間と再発動時間からアクティブ割合を評価
+ *
+ * @param buffs - バフ情報の配列（各バフの継続時間とクールダウン）
+ * @returns バフ稼働率スコア (0-100)
+ */
+export function calculateBuffUptimeScore(
+  buffs?: Array<{ duration: number; cooldown: number; impactWeight?: number }>,
+): number {
+  if (!buffs || buffs.length === 0) {
+    // バフがない場合は中立的な50点
+    return 50
+  }
+
+  // 各バフの稼働率を計算
+  let totalWeightedUptime = 0
+  let totalWeight = 0
+
+  for (const buff of buffs) {
+    // 稼働率 = 継続時間 / (継続時間 + クールダウン)
+    const uptime = buff.duration / (buff.duration + buff.cooldown)
+    const weight = buff.impactWeight || 1
+
+    totalWeightedUptime += uptime * weight
+    totalWeight += weight
+  }
+
+  // 平均稼働率
+  const averageUptime = totalWeightedUptime / totalWeight
+
+  // 稼働率100%で100点
+  return Math.min(averageUptime * 100, 100)
+}
+
+/**
  * ビルドの総合評価を計算
  *
  * @param stats - 基本ステータス
  * @param damageBonus - ダメージボーナス
  * @param defensePen - 防御貫通
  * @param dps - DPS値
+ * @param buffs - バフ情報（オプション）
  * @param weights - スコアの重み（オプション）
  * @returns ビルド評価メトリクス
  */
@@ -155,10 +204,10 @@ export function evaluateBuild(
   damageBonus: DamageBonus,
   defensePen: DefensePenetration,
   dps: number,
+  buffs?: Array<{ duration: number; cooldown: number; impactWeight?: number }>,
   weights: ScoreWeights = DEFAULT_WEIGHTS,
 ): BuildEvaluationMetrics {
   const attackScore = calculateAttackScore(stats.atk)
-  const defenseScore = calculateDefenseScore(stats.def, stats.hp)
   const critEfficiencyScore = calculateCritEfficiencyScore(
     stats.critRate,
     stats.critDmg,
@@ -168,26 +217,27 @@ export function evaluateBuild(
     defensePen,
   )
   const dpsScore = calculateDpsScore(dps)
+  const buffUptimeScore = calculateBuffUptimeScore(buffs)
 
   // 重み付き総合スコア
   const totalScore =
     attackScore * weights.attack +
-    defenseScore * weights.defense +
     critEfficiencyScore * weights.critEfficiency +
     elementalDamageScore * weights.elementalDamage +
-    dpsScore * weights.dps
+    dpsScore * weights.dps +
+    buffUptimeScore * weights.buffUptime
 
   return {
     attackScore,
     breakdown: {
       attack: attackScore * weights.attack,
+      buffUptime: buffUptimeScore * weights.buffUptime,
       critEfficiency: critEfficiencyScore * weights.critEfficiency,
-      defense: defenseScore * weights.defense,
       dps: dpsScore * weights.dps,
       elementalDamage: elementalDamageScore * weights.elementalDamage,
     },
+    buffUptimeScore,
     critEfficiencyScore,
-    defenseScore,
     dpsScore,
     elementalDamageScore,
     totalScore,
@@ -209,9 +259,9 @@ export function compareBuilds(
 ): BuildComparisonResult {
   const difference = {
     attackScore: metricsA.attackScore - metricsB.attackScore,
+    buffUptimeScore: metricsA.buffUptimeScore - metricsB.buffUptimeScore,
     critEfficiencyScore:
       metricsA.critEfficiencyScore - metricsB.critEfficiencyScore,
-    defenseScore: metricsA.defenseScore - metricsB.defenseScore,
     dpsScore: metricsA.dpsScore - metricsB.dpsScore,
     elementalDamageScore:
       metricsA.elementalDamageScore - metricsB.elementalDamageScore,

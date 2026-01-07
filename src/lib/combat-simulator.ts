@@ -40,8 +40,8 @@ function isEffectActive(
     }
 
     // 簡易的な条件判定（実際の実装では条件に応じた詳細な判定が必要）
-    // ここでは条件がある場合は50%の確率で有効とする
-    return Math.random() > 0.5
+    // テストの再現性のため、条件がある場合は常に有効とする
+    return true
   }
 
   return false

@@ -155,10 +155,12 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
   if (buildScore.aggregatedEffects) {
     // 新しい形式（クライアント計算）
     for (const [type, totalIncrease] of Object.entries(buildScore.aggregatedEffects)) {
+      // 数値に変換（型安全のため）
+      const numValue = typeof totalIncrease === 'number' ? totalIncrease : Number(totalIncrease) || 0
       effectsMap.set(type, {
         type,
         label: EFFECT_TYPE_LABELS[type] ?? type,
-        totalIncrease,
+        totalIncrease: numValue,
       })
     }
   } else {
@@ -174,7 +176,9 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
   }
   
   // 新しい総合スコアを計算（buildScoreから取得、なければ計算）
-  const totalScore = buildScore.buildScore ?? calculateTotalScore(effectsMap)
+  const totalScore = typeof buildScore.buildScore === 'number' 
+    ? buildScore.buildScore 
+    : calculateTotalScore(effectsMap)
   
   // 属性ダメージグループ
   const elementalDamages = [
@@ -198,29 +202,34 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
   ].filter((e): e is AggregatedEffect => e !== undefined && e.totalIncrease > 0)
     .sort((a, b) => b.totalIncrease - a.totalIncrease)
 
-  const StatRow: FC<{ label: string; value: number; tooltip?: string }> = ({ label, value, tooltip }) => (
-    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800">
-      <span className="text-sm text-slate-600 dark:text-slate-300">{label}</span>
-      {tooltip ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="font-semibold text-sm text-primary cursor-help">
-                +{value.toFixed(1)}%
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-xs">{tooltip}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ) : (
-        <span className="font-semibold text-sm text-primary">
-          +{value.toFixed(1)}%
-        </span>
-      )}
-    </div>
-  )
+  const StatRow: FC<{ label: string; value: number; tooltip?: string }> = ({ label, value, tooltip }) => {
+    // 数値に変換（型安全のため）
+    const numValue = typeof value === 'number' ? value : Number(value) || 0
+    
+    return (
+      <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800">
+        <span className="text-sm text-slate-600 dark:text-slate-300">{label}</span>
+        {tooltip ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="font-semibold text-sm text-primary cursor-help">
+                  +{numValue.toFixed(1)}%
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">{tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <span className="font-semibold text-sm text-primary">
+            +{numValue.toFixed(1)}%
+          </span>
+        )}
+      </div>
+    )
+  }
 
   const DamageGroup: FC<{ damages: AggregatedEffect[]; title: string }> = ({ damages, title }) => {
     if (damages.length === 0) return null
@@ -232,7 +241,10 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
       return <StatRow label={topDamage.label} value={topDamage.totalIncrease} />
     }
     
-    const tooltipText = others.map(d => `${d.label}: +${d.totalIncrease.toFixed(1)}%`).join('\n')
+    const tooltipText = others.map(d => {
+      const numVal = typeof d.totalIncrease === 'number' ? d.totalIncrease : Number(d.totalIncrease) || 0
+      return `${d.label}: +${numVal.toFixed(1)}%`
+    }).join('\n')
     
     return (
       <StatRow
@@ -249,7 +261,7 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
         <CardTitle className="flex items-center justify-between">
           <span>総合スコア</span>
           <Badge variant="default" className="text-lg px-4 py-1">
-            {totalScore.toFixed(1)}%
+            {(typeof totalScore === 'number' ? totalScore : 0).toFixed(1)}%
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -328,7 +340,10 @@ export interface DamageIncreaseBadgeProps {
 export const DamageIncreaseBadge: FC<DamageIncreaseBadgeProps> = ({
   damageIncrease,
 }) => {
-  if (!damageIncrease || damageIncrease === 0) {
+  // 数値に変換（型安全のため）
+  const numValue = typeof damageIncrease === 'number' ? damageIncrease : Number(damageIncrease) || 0
+  
+  if (!numValue || numValue === 0) {
     return null
   }
 
@@ -337,7 +352,7 @@ export const DamageIncreaseBadge: FC<DamageIncreaseBadgeProps> = ({
       variant="secondary"
       className="ml-1 text-xs font-normal text-primary"
     >
-      +{damageIncrease.toFixed(1)}%
+      +{numValue.toFixed(1)}%
     </Badge>
   )
 }

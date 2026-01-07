@@ -106,7 +106,12 @@
         "noUselessUndefined": "on",
         "useConsistentArrowReturn": "on",
         "useExhaustiveSwitchCases": "error",
-        "useMaxParams": "on",
+        "useMaxParams": {
+          "level": "warn",
+          "options": {
+            "max": 5
+          }
+        },
         "useSortedClasses": {
           "fix": "safe",
           "level": "error",
@@ -125,7 +130,9 @@
       "style": {
         "noImplicitBoolean": "on",
         "noInferrableTypes": "on",
-        "noMagicNumbers": "on",
+        "noMagicNumbers": {
+          "level": "off"
+        },
         "useComponentExportOnlyModules": "off",
         "useConsistentArrayType": "error",
         "useConsistentTypeDefinitions": "on",

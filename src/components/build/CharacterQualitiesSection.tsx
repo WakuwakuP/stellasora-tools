@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { type FC, useMemo } from 'react'
+import type { EffectEvaluation } from 'types/buildScore'
 import type { QualityInfo } from 'types/quality'
 import { QualityCard } from './QualityCard'
 
@@ -54,6 +55,8 @@ export interface CharacterQualitiesSectionProps {
   onTalentSelect: (characterName: string, role: 'main' | 'sub', index: number) => void
   /** 選択した素質の合計レベル */
   totalLevel: number
+  /** 素質の効果評価（ダメージ増加率）（オプション） */
+  talentEvaluations?: EffectEvaluation[]
 }
 
 /**
@@ -70,6 +73,7 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
   selectedTalents,
   onTalentSelect,
   totalLevel,
+  talentEvaluations,
 }) => {
   // 素質をコア/サブにグループ分けし、サブはレアリティでソート
   const { coreQualities, subQualities } = useMemo(() => {
@@ -112,6 +116,13 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
               t.index === originalIndex,
           )
           const isCore = isCoreTalent(originalIndex, quality)
+          
+          // 素質名で効果評価を検索（ダメージ増加率を取得）
+          const evaluation = talentEvaluations?.find((e) =>
+            e.effectName.includes(quality.title),
+          )
+          const damageIncrease = evaluation?.averageDamageIncrease
+          
           return (
             <QualityCard
               key={`${characterName}-${role}-${originalIndex}`}
@@ -120,6 +131,7 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
               level={selectedTalent?.level}
               isCore={isCore}
               onClick={() => onTalentSelect(characterName, role, originalIndex)}
+              damageIncrease={damageIncrease}
             />
           )
         })}

@@ -3,6 +3,7 @@
 import { buildSearchParamKeys, buildSerializer } from 'app/build/searchParams'
 import { SavedBuildList } from 'app/build/SavedBuildList'
 import {
+  BuildScoreDisplay,
   CharacterAvatar,
   CharacterQualitiesSection,
   CharacterSelectDialog,
@@ -43,6 +44,7 @@ import {
 import { ChevronDown, ChevronUp, Pencil } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { BuildScoreResult } from 'types/buildScore'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
 
@@ -306,6 +308,10 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // モバイル用のセクション折りたたみ状態（デフォルトは閉じた状態で素質選択エリアを広く表示）
   const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(false)
   const [isSavedBuildsOpen, setIsSavedBuildsOpen] = useState(false)
+
+  // ビルドスコア計算の状態
+  const [buildScore, setBuildScore] = useState<BuildScoreResult | null>(null)
+  const [isBuildScoreLoading, setIsBuildScoreLoading] = useState(false)
 
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
@@ -812,6 +818,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </div>
           </div>
 
+          {/* ビルドスコア表示 */}
+          {(mainLossRecordIds.length > 0 || selectedTalents.length > 0) && (
+            <div className={isMobile ? 'mt-2' : 'mt-4'}>
+              <BuildScoreDisplay
+                buildScore={buildScore}
+                isLoading={isBuildScoreLoading}
+              />
+            </div>
+          )}
+
           {/* 登録ボタン */}
           <div className={isMobile ? 'mt-2' : 'mt-4'}>
             <button
@@ -899,6 +915,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(mainCharacter.name)}
+                    talentEvaluations={
+                      buildScore?.characterEvaluations.find(
+                        (ce) => ce.characterName === mainCharacter.name,
+                      )?.talentEvaluations
+                    }
                   />
                 )}
 
@@ -911,6 +932,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(support1.name)}
+                    talentEvaluations={
+                      buildScore?.characterEvaluations.find(
+                        (ce) => ce.characterName === support1.name,
+                      )?.talentEvaluations
+                    }
                   />
                 )}
 
@@ -923,6 +949,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(support2.name)}
+                    talentEvaluations={
+                      buildScore?.characterEvaluations.find(
+                        (ce) => ce.characterName === support2.name,
+                      )?.talentEvaluations
+                    }
                   />
                 )}
               </ScrollArea>

@@ -39,3 +39,8 @@ export {
   SubLossRecordSelectDialog,
 } from './SubLossRecordSelectDialog'
 export type { SubLossRecordSelectDialogProps } from './SubLossRecordSelectDialog'
+export { BuildScoreDisplay, DamageIncreaseBadge } from './BuildScoreDisplay'
+export type {
+  BuildScoreDisplayProps,
+  DamageIncreaseBadgeProps,
+} from './BuildScoreDisplay'

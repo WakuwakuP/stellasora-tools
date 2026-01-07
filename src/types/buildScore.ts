@@ -38,6 +38,8 @@ export interface EffectInfo {
   cooldown: number
   /** 重複上限（記載がなければ1） */
   maxStacks: number
+  /** レベル（素質の場合のみ、1-6） */
+  level?: number
 }
 
 /** 戦闘シミュレーションのアクション */
@@ -92,4 +94,24 @@ export interface BuildEvaluationInput {
   characterIds: [number, number, number]
   /** ロスレコID（3つ分） */
   discIds: [number, number, number]
+  /** 選択された素質情報（レベル含む） */
+  selectedTalents?: Array<{
+    characterId: number
+    talentIndex: number
+    level: number
+  }>
+}
+
+/** 素質レベル別のスコア */
+export interface TalentLevelScore {
+  /** 素質名 */
+  talentName: string
+  /** キャラクターID */
+  characterId: number
+  /** 素質インデックス */
+  talentIndex: number
+  /** レベル */
+  level: number
+  /** 平均ダメージ増加率（%） */
+  averageIncrease: number
 }

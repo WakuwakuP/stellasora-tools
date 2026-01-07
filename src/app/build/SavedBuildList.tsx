@@ -61,6 +61,11 @@ export const SavedBuildList: FC<SavedBuildListProps> = ({
                   title={build.name}
                 >
                   {build.name}
+                  {build.totalScore !== undefined && (
+                    <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
+                      (+{build.totalScore.toFixed(1)}%)
+                    </span>
+                  )}
                 </Link>
               ) : (
                 <span

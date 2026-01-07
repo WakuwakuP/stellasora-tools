@@ -128,12 +128,13 @@ function aggregateEffectsByType(
 
 /**
  * 総合スコアを計算
- * 計算式: (攻撃力) × (最高属性ダメージ + 最高攻撃種別ダメージ) × (会心率) × (会心ダメージ) × (被ダメ増加)
+ * 計算式: (攻撃力バフ) × (最高属性ダメージ + 最高攻撃種別ダメージ) × (会心率) × (会心ダメージ) × (被ダメ増加)
+ * ベース: 攻撃力100%, 会心率5%, 会心ダメージ50%, その他100%
  */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: スコア計算は多数の効果タイプ処理が必要
 // biome-ignore lint/style/noMagicNumbers: 定数化すると可読性が下がる（パーセント変換、デフォルト値）
 function calculateTotalScore(aggregated: Record<string, number>): number {
-  // 攻撃力バフ（デフォルト100%）
+  // 攻撃力バフ（ベース100% + バフ量）
   const atkBuff = 1 + (aggregated.atk_increase || 0) / 100
 
   // 属性ダメージの最大値
@@ -162,16 +163,16 @@ function calculateTotalScore(aggregated: Record<string, number>): number {
   ]
   const maxAttackTypeDamage = Math.max(...attackTypeDamages)
 
-  // ダメージバフ
+  // ダメージバフ（ベース100% + バフ量）
   const damageBuff = 1 + (maxElementalDamage + maxAttackTypeDamage) / 100
 
-  // 会心率（デフォルト20%）
-  const critRate = 0.2 + (aggregated.crit_rate || 0) / 100
+  // 会心率（ベース5% + バフ量）
+  const critRate = 0.05 + (aggregated.crit_rate || 0) / 100
 
-  // 会心ダメージ（デフォルト150%）
-  const critDamage = 1.5 + (aggregated.crit_damage || 0) / 100
+  // 会心ダメージ（ベース50% + バフ量）
+  const critDamage = 0.5 + (aggregated.crit_damage || 0) / 100
 
-  // 被ダメ増加（デバフ）
+  // 被ダメ増加（ベース100% + バフ量）
   const damageTaken = 1 + (aggregated.damage_taken_increase || 0) / 100
 
   // 総合スコア

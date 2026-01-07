@@ -20,22 +20,40 @@ export interface BuildScoreDisplayProps {
  * 効果タイプの日本語表記マッピング
  */
 const EFFECT_TYPE_LABELS: Record<string, string> = {
+  // ダメージ系
   damage_increase: 'ダメージ',
-  atk_increase: '攻撃力',
-  crit_rate: '会心率',
-  crit_damage: '会心ダメージ',
-  elemental_damage: '属性ダメージ',
+  normal_attack_damage: '通常攻撃ダメージ',
   skill_damage: 'スキルダメージ',
   ultimate_damage: '必殺技ダメージ',
-  normal_attack_damage: '通常攻撃ダメージ',
+  
+  // 属性ダメージ
+  elemental_damage: '属性ダメージ',
+  water_damage: '属性ダメージ(水)',
+  fire_damage: '属性ダメージ(火)',
+  wind_damage: '属性ダメージ(風)',
+  earth_damage: '属性ダメージ(地)',
+  light_damage: '属性ダメージ(光)',
+  dark_damage: '属性ダメージ(闇)',
+  
+  // 印ダメージ
   mark_damage: '印ダメージ',
-  attack_speed: '攻撃速度',
-  def_decrease: '防御力減少',
-  def_increase: '防御力',
-  hp_increase: 'HP',
+  water_mark_damage: '印ダメージ(水)',
+  fire_mark_damage: '印ダメージ(火)',
+  wind_mark_damage: '印ダメージ(風)',
+  earth_mark_damage: '印ダメージ(地)',
+  light_mark_damage: '印ダメージ(光)',
+  dark_mark_damage: '印ダメージ(闇)',
+  
+  // ステータス系
+  atk_increase: '攻撃力',
   speed_increase: '速度',
-  healing: '回復',
-  shield: 'シールド',
+  crit_rate: '会心率',
+  crit_damage: '会心ダメージ',
+  
+  // その他
+  cooldown_reduction: 'クールダウン',
+  damage_taken_increase: '被ダメージ増加',
+  def_decrease: '被ダメージ増加', // 防御力減少は被ダメージ増加として扱う
 }
 
 /**
@@ -128,58 +146,6 @@ export const BuildScoreDisplay: FC<BuildScoreDisplayProps> = ({
                 </span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* キャラクター別の詳細 */}
-        <div>
-          <h3 className="mb-2 font-semibold text-sm text-slate-600 dark:text-slate-300">
-            キャラクター別
-          </h3>
-          <div className="space-y-2">
-            {buildScore.characterEvaluations.map((charEval) => {
-              const totalCharIncrease = charEval.talentEvaluations.reduce(
-                (sum, e) => sum + (e.averageDamageIncrease ?? 0),
-                0,
-              )
-              return (
-                <div
-                  key={charEval.characterId}
-                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"
-                >
-                  <span className="text-sm">{charEval.characterName}</span>
-                  <span className="font-semibold text-sm text-primary">
-                    +{totalCharIncrease?.toFixed(1) ?? '0.0'}%
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* ディスク別の詳細 */}
-        <div>
-          <h3 className="mb-2 font-semibold text-sm text-slate-600 dark:text-slate-300">
-            ディスク別
-          </h3>
-          <div className="space-y-2">
-            {buildScore.discEvaluations.map((discEval) => {
-              const totalDiscIncrease = discEval.skillEvaluations.reduce(
-                (sum, e) => sum + (e.averageDamageIncrease ?? 0),
-                0,
-              )
-              return (
-                <div
-                  key={discEval.discId}
-                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 dark:bg-slate-800"
-                >
-                  <span className="text-sm">{discEval.discName}</span>
-                  <span className="font-semibold text-sm text-primary">
-                    +{totalDiscIncrease?.toFixed(1) ?? '0.0'}%
-                  </span>
-                </div>
-              )
-            })}
           </div>
         </div>
       </CardContent>

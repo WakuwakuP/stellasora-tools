@@ -3,6 +3,7 @@
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { unstable_cache } from 'next/cache'
 import {
   type LLMConversionRequest,
   type LLMConversionResponse,
@@ -164,9 +165,9 @@ function parseGeminiResponse(responseText: string): ParsedEffect[] {
 }
 
 /**
- * スキル/素質説明をJSON形式に変換
+ * スキル/素質説明をJSON形式に変換（内部実装）
  */
-export async function convertDescriptionToJSON(
+async function convertDescriptionToJSONInternal(
   request: LLMConversionRequest,
 ): Promise<LLMConversionResponse> {
   try {
@@ -207,6 +208,35 @@ export async function convertDescriptionToJSON(
       success: false,
     }
   }
+}
+
+/**
+ * スキル/素質説明をJSON形式に変換（キャッシュ付き）
+ * @param request - LLM変換リクエスト
+ * @returns LLM変換レスポンス
+ */
+export async function convertDescriptionToJSON(
+  request: LLMConversionRequest,
+): Promise<LLMConversionResponse> {
+  // テスト環境ではキャッシュなしで実行
+  if (process.env.NODE_ENV === 'test') {
+    return convertDescriptionToJSONInternal(request)
+  }
+
+  // リクエスト内容からキャッシュキーを生成
+  const cacheKey = `gemini:${request.characterInfo?.name ?? 'unknown'}:${request.description.substring(0, 100)}`
+
+  // キャッシュ化された関数を作成（24時間キャッシュ）
+  const cachedConvert = unstable_cache(
+    async () => convertDescriptionToJSONInternal(request),
+    [cacheKey],
+    {
+      revalidate: 86400, // 24時間
+      tags: ['gemini-conversion'],
+    },
+  )
+
+  return cachedConvert()
 }
 
 /**

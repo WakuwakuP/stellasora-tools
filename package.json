@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@google/model-viewer": "^4.1.0",
     "@hookform/resolvers": "5.2.2",
     "@next-auth/prisma-adapter": "^1.0.7",

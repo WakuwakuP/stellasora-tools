@@ -430,7 +430,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     }
 
     // ロスレコまたは素質が選択されていない場合はスキップ
-    if (mainLossRecordIds.length === 0 && selectedTalents.length === 0) {
+    if (mainLossRecordIds.length === 0 || selectedTalents.length === 0) {
       setBuildScore(null)
       return
     }

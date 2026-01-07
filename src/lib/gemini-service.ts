@@ -121,7 +121,7 @@ ${processedDescription}
   "effects": [
     {
       "name": "効果の名前",
-      "type": "効果の種類（damage_increase, crit_rate, crit_damage, elemental_damage, atk_increase, def_increase, speed_increase, healing, shieldなど）",
+      "type": "効果の種類（下記の分類のみ使用）",
       "value": 数値（パーセントの場合は数値のみ、例: 10% → 10）,
       "unit": "単位（%, 秒, 回など）",
       "duration": 持続時間（秒、永続の場合は-1）,
@@ -132,10 +132,26 @@ ${processedDescription}
   ]
 }
 
+効果の種類（type）は必ず以下のいずれかを使用してください:
+- damage_increase: 全体的なダメージ増加
+- normal_attack_damage: 通常攻撃ダメージ増加
+- skill_damage: スキルダメージ増加
+- ultimate_damage: 必殺技ダメージ増加
+- mark_damage: 印ダメージ増加
+- elemental_damage: 属性ダメージ増加（水/火/風/地/光/闇は自動判定）
+- atk_increase: 攻撃力増加
+- speed_increase: 速度増加
+- cooldown_reduction: クールダウン減少
+- crit_rate: 会心率増加
+- crit_damage: 会心ダメージ増加
+- damage_taken_increase: 被ダメージ増加（敵に付与するデバフ）
+- def_decrease: 防御力減少（敵に付与するデバフ、damage_taken_increaseとして扱う）
+
 注意事項:
 - 効果が複数ある場合は配列に複数含めてください
 - 数値は必ず数字型で出力してください
 - conditionがない場合はnullを設定してください
+- 移動速度減少などの効果は無視してください（ダメージに直接影響しないため）
 - 必ずJSON形式で出力してください（説明文やマークダウンは含めないでください）`
 }
 

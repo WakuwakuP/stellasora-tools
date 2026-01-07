@@ -316,6 +316,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const buildEvaluationResult = useBuildEvaluation({
     mainCharacterName: characters[0]?.name ?? null,
     mainLossRecordIds,
+    qualitiesData,
     selectedTalents,
     subLossRecordIds,
     support1CharacterName: characters[1]?.name ?? null,

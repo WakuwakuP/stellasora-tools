@@ -102,8 +102,8 @@ ${JSON.stringify(inputData, null, 2)}
 `
 
   try {
-    // Gemini 1.5 Flash を使用（コスト効率が良い）
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    // Gemini 2.0 Flash Lite を使用（コスト効率が良い）
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash-lite' })
 
     const result = await model.generateContent(prompt)
     const response = result.response

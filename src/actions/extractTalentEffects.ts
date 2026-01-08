@@ -13,6 +13,12 @@ const CACHE_REVALIDATE_SECONDS = 604800
 /** JSON抽出用の正規表現 */
 const JSON_EXTRACT_REGEX = /```json\s*([\s\S]*?)\s*```/
 
+/** 常時発動効果のデフォルト稼働時間（秒） */
+const DEFAULT_PERMANENT_UPTIME = 999999
+
+/** キャッシュキーの表示長 */
+const CACHE_KEY_DISPLAY_LENGTH = 80
+
 if (!GEMINI_API_KEY) {
   console.warn('GEMINI_API_KEY is not set. LLM features will not be available.')
 }
@@ -76,14 +82,14 @@ const EFFECT_EXTRACTION_PROMPT = `あなたはステラソラというゲーム�
 /**
  * キャラクターの詳細情報型（ステータスとスキル情報を含む）
  */
-interface CharacterStats {
+export interface CharacterStats {
   /** Lv90時点のHP */
   hp_lv90: number
   /** Lv90時点のATK */
   atk_lv90: number
 }
 
-interface SkillInfo {
+export interface SkillInfo {
   /** スキル名 */
   name: string
   /** スキルLv10時点の数値を当てはめた説明テキスト */
@@ -97,13 +103,47 @@ interface SkillInfo {
 /**
  * 効果抽出のオプション
  */
-interface ExtractEffectsOptions {
+export interface ExtractEffectsOptions {
   characterName: string
   element: string
   characterStats: CharacterStats
   skills: SkillInfo[]
   talentName: string
   talentDescription: string
+}
+
+/**
+ * 効果情報を正規化する（デフォルト値を設定し、NaNを防ぐ）
+ */
+function normalizeEffectInfo(
+  effect: Partial<EffectInfo>,
+  talentName: string,
+): EffectInfo {
+  return {
+    cooldown:
+      typeof effect.cooldown === 'number' && !Number.isNaN(effect.cooldown)
+        ? effect.cooldown
+        : 0,
+    level:
+      typeof effect.level === 'number' && !Number.isNaN(effect.level)
+        ? effect.level
+        : 1,
+    maxStacks:
+      typeof effect.maxStacks === 'number' && !Number.isNaN(effect.maxStacks)
+        ? effect.maxStacks
+        : 1,
+    name: effect.name || talentName,
+    type: effect.type || 'damage_increase',
+    unit: effect.unit || '%',
+    uptime:
+      typeof effect.uptime === 'number' && !Number.isNaN(effect.uptime)
+        ? effect.uptime
+        : DEFAULT_PERMANENT_UPTIME,
+    value:
+      typeof effect.value === 'number' && !Number.isNaN(effect.value)
+        ? effect.value
+        : 0,
+  }
 }
 
 /**
@@ -149,6 +189,11 @@ async function extractEffectsWithGemini(
 ${JSON.stringify(inputData, null, 2)}
 `
 
+  // LLMリクエストのログ出力
+  console.log(
+    `[LLM Request] キャラクター: ${characterName}, 素質/スキル: ${talentName}`,
+  )
+
   try {
     // Gemini 2.0 Flash Lite を使用
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' })
@@ -162,11 +207,24 @@ ${JSON.stringify(inputData, null, 2)}
     const jsonText = jsonMatch ? jsonMatch[1] : text
 
     // JSONをパース
-    const effects = JSON.parse(jsonText) as EffectInfo[]
+    const rawEffects = JSON.parse(jsonText) as EffectInfo[]
 
     // 型チェック
-    if (!Array.isArray(effects)) {
+    if (!Array.isArray(rawEffects)) {
       throw new Error('Invalid response format: expected array')
+    }
+
+    // 各効果のデフォルト値を設定し、NaNを防ぐ
+    const effects: EffectInfo[] = rawEffects.map((effect) =>
+      normalizeEffectInfo(effect, talentName),
+    )
+
+    // LLMレスポンスのログ出力
+    console.log(`[LLM Response] ${talentName}: ${effects.length}件の効果を抽出`)
+    for (const effect of effects) {
+      console.log(
+        `  - Lv${effect.level}: ${effect.type} +${effect.value}${effect.unit} (uptime: ${effect.uptime}s, cd: ${effect.cooldown}s)`,
+      )
     }
 
     return effects
@@ -186,20 +244,31 @@ ${JSON.stringify(inputData, null, 2)}
 export async function extractTalentEffects(
   options: ExtractEffectsOptions,
 ): Promise<EffectInfo[]> {
-  // キャッシュキーを生成
-  const cacheKey = `talent-effects:${options.characterName}:${options.talentName}:${JSON.stringify(options.characterStats)}:${JSON.stringify(options.skills)}`
+  // 説明文のハッシュを生成（キャッシュキー用）
+  // 同じ説明文であれば同じキャッシュを使う
+  const descriptionHash = Buffer.from(options.talentDescription).toString(
+    'base64url',
+  )
 
-  const cachedFunction = unstable_cache(
-    async () => extractEffectsWithGemini(options),
+  // キャッシュキーを生成（説明文ハッシュを含む）
+  const cacheKey = `talent-effects:${options.characterName}:${options.talentName}:${descriptionHash}`
+
+  // リクエスト受信のログ（キャッシュキーも表示）
+  console.log(
+    `[extractTalentEffects] キャラクター: ${options.characterName}, 素質/スキル: ${options.talentName}, キャッシュキー: ${cacheKey.substring(0, CACHE_KEY_DISPLAY_LENGTH)}...`,
+  )
+
+  // unstable_cacheでキャッシュ付き関数を作成
+  // 第2引数のkeyPartsにキャッシュキーを渡すことで、同じキーなら同じキャッシュを使う
+  const cachedExtract = unstable_cache(
+    async (extractOptions: ExtractEffectsOptions) =>
+      extractEffectsWithGemini(extractOptions),
     [cacheKey],
     {
       revalidate: CACHE_REVALIDATE_SECONDS,
-      tags: ['talent-effects'],
+      tags: ['talent-effects', cacheKey],
     },
   )
 
-  return cachedFunction()
+  return cachedExtract(options)
 }
-
-// Export types for use in other modules
-export type { CharacterStats, ExtractEffectsOptions, SkillInfo }

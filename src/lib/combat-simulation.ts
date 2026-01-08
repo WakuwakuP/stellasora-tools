@@ -17,13 +17,19 @@ const SIMULATION_DURATION = 120
 const NORMAL_ATTACK_INTERVAL = 0.5
 
 /** スキルの実行時間（秒） */
-const SKILL_DURATION = 1
+const _SKILL_DURATION = 1
 
 /** 必殺技の実行時間（秒） */
 const ULTIMATE_DURATION = 3
 
 /** 必殺技の発動タイミング（秒） */
 const ULTIMATE_TIMING = 60
+
+/** 時間進行のステップ（秒） */
+const TIME_STEP = 0.1
+
+/** 常時発動効果のデフォルト稼働時間 */
+const DEFAULT_PERMANENT_UPTIME = 999999
 
 /**
  * 主力スキルの定義
@@ -138,7 +144,7 @@ export function simulateCombat(
       nextNormalAttackTime = currentTime + NORMAL_ATTACK_INTERVAL
       currentTime = nextNormalAttackTime
     } else {
-      currentTime += 0.1 // 時間を進める
+      currentTime += TIME_STEP // 時間を進める
     }
   }
 
@@ -177,7 +183,7 @@ function activateEffects(
     if (!uptimeData) continue
 
     // 常時発動の効果
-    if (effect.cooldown === 0 && effect.uptime === 999999) {
+    if (effect.cooldown === 0 && effect.uptime === DEFAULT_PERMANENT_UPTIME) {
       if (uptimeData.currentStart === undefined) {
         uptimeData.currentStart = currentTime
       }
@@ -202,9 +208,6 @@ function activateEffects(
     if (uptimeData.stacks < effect.maxStacks) {
       uptimeData.stacks += 1
     }
-
-    // 効果が終了する時刻を計算
-    const endTime = currentTime + effect.uptime
 
     // 稼働時間を記録
     uptimeData.totalUptime += effect.uptime

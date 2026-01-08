@@ -6,8 +6,27 @@ import { type TalentLevelScore } from 'types/buildScore'
 // TODO: This Server Action needs refactoring to use extractTalentEffects
 // Currently not in use - useTalentScores hook uses extractTalentEffects directly
 
+/** 素質レベル最小値 */
+const TALENT_LEVEL_MIN = 1
+/** 素質レベル最大値 */
+const TALENT_LEVEL_MAX = 6
+/** 素質レベル2 */
+const TALENT_LEVEL_2 = 2
+/** 素質レベル3 */
+const TALENT_LEVEL_3 = 3
+/** 素質レベル4 */
+const TALENT_LEVEL_4 = 4
+/** 素質レベル5 */
+const TALENT_LEVEL_5 = 5
 /** 素質レベルの定数 */
-const TALENT_LEVELS = [1, 2, 3, 4, 5, 6] as const
+const TALENT_LEVELS = [
+  TALENT_LEVEL_MIN,
+  TALENT_LEVEL_2,
+  TALENT_LEVEL_3,
+  TALENT_LEVEL_4,
+  TALENT_LEVEL_5,
+  TALENT_LEVEL_MAX,
+] as const
 
 /** 素質スコア計算のオプション */
 interface TalentScoreOptions {

@@ -76,6 +76,14 @@ export interface EffectDamageIncrease {
   averageIncrease: number
   /** アップタイムカバレッジ（0-1） */
   uptimeCoverage: number
+  /** キャラクター名（素質の場合） */
+  characterName?: string
+  /** 素質インデックス（素質の場合） */
+  talentIndex?: number
+  /** レベル（素質の場合、1-6） */
+  level?: number
+  /** ソースタイプ（素質 or ロスレコ） */
+  sourceType?: 'talent' | 'lossreco'
 }
 
 /** ビルドスコア */

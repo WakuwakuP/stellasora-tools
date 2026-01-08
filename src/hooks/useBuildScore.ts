@@ -4,6 +4,13 @@ import { calculateBuildPerformance } from 'actions/calculateBuildScore'
 import { getCharacterIdByName } from 'actions/getAllCharacters'
 import { type SelectedTalent } from 'components/build'
 import { useEffect, useState } from 'react'
+import { type EffectDamageIncrease } from 'types/buildScore'
+
+/** ビルドに必要なキャラクター数 */
+const REQUIRED_CHARACTER_COUNT = 3
+
+/** ビルドに必要なロスレコ数 */
+const REQUIRED_LOSS_RECORD_COUNT = 3
 
 /**
  * ビルドスコアを計算するフック
@@ -18,6 +25,9 @@ export function useBuildScore(
   subLossRecordIds: number[],
 ) {
   const [score, setScore] = useState<number | undefined>(undefined)
+  const [effectContributions, setEffectContributions] = useState<
+    EffectDamageIncrease[]
+  >([])
   const [isCalculating, setIsCalculating] = useState(false)
 
   useEffect(() => {
@@ -33,8 +43,11 @@ export function useBuildScore(
 
     if (!(hasAllCharacters && hasLossRecords && hasTalents)) {
       setScore(undefined)
+      setEffectContributions([])
       return
     }
+
+    console.log('Calculating build score...')
 
     // LLMベースのスコア計算を実行
     const calculateRealScore = async () => {
@@ -43,20 +56,27 @@ export function useBuildScore(
       try {
         // キャラクター名からIDを取得
         const characterIds = await Promise.all(
-          characters.map((c) => getCharacterIdByName(c.name!)),
+          characters.map((c) => {
+            if (c.name === null) {
+              return Promise.resolve(null)
+            }
+            return getCharacterIdByName(c.name)
+          }),
         )
 
         // IDが取得できなかった場合はエラー
         if (characterIds.some((id) => id === null)) {
           console.error('Failed to fetch character IDs')
           setScore(undefined)
+          setEffectContributions([])
           setIsCalculating(false)
           return
         }
 
         // 正確に3つのキャラクターIDが必要
-        if (characterIds.length !== 3) {
+        if (characterIds.length !== REQUIRED_CHARACTER_COUNT) {
           setScore(undefined)
+          setEffectContributions([])
           setIsCalculating(false)
           return
         }
@@ -65,8 +85,9 @@ export function useBuildScore(
         const allDiscIds = [...mainLossRecordIds, ...subLossRecordIds]
 
         // 正確に3つのロスレコが必要
-        if (allDiscIds.length < 3) {
+        if (allDiscIds.length < REQUIRED_LOSS_RECORD_COUNT) {
           setScore(undefined)
+          setEffectContributions([])
           setIsCalculating(false)
           return
         }
@@ -74,13 +95,19 @@ export function useBuildScore(
         // ビルドスコアを計算
         const result = await calculateBuildPerformance({
           characterIds: characterIds as [number, number, number],
-          discIds: allDiscIds.slice(0, 3) as [number, number, number],
+          discIds: allDiscIds.slice(0, REQUIRED_LOSS_RECORD_COUNT) as [
+            number,
+            number,
+            number,
+          ],
         })
 
         setScore(result.totalScore)
+        setEffectContributions(result.effectContributions)
       } catch (error) {
         console.error('Failed to calculate build score:', error)
         setScore(undefined)
+        setEffectContributions([])
       } finally {
         setIsCalculating(false)
       }
@@ -89,5 +116,5 @@ export function useBuildScore(
     calculateRealScore()
   }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds])
 
-  return { isCalculating, score }
+  return { effectContributions, isCalculating, score }
 }

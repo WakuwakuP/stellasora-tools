@@ -12,6 +12,18 @@ import {
  * 各効果の平均ダメージ増加率を計算し、総合スコアを算出する
  */
 
+/** パーセンテージ変換用の基準値 */
+const PERCENTAGE_BASE = 100
+
+/** ベースダメージ（%） */
+const BASE_DAMAGE = 100
+
+/** デフォルト会心率（%） */
+const DEFAULT_CRIT_RATE = 0.2
+
+/** 会心率によるダメージ増加係数 */
+const CRIT_RATE_DAMAGE_FACTOR = 0.5
+
 /**
  * 加算タイプの効果（同一タイプは加算）
  */
@@ -84,20 +96,21 @@ export function calculateBuildScore(
 function calculateAverageIncrease(
   effect: EffectInfo,
   uptimeCoverage: number,
-  allEffects: EffectInfo[],
+  _allEffects: EffectInfo[],
 ): number {
   // 効果量を取得
   let effectValue = effect.value
 
   // 単位が%でない場合は適切に変換
+  const DAMAGE_PER_COUNT = 10
   if (effect.unit === '回') {
     // 回数ベースの効果は、実行回数に応じて変換
     // 簡易的に1回あたり10%のダメージ増加として扱う
-    effectValue = effect.value * 10
+    effectValue = effect.value * DAMAGE_PER_COUNT
   } else if (effect.unit === '秒') {
     // 時間ベースの効果は、持続時間に応じて変換
     // 簡易的に1秒あたり1%のダメージ増加として扱う
-    effectValue = effect.value * 1
+    effectValue = effect.value
   }
 
   // 稼働率を考慮した平均増加率
@@ -134,19 +147,21 @@ function calculateTotalScore(contributions: EffectDamageIncrease[]): number {
   )
 
   // 乗算効果を適用
-  let totalScore = 100 + additiveTotal // ベースダメージ100%に加算効果を加える
+  let totalScore = BASE_DAMAGE + additiveTotal // ベースダメージ100%に加算効果を加える
 
   for (const effect of multiplicativeEffects) {
     // 効果の種類に応じて乗算
     switch (effect.type) {
       case 'atk_increase':
         // 攻撃力増加はダメージに直接影響
-        totalScore *= 1 + effect.averageIncrease / 100
+        totalScore *= 1 + effect.averageIncrease / PERCENTAGE_BASE
         break
       case 'crit_rate':
         // 会心率は確率的なダメージ増加
         // 会心ダメージを150%と仮定（会心ダメージ増加がない場合）
-        totalScore *= 1 + (effect.averageIncrease / 100) * 0.5
+        totalScore *=
+          1 +
+          (effect.averageIncrease / PERCENTAGE_BASE) * CRIT_RATE_DAMAGE_FACTOR
         break
       case 'crit_damage': {
         // 会心ダメージ増加
@@ -155,19 +170,20 @@ function calculateTotalScore(contributions: EffectDamageIncrease[]): number {
           (e) => e.type === 'crit_rate',
         )
         const assumedCritRate = critRateEffect
-          ? critRateEffect.averageIncrease / 100
-          : 0.2 // デフォルト20%
-        totalScore *= 1 + assumedCritRate * (effect.averageIncrease / 100)
+          ? critRateEffect.averageIncrease / PERCENTAGE_BASE
+          : DEFAULT_CRIT_RATE
+        totalScore *=
+          1 + assumedCritRate * (effect.averageIncrease / PERCENTAGE_BASE)
         break
       }
       case 'speed_increase':
         // 速度増加は実行回数に影響
         // 簡易的に速度増加%がそのまま実行回数増加に繋がると仮定
-        totalScore *= 1 + effect.averageIncrease / 100
+        totalScore *= 1 + effect.averageIncrease / PERCENTAGE_BASE
         break
       case 'cooldown_reduction':
         // クールダウン減少は実行回数に影響
-        totalScore *= 1 + effect.averageIncrease / 100
+        totalScore *= 1 + effect.averageIncrease / PERCENTAGE_BASE
         break
       default:
         break
@@ -175,7 +191,7 @@ function calculateTotalScore(contributions: EffectDamageIncrease[]): number {
   }
 
   // ベースダメージを引いてスコアとして返す
-  return totalScore - 100
+  return totalScore - BASE_DAMAGE
 }
 
 /**
@@ -213,7 +229,7 @@ export function formatBuildScore(score: BuildScore): string {
 
   for (const contribution of sortedContributions) {
     lines.push(
-      `  ${contribution.name}: +${contribution.averageIncrease.toFixed(2)}% (稼働率: ${(contribution.uptimeCoverage * 100).toFixed(1)}%)`,
+      `  ${contribution.name}: +${contribution.averageIncrease.toFixed(2)}% (稼働率: ${(contribution.uptimeCoverage * PERCENTAGE_BASE).toFixed(1)}%)`,
     )
   }
 

@@ -14,11 +14,6 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? ''
 /** キャッシュ時間（7日間 = 604800秒） */
 const CACHE_REVALIDATE_SECONDS = 604800
 
-/** マークダウンコードブロック抽出用の正規表現 */
-const CODE_BLOCK_REGEX = /```(?:json)?\s*([\s\S]*?)\s*```/
-/** バッククオート除去用の正規表現 */
-const BACKTICK_CLEANUP_REGEX = /^`+|`+$/g
-
 if (!GEMINI_API_KEY) {
   console.warn('GEMINI_API_KEY is not set. LLM features will not be available.')
 }
@@ -107,29 +102,16 @@ ${JSON.stringify(inputData, null, 2)}
 `
 
   try {
-    // Gemini 2.0 Flash Lite を使用（コスト効率が良い）
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash-lite' })
+    // Gemini 1.5 Flash を使用（コスト効率が良い）
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const result = await model.generateContent(prompt)
     const response = result.response
     const text = response.text()
 
     // JSON部分を抽出（```json ... ``` で囲まれている場合に対応）
-    let jsonText = text.trim()
-
-    // マークダウンのコードブロックを削除
-    const jsonMatch = jsonText.match(CODE_BLOCK_REGEX)
-    if (jsonMatch) {
-      jsonText = jsonMatch[1].trim()
-    }
-
-    // 先頭と末尾のバッククオートを削除（念のため）
-    jsonText = jsonText.replace(BACKTICK_CLEANUP_REGEX, '').trim()
-
-    // "json" という文字列が先頭にある場合は削除（LLMが稀に出力する）
-    if (jsonText.startsWith('json')) {
-      jsonText = jsonText.substring(4).trim()
-    }
+    const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/)
+    const jsonText = jsonMatch ? jsonMatch[1] : text
 
     // JSONをパース
     const effects = JSON.parse(jsonText) as EffectInfo[]

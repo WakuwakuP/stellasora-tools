@@ -1,29 +1,9 @@
 'use client'
 
 import { calculateBuildPerformance } from 'actions/calculateBuildScore'
+import { getCharacterIdByName } from 'actions/getAllCharacters'
 import { type SelectedTalent } from 'components/build'
 import { useEffect, useState } from 'react'
-
-/**
- * キャラクター名からIDを取得する
- * API経由でキャラクター一覧を取得してマッピング
- */
-async function getCharacterIdByName(name: string): Promise<number | null> {
-  try {
-    const response = await fetch(
-      'https://api.ennead.cc/stella/characters?lang=JP',
-    )
-    if (!response.ok) return null
-
-    const characters = await response.json()
-    const character = characters.find(
-      (c: { name: string; id: number }) => c.name === name,
-    )
-    return character?.id ?? null
-  } catch {
-    return null
-  }
-}
 
 /**
  * ビルドスコアを計算するフック

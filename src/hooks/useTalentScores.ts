@@ -100,28 +100,9 @@ export function useTalentScores(
             const level = effect.level ?? 1
             const scoreKey = `${talent.characterName}-${talent.index}-${level}`
 
-            // 簡易スコア計算（実際の値をベースに）
-            // ダメージ増加系は効果量をそのまま使用
-            // その他の効果は係数を掛けて換算
-            let score = 0
-
-            if (
-              effect.type === 'damage_increase' ||
-              effect.type === 'damage_normal_attack' ||
-              effect.type === 'damage_skill' ||
-              effect.type === 'damage_ultimate' ||
-              effect.type === 'damage_elemental'
-            ) {
-              score = effect.value
-            } else if (effect.type === 'atk_increase') {
-              score = effect.value * 0.8 // 攻撃力増加は0.8倍で換算
-            } else if (effect.type === 'crit_rate') {
-              score = effect.value * 2 // 会心率は2倍で換算
-            } else if (effect.type === 'crit_damage') {
-              score = effect.value * 0.5 // 会心ダメージは0.5倍で換算
-            }
-
-            newScoresMap[scoreKey] = score
+            // 効果値をそのまま使用（APIから取得した実際の値）
+            // LLMが各レベルの正確な数値を抽出しているため係数は不要
+            newScoresMap[scoreKey] = effect.value
           }
         }
 

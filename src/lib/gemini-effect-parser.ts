@@ -14,6 +14,11 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? ''
 /** キャッシュ時間（7日間 = 604800秒） */
 const CACHE_REVALIDATE_SECONDS = 604800
 
+/** マークダウンコードブロック抽出用の正規表現 */
+const CODE_BLOCK_REGEX = /```(?:json)?\s*([\s\S]*?)\s*```/
+/** バッククオート除去用の正規表現 */
+const BACKTICK_CLEANUP_REGEX = /^`+|`+$/g
+
 if (!GEMINI_API_KEY) {
   console.warn('GEMINI_API_KEY is not set. LLM features will not be available.')
 }
@@ -110,8 +115,16 @@ ${JSON.stringify(inputData, null, 2)}
     const text = response.text()
 
     // JSON部分を抽出（```json ... ``` で囲まれている場合に対応）
-    const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/)
-    const jsonText = jsonMatch ? jsonMatch[1] : text
+    let jsonText = text.trim()
+
+    // マークダウンのコードブロックを削除
+    const jsonMatch = jsonText.match(CODE_BLOCK_REGEX)
+    if (jsonMatch) {
+      jsonText = jsonMatch[1].trim()
+    }
+
+    // 先頭と末尾のバッククオートを削除（念のため）
+    jsonText = jsonText.replace(BACKTICK_CLEANUP_REGEX, '').trim()
 
     // JSONをパース
     const effects = JSON.parse(jsonText) as EffectInfo[]

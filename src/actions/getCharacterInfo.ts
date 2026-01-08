@@ -22,6 +22,37 @@ export interface CharacterDetail {
     supportCore: Array<{ description: string; name: string }>
     supportNormal: Array<{ description: string; name: string }>
   }
+  /** キャラクターステータス（Lv90時点） */
+  stats?: {
+    hp_lv90: number
+    atk_lv90: number
+  }
+  /** スキル情報 */
+  skills?: {
+    normal?: {
+      name?: string
+      description?: string
+      description_lv10?: string
+    }
+    main?: {
+      name?: string
+      description?: string
+      description_lv10?: string
+      cooldown?: number
+    }
+    support?: {
+      name?: string
+      description?: string
+      description_lv10?: string
+      cooldown?: number
+    }
+    ultimate?: {
+      name?: string
+      description?: string
+      description_lv10?: string
+      cooldown?: number
+    }
+  }
 }
 
 /**

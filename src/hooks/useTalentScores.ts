@@ -1,6 +1,10 @@
 'use client'
 
-import { extractTalentEffects } from 'actions/extractTalentEffects'
+import {
+  type CharacterStats,
+  extractTalentEffects,
+  type SkillInfo,
+} from 'actions/extractTalentEffects'
 import { type CharacterDetail } from 'actions/getCharacterInfo'
 import { type SelectedTalent } from 'components/build'
 import { useEffect, useState } from 'react'
@@ -51,18 +55,18 @@ export function useTalentScores(
         const newEffectsMap: TalentEffectsMap = {}
         const newScoresMap: TalentScoreMap = {}
 
-        // 各素質に対して効果情報を抽出
-        for (const talent of selectedTalents) {
+        // 並列で各素質の効果情報を抽出
+        const extractionPromises = selectedTalents.map(async (talent) => {
           const character = characters.find(
             (c) => c.name === talent.characterName,
           )
-          if (!character?.characterData) continue
+          if (!character?.characterData) return
 
           const { characterData } = character
           const effectsKey = `${talent.characterName}-${talent.index}`
 
           // すでに抽出済みの場合はスキップ
-          if (newEffectsMap[effectsKey]) continue
+          if (newEffectsMap[effectsKey]) return
 
           // 素質情報を取得
           let talentInfo: { description: string; name: string } | null = null
@@ -83,26 +87,95 @@ export function useTalentScores(
             talentInfo = allTalents[talent.index] || null
           }
 
-          if (!talentInfo) continue
+          if (!talentInfo) return
+
+          // キャラクターステータス（Lv90）を構築
+          const characterStats: CharacterStats = {
+            atk_lv90: characterData.stats?.atk_lv90 ?? 0,
+            hp_lv90: characterData.stats?.hp_lv90 ?? 0,
+          }
+
+          // スキル情報（Lv10）を構築
+          const skills: SkillInfo[] = []
+
+          // 通常攻撃
+          if (characterData.skills?.normal) {
+            skills.push({
+              cooldown: 0,
+              description:
+                characterData.skills.normal.description_lv10 ??
+                characterData.skills.normal.description ??
+                '',
+              name: characterData.skills.normal.name ?? '通常攻撃',
+              type: 'normal',
+            })
+          }
+
+          // 主力/支援スキルを選択
+          const skillRole =
+            talent.role === 'main'
+              ? characterData.skills?.main
+              : characterData.skills?.support
+          if (skillRole) {
+            skills.push({
+              cooldown: skillRole.cooldown ?? 10,
+              description:
+                skillRole.description_lv10 ?? skillRole.description ?? '',
+              name:
+                skillRole.name ??
+                (talent.role === 'main' ? '主力スキル' : '支援スキル'),
+              type: talent.role === 'main' ? 'main_skill' : 'support_skill',
+            })
+          }
+
+          // 必殺技
+          if (characterData.skills?.ultimate) {
+            skills.push({
+              cooldown: characterData.skills.ultimate.cooldown ?? 60,
+              description:
+                characterData.skills.ultimate.description_lv10 ??
+                characterData.skills.ultimate.description ??
+                '',
+              name: characterData.skills.ultimate.name ?? '必殺技',
+              type: 'ultimate',
+            })
+          }
 
           // LLMで効果情報を抽出（レベル1-6を含む）
-          const effects = await extractTalentEffects(
-            characterData.name,
-            characterData.element,
-            talentInfo.name,
-            talentInfo.description,
-          )
+          const effects = await extractTalentEffects({
+            characterName: characterData.name,
+            characterStats,
+            element: characterData.element,
+            skills,
+            talentDescription: talentInfo.description,
+            talentName: talentInfo.name,
+          })
 
+          return { effects, effectsKey }
+        })
+
+        // 並列実行の結果を待つ
+        const results = await Promise.all(extractionPromises)
+
+        // 結果を集約
+        for (const result of results) {
+          if (!result) continue
+
+          const { effectsKey, effects } = result
           newEffectsMap[effectsKey] = effects
 
           // 各レベルのスコアを計算
           for (const effect of effects) {
             const level = effect.level ?? 1
+            const talent = selectedTalents.find(
+              (t) => `${t.characterName}-${t.index}` === effectsKey,
+            )
+            if (!talent) continue
+
             const scoreKey = `${talent.characterName}-${talent.index}-${level}`
 
             // 簡易スコア計算（実際の値をベースに）
             // ダメージ増加系は効果量をそのまま使用
-            // その他の効果は係数を掛けて換算
             let score = 0
 
             if (
@@ -110,15 +183,19 @@ export function useTalentScores(
               effect.type === 'damage_normal_attack' ||
               effect.type === 'damage_skill' ||
               effect.type === 'damage_ultimate' ||
-              effect.type === 'damage_elemental'
+              effect.type === 'damage_elemental' ||
+              effect.type === 'damage_additional' ||
+              effect.type === 'damage_mark'
             ) {
               score = effect.value
             } else if (effect.type === 'atk_increase') {
-              score = effect.value * 0.8 // 攻撃力増加は0.8倍で換算
+              score = effect.value
             } else if (effect.type === 'crit_rate') {
-              score = effect.value * 2 // 会心率は2倍で換算
+              score = effect.value
             } else if (effect.type === 'crit_damage') {
-              score = effect.value * 0.5 // 会心ダメージは0.5倍で換算
+              score = effect.value
+            } else if (effect.type === 'damage_taken_increase') {
+              score = effect.value
             }
 
             newScoresMap[scoreKey] = score

@@ -43,7 +43,14 @@ export function useBuildScore(
       try {
         // キャラクター名からIDを取得
         const characterIds = await Promise.all(
-          characters.map((c) => getCharacterIdByName(c.name!)),
+          characters.map(async (c) => {
+            try {
+              return await getCharacterIdByName(c.name!)
+            } catch (err) {
+              console.error(`Failed to get ID for character ${c.name}:`, err)
+              return null
+            }
+          }),
         )
 
         // IDが取得できなかった場合はエラー
@@ -72,12 +79,20 @@ export function useBuildScore(
         }
 
         // ビルドスコアを計算
-        const result = await calculateBuildPerformance({
-          characterIds: characterIds as [number, number, number],
-          discIds: allDiscIds.slice(0, 3) as [number, number, number],
-        })
+        try {
+          const result = await calculateBuildPerformance({
+            characterIds: characterIds as [number, number, number],
+            discIds: allDiscIds.slice(0, 3) as [number, number, number],
+          })
 
-        setScore(result.totalScore)
+          setScore(result.totalScore)
+        } catch (performanceError) {
+          console.error(
+            'Failed to calculate build performance:',
+            performanceError,
+          )
+          setScore(undefined)
+        }
       } catch (error) {
         console.error('Failed to calculate build score:', error)
         setScore(undefined)
@@ -86,7 +101,11 @@ export function useBuildScore(
       }
     }
 
-    calculateRealScore()
+    calculateRealScore().catch((err) => {
+      console.error('Unexpected error in calculateRealScore:', err)
+      setIsCalculating(false)
+      setScore(undefined)
+    })
   }, [characters, selectedTalents, mainLossRecordIds, subLossRecordIds])
 
   return { isCalculating, score }

@@ -13,30 +13,37 @@ export interface CharacterListItem {
  * @returns キャラクター一覧
  */
 export async function getAllCharacters(): Promise<CharacterListItem[]> {
-  return await unstable_cache(
-    async () => {
-      const response = await fetch(
-        'https://api.ennead.cc/stella/characters?lang=JP',
-        {
-          headers: {
-            'Content-Type': 'application/json',
+  try {
+    return await unstable_cache(
+      async () => {
+        const response = await fetch(
+          'https://api.ennead.cc/stella/characters?lang=JP',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-        },
-      )
+        )
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch characters: ${response.statusText}`)
-      }
+        if (!response.ok) {
+          throw new Error(`Failed to fetch characters: ${response.statusText}`)
+        }
 
-      const characters = await response.json()
-      return characters as CharacterListItem[]
-    },
-    ['characters-list'],
-    {
-      revalidate: 60 * 60 * 4, // 4時間キャッシュ
-      tags: ['characters-list'],
-    },
-  )()
+        const characters = await response.json()
+        return characters as CharacterListItem[]
+      },
+      ['characters-list'],
+      {
+        revalidate: 60 * 60 * 4, // 4時間キャッシュ
+        tags: ['characters-list'],
+      },
+    )()
+  } catch (error) {
+    console.error('Error in getAllCharacters:', error)
+    throw new Error(
+      `Failed to get character list: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    )
+  }
 }
 
 /**

@@ -126,6 +126,11 @@ ${JSON.stringify(inputData, null, 2)}
     // 先頭と末尾のバッククオートを削除（念のため）
     jsonText = jsonText.replace(BACKTICK_CLEANUP_REGEX, '').trim()
 
+    // "json" という文字列が先頭にある場合は削除（LLMが稀に出力する）
+    if (jsonText.startsWith('json')) {
+      jsonText = jsonText.substring(4).trim()
+    }
+
     // JSONをパース
     const effects = JSON.parse(jsonText) as EffectInfo[]
 

@@ -2,12 +2,11 @@
 
 import { calculateBuildScore } from 'lib/build-score-calculator'
 import { simulateCombat } from 'lib/combat-simulation'
-import {
-  convertDiscSkillsToEffectInfo,
-  convertTalentsToEffectInfo,
-} from 'lib/gemini-effect-parser'
 import { unstable_cache } from 'next/cache'
 import { type BuildEvaluationInput, type BuildScore } from 'types/buildScore'
+
+// TODO: This Server Action needs refactoring to use extractTalentEffects
+// Currently not in use - useTalentScores hook uses extractTalentEffects directly
 
 /**
  * ビルドスコアを計算する Server Action
@@ -128,7 +127,8 @@ export async function calculateBuildPerformance(
       ])
 
       // Step 3: キャラクターの素質情報を抽出
-      const characterTalents = [
+      // TODO: Will be used when refactored to use extractTalentEffects
+      const _characterTalents = [
         ...char1.potentials.mainCore,
         ...char1.potentials.mainNormal,
         ...char2.potentials.supportCore,
@@ -138,13 +138,14 @@ export async function calculateBuildPerformance(
       ]
 
       // Step 4: ロスレコのスキル情報を抽出
-      const discSkills = []
+      // TODO: Will be used when refactored to use extractTalentEffects
+      const _discSkills = []
       for (const disc of [disc1, disc2, disc3]) {
         // 最大レベルのパラメータを使用
         const maxLevelParams =
           disc.mainSkill.params[disc.mainSkill.params.length - 1] ?? []
 
-        discSkills.push({
+        _discSkills.push({
           description: replaceParams(
             disc.mainSkill.description,
             maxLevelParams,
@@ -156,7 +157,7 @@ export async function calculateBuildPerformance(
         for (const secondarySkill of disc.secondarySkills) {
           const maxSecondaryParams =
             secondarySkill.params[secondarySkill.params.length - 1] ?? []
-          discSkills.push({
+          _discSkills.push({
             description: replaceParams(
               secondarySkill.description,
               maxSecondaryParams,
@@ -167,13 +168,9 @@ export async function calculateBuildPerformance(
       }
 
       // Step 5: LLMで効果情報に変換
-      const [talentEffects, discEffects] = await Promise.all([
-        convertTalentsToEffectInfo(char1.name, char1.element, characterTalents),
-        convertDiscSkillsToEffectInfo(disc1.name, disc1.element, discSkills),
-      ])
-
-      // Step 6: 全ての効果を結合
-      const allEffects = [...talentEffects, ...discEffects]
+      // TODO: Replace with extractTalentEffects calls
+      // For now, return empty effects as this function is not actively used
+      const allEffects: never[] = []
 
       // Step 7: 戦闘シミュレーションを実行
       // 主力スキルは簡易的に定義（実際のゲームデータに基づいて調整が必要）

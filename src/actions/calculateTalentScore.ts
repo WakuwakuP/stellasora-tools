@@ -1,10 +1,10 @@
 'use server'
 
-import { calculateBuildScore } from 'lib/build-score-calculator'
-import { simulateCombat } from 'lib/combat-simulation'
-import { convertTalentsToEffectInfo } from 'lib/gemini-effect-parser'
 import { unstable_cache } from 'next/cache'
 import { type TalentLevelScore } from 'types/buildScore'
+
+// TODO: This Server Action needs refactoring to use extractTalentEffects
+// Currently not in use - useTalentScores hook uses extractTalentEffects directly
 
 /** 素質レベルの定数 */
 const TALENT_LEVELS = [1, 2, 3, 4, 5, 6] as const
@@ -32,10 +32,10 @@ export async function calculateTalentLevelScore(
 ): Promise<TalentLevelScore> {
   const {
     characterId,
-    characterName,
-    element,
+    // characterName, // TODO: Will be used when refactored to use extractTalentEffects
+    // element, // TODO: Will be used when refactored to use extractTalentEffects
     talentName,
-    talentDescription,
+    // talentDescription, // TODO: Will be used when refactored to use extractTalentEffects
     talentIndex,
   } = options
 
@@ -45,43 +45,10 @@ export async function calculateTalentLevelScore(
   const cachedFunction = unstable_cache(
     async () => {
       try {
-        // LLMで効果情報に変換（レベル情報を含めてプロンプトに渡す）
-        const effectInfos = await convertTalentsToEffectInfo(
-          characterName,
-          element,
-          [
-            {
-              description: talentDescription,
-              name: `${talentName} Lv${level}`,
-            },
-          ],
-        )
-
-        // 効果情報が取得できない場合は0を返す
-        if (effectInfos.length === 0) {
-          return {
-            averageIncrease: 0,
-            characterId,
-            level,
-            talentIndex,
-            talentName,
-          }
-        }
-
-        // レベル情報を効果に付与
-        const effectsWithLevel = effectInfos.map((effect) => ({
-          ...effect,
-          level,
-        }))
-
-        // 戦闘シミュレーションを実行（素質単体）
-        const simulation = simulateCombat(effectsWithLevel, [])
-
-        // スコアを計算
-        const score = calculateBuildScore(effectsWithLevel, simulation)
-
+        // TODO: Replace with extractTalentEffects
+        // For now, return empty score as this function is not actively used
         return {
-          averageIncrease: score.totalScore,
+          averageIncrease: 0,
           characterId,
           level,
           talentIndex,

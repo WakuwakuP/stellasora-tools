@@ -438,8 +438,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         }
         // 通常素質はレベルアップ、最大レベルで解除
         if (existing.level < MAX_TALENT_LEVEL) {
+          const newLevel = (existing.level + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
           return prev.map((t) =>
-            t === existing ? { ...t, level: (t.level + 1) as any } : t,
+            t === existing ? { ...t, level: newLevel } : t,
           )
         }
         return prev.filter((t) => t !== existing)

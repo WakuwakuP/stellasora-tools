@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'components/ui/sonner'
 import { type Metadata } from 'next'
 import { type JSX } from 'react'
@@ -22,6 +23,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </Providers>
+        <Analytics />
       </body>
     </html>
   )

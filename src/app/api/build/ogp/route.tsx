@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '16px',
+                  padding: '20px',
                   background:
                     index === 0
                       ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
@@ -190,14 +190,16 @@ export async function GET(request: NextRequest) {
                     style={{
                       display: 'flex',
                       borderRadius: '16px',
-                      marginBottom: '12px',
+                      marginBottom: '14px',
                       overflow: 'hidden',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                      border: '3px solid rgba(255, 255, 255, 0.15)',
                     }}
                   >
                     <img
                       src={characterIcons[index]!}
-                      width={188}
-                      height={188}
+                      width={140}
+                      height={140}
                       alt={name}
                     />
                   </div>
@@ -207,11 +209,13 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      width: '188px',
-                      height: '188px',
+                      width: '140px',
+                      height: '140px',
                       background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
                       borderRadius: '16px',
-                      marginBottom: '12px',
+                      marginBottom: '14px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                      border: '3px solid rgba(255, 255, 255, 0.1)',
                     }}
                   >
                     <span style={{ fontSize: '56px', color: '#94a3b8' }}>

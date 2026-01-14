@@ -285,7 +285,6 @@ export async function GET(request: NextRequest) {
                       borderRadius: '12px',
                       overflow: 'hidden',
                       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     <img
@@ -306,7 +305,6 @@ export async function GET(request: NextRequest) {
                       background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
                       borderRadius: '12px',
                       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     <span style={{ fontSize: '28px' }}>🎵</span>
@@ -338,7 +336,6 @@ export async function GET(request: NextRequest) {
                       borderRadius: '12px',
                       overflow: 'hidden',
                       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     <img
@@ -359,7 +356,6 @@ export async function GET(request: NextRequest) {
                       background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
                       borderRadius: '12px',
                       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
                     <span style={{ fontSize: '28px' }}>🎵</span>

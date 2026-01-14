@@ -327,6 +327,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // 横向きモード用の左パネルタブ状態
   const [leftPanelTab, setLeftPanelTab] = useState('characters')
 
+  // モード切替時にタブ状態をリセット
+  useEffect(() => {
+    // デスクトップモードで landscape 専用タブが選択されている場合は characters にリセット
+    if (!isMobile && !isLandscape) {
+      if (leftPanelTab === 'main-lr' || leftPanelTab === 'sub-lr') {
+        setLeftPanelTab('characters')
+      }
+    }
+  }, [isMobile, isLandscape, leftPanelTab])
+
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 

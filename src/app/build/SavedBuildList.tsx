@@ -41,7 +41,7 @@ export const SavedBuildList: FC<SavedBuildListProps> = ({
   }
 
   return (
-    <ScrollArea className="max-h-60">
+    <ScrollArea className="h-full">
       <div className="space-y-2">
         {builds.map((build) => {
           const isActive = currentUrl === build.url

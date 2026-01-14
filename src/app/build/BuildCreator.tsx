@@ -32,7 +32,7 @@ import {
 import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
-import { useIsMobile } from 'hooks/use-mobile'
+import { useIsLandscape, useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
@@ -318,10 +318,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   // モバイル判定
   const isMobile = useIsMobile()
+  const isLandscape = useIsLandscape()
 
   // モバイル用のセクション折りたたみ状態（デフォルトは閉じた状態で素質選択エリアを広く表示）
   const [isBuildInfoOpen, setIsBuildInfoOpen] = useState(false)
   const [isSavedBuildsOpen, setIsSavedBuildsOpen] = useState(false)
+
+  // 横向きモード用の左パネルタブ状態
+  const [leftPanelTab, setLeftPanelTab] = useState('characters')
 
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
@@ -634,7 +638,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           {/* ビルド名 - モバイルではコンパクトに */}
           <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'} landscape:mb-1.5 landscape:p-1.5`}>
             <div className="flex items-center gap-2">
-              <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
+              <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'} landscape:h-3.5 landscape:w-3.5`} />
               <div className="flex-1">
                 <input
                   type="text"
@@ -642,14 +646,127 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   onChange={(e) => setBuildName(e.target.value)}
                   aria-label="ビルド名"
                   placeholder="新規ビルド"
-                  className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
+                  className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'} landscape:text-sm`}
                 />
               </div>
             </div>
           </div>
 
-          {/* モバイルの場合、ビルド情報を折りたたみ可能にする */}
-          {isMobile ? (
+          {/* 横向きモードの場合、タブ表示にする */}
+          {isLandscape ? (
+            <Tabs value={leftPanelTab} onValueChange={setLeftPanelTab} className="flex min-h-0 flex-1 flex-col">
+              <TabsList className="w-full shrink-0 grid grid-cols-4 rounded-lg p-0.5">
+                <TabsTrigger value="characters" className="px-1 py-1 text-[10px]">
+                  キャラクター
+                </TabsTrigger>
+                <TabsTrigger value="main-lr" className="px-1 py-1 text-[10px]">
+                  メイン
+                </TabsTrigger>
+                <TabsTrigger value="sub-lr" className="px-1 py-1 text-[10px]">
+                  サブ
+                </TabsTrigger>
+                <TabsTrigger value="builds" className="px-1 py-1 text-[10px]">
+                  ビルド
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="characters" className="mt-1.5 min-h-0 flex-1">
+                <div className="grid grid-cols-3 gap-1">
+                  {characters.map((char, index) => (
+                    <CharacterAvatar
+                      key={char.label}
+                      name={char.name}
+                      iconUrl={getCharacterIconUrl(char.name)}
+                      label={char.label}
+                      isMain={char.role === 'main'}
+                      totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                      onClick={() => openCharacterDialog(index)}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="main-lr" className="mt-1.5 min-h-0 flex-1">
+                <div>
+                  <h3 className="mb-1 flex items-center gap-1 text-xs font-bold">
+                    <span>⊕</span>
+                    メインロスレコ
+                    <button
+                      type="button"
+                      onClick={() => setMainLossRecordDialogOpen(true)}
+                      className="ml-auto text-slate-400 hover:text-slate-600"
+                      aria-label="メインロスレコを選択"
+                    >
+                      🔍
+                    </button>
+                  </h3>
+                  <LossRecordSlots
+                    lossRecordIds={mainLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                    onDeselect={handleMainLossRecordDeselect}
+                    compact
+                    showSecondaryNotes
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="sub-lr" className="mt-1.5 min-h-0 flex-1">
+                <div>
+                  <h3 className="mb-1 flex items-center gap-1 text-xs font-bold">
+                    <span>⊖</span>
+                    サブロスレコ
+                    <button
+                      type="button"
+                      onClick={() => setSubLossRecordDialogOpen(true)}
+                      className="ml-auto text-slate-400 hover:text-slate-600"
+                      aria-label="サブロスレコを選択"
+                    >
+                      🔍
+                    </button>
+                  </h3>
+                  <LossRecordSlots
+                    lossRecordIds={subLossRecordIds}
+                    getLossRecordById={getLossRecordById}
+                    onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                    onDeselect={handleSubLossRecordDeselect}
+                    compact
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="builds" className="mt-1.5 min-h-0 flex-1 overflow-hidden">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </TabsContent>
+
+              {/* ステータス表示 */}
+              <div className="mt-1.5 rounded-lg bg-slate-200 p-1.5 dark:bg-slate-700">
+                <div className="flex items-center gap-1 text-[10px]">
+                  <span className="text-blue-500">ℹ</span>
+                  <span>
+                    選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                  </span>
+                </div>
+              </div>
+
+              {/* 登録ボタン */}
+              <div className="mt-1.5">
+                <button
+                  type="button"
+                  onClick={handleSaveBuild}
+                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1 text-xs font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                >
+                  ❤ 登録
+                </button>
+              </div>
+            </Tabs>
+          ) : isMobile ? (
+            /* モバイルの場合、ビルド情報を折りたたみ可能にする */
             <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
               <CollapsibleTrigger
                 className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"

@@ -2,6 +2,8 @@
  * ビルドOGP画像URL生成ユーティリティ
  */
 
+import { getBaseUrl } from './url-utils'
+
 interface BuildOgpParams {
   /** ビルド名 */
   name?: string | null
@@ -14,7 +16,7 @@ interface BuildOgpParams {
 }
 
 /**
- * ビルド情報からOGP画像URLを生成する
+ * ビルド情報からOGP画像URLを生成する（絶対URLを返す）
  */
 export function generateBuildOgpUrl(params: BuildOgpParams): string {
   const searchParams = new URLSearchParams()
@@ -42,5 +44,7 @@ export function generateBuildOgpUrl(params: BuildOgpParams): string {
     searchParams.set('subLossRecords', params.subLossRecords.join(','))
   }
 
-  return `/api/build/ogp?${searchParams.toString()}`
+  // 絶対URLを生成（OpenGraph/Twitterクローラー用）
+  const baseUrl = getBaseUrl()
+  return `${baseUrl}/api/build/ogp?${searchParams.toString()}`
 }

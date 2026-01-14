@@ -4,6 +4,24 @@ import { type NextRequest } from 'next/server'
 export const runtime = 'edge'
 
 const API_BASE_URL = 'https://api.ennead.cc'
+const FETCH_TIMEOUT_MS = 8000 // 8秒タイムアウト
+
+/**
+ * タイムアウト付きfetchヘルパー関数
+ */
+async function fetchWithTimeout(url: string, timeoutMs: number = FETCH_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+  
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    clearTimeout(timeoutId)
+    return response
+  } catch (error) {
+    clearTimeout(timeoutId)
+    throw error
+  }
+}
 
 /**
  * OGP画像生成API
@@ -30,13 +48,14 @@ export async function GET(request: NextRequest) {
   const characterIcons = await Promise.all(
     characterNames.map(async (name) => {
       try {
-        const response = await fetch(
+        const response = await fetchWithTimeout(
           `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
         )
         if (!response.ok) return null
         const data = await response.json()
         return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch {
+      } catch (error) {
+        // タイムアウトまたは取得失敗時はnullを返す
         return null
       }
     }),
@@ -46,13 +65,14 @@ export async function GET(request: NextRequest) {
   const mainLossRecordIcons = await Promise.all(
     mainLossRecordIds.map(async (id) => {
       try {
-        const response = await fetch(
+        const response = await fetchWithTimeout(
           `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
         )
         if (!response.ok) return null
         const data = await response.json()
         return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch {
+      } catch (error) {
+        // タイムアウトまたは取得失敗時はnullを返す
         return null
       }
     }),
@@ -61,13 +81,14 @@ export async function GET(request: NextRequest) {
   const subLossRecordIcons = await Promise.all(
     subLossRecordIds.map(async (id) => {
       try {
-        const response = await fetch(
+        const response = await fetchWithTimeout(
           `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
         )
         if (!response.ok) return null
         const data = await response.json()
         return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch {
+      } catch (error) {
+        // タイムアウトまたは取得失敗時はnullを返す
         return null
       }
     }),
@@ -371,7 +392,17 @@ export async function GET(request: NextRequest) {
       },
     )
   } catch (error) {
-    console.error('OGP image generation error:', error)
+    // エラー詳細をログに記録（構造化ログとして出力）
+    const errorInfo = {
+      message: 'OGP image generation failed',
+      error: error instanceof Error ? error.message : String(error),
+      buildName: rawBuildName,
+      characterCount: characterNames.length,
+      mainLossRecordCount: mainLossRecordIds.length,
+      subLossRecordCount: subLossRecordIds.length,
+    }
+    console.error(JSON.stringify(errorInfo))
+    
     return new Response('Failed to generate OGP image', { status: 500 })
   }
 }

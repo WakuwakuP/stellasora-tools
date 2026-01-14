@@ -767,87 +767,140 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </Tabs>
           ) : isMobile ? (
             /* モバイルの場合、ビルド情報を折りたたみ可能にする */
-            <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
-              <CollapsibleTrigger
-                className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
-                aria-expanded={isBuildInfoOpen}
-              >
-                <span className="flex items-center gap-1 text-amber-600">
-                  <span>🏆</span>
-                  巡遊者・ロスレコ
-                </span>
-                {isBuildInfoOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
-              <CollapsibleContent className="space-y-2">
-                {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
-                <div>
-                  <div className="grid grid-cols-3 gap-1">
-                    {characters.map((char, index) => (
-                      <CharacterAvatar
-                        key={char.label}
-                        name={char.name}
-                        iconUrl={getCharacterIconUrl(char.name)}
-                        label={char.label}
-                        isMain={char.role === 'main'}
-                        totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
-                        onClick={() => openCharacterDialog(index)}
-                      />
-                    ))}
+            <>
+              <Collapsible open={isBuildInfoOpen} onOpenChange={setIsBuildInfoOpen}>
+                <CollapsibleTrigger
+                  className="mb-2 flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                  aria-expanded={isBuildInfoOpen}
+                >
+                  <span className="flex items-center gap-1 text-amber-600">
+                    <span>🏆</span>
+                    巡遊者・ロスレコ
+                  </span>
+                  {isBuildInfoOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-2">
+                  {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
+                  <div>
+                    <div className="grid grid-cols-3 gap-1">
+                      {characters.map((char, index) => (
+                        <CharacterAvatar
+                          key={char.label}
+                          name={char.name}
+                          iconUrl={getCharacterIconUrl(char.name)}
+                          label={char.label}
+                          isMain={char.role === 'main'}
+                          totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                          onClick={() => openCharacterDialog(index)}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* メインロスレコセクション - コンパクト版 */}
-                <div>
-                  <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
-                    <span>⊕</span>
-                    メインロスレコ
-                    <button
-                      type="button"
-                      onClick={() => setMainLossRecordDialogOpen(true)}
-                      className="ml-auto text-slate-400 hover:text-slate-600"
-                      aria-label="メインロスレコを選択"
-                    >
-                      🔍
-                    </button>
-                  </h3>
-                  <LossRecordSlots
-                    lossRecordIds={mainLossRecordIds}
-                    getLossRecordById={getLossRecordById}
-                    onSlotClick={() => setMainLossRecordDialogOpen(true)}
-                    onDeselect={handleMainLossRecordDeselect}
-                    compact
-                    showSecondaryNotes
-                  />
-                </div>
+                  {/* メインロスレコセクション - コンパクト版 */}
+                  <div>
+                    <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                      <span>⊕</span>
+                      メインロスレコ
+                      <button
+                        type="button"
+                        onClick={() => setMainLossRecordDialogOpen(true)}
+                        className="ml-auto text-slate-400 hover:text-slate-600"
+                        aria-label="メインロスレコを選択"
+                      >
+                        🔍
+                      </button>
+                    </h3>
+                    <LossRecordSlots
+                      lossRecordIds={mainLossRecordIds}
+                      getLossRecordById={getLossRecordById}
+                      onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                      onDeselect={handleMainLossRecordDeselect}
+                      compact
+                      showSecondaryNotes
+                    />
+                  </div>
 
-                {/* サブロスレコセクション - コンパクト版 */}
-                <div>
-                  <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
-                    <span>⊖</span>
-                    サブロスレコ
-                    <button
-                      type="button"
-                      onClick={() => setSubLossRecordDialogOpen(true)}
-                      className="ml-auto text-slate-400 hover:text-slate-600"
-                      aria-label="サブロスレコを選択"
-                    >
-                      🔍
-                    </button>
-                  </h3>
-                  <LossRecordSlots
-                    lossRecordIds={subLossRecordIds}
-                    getLossRecordById={getLossRecordById}
-                    onSlotClick={() => setSubLossRecordDialogOpen(true)}
-                    onDeselect={handleSubLossRecordDeselect}
-                    compact
-                  />
+                  {/* サブロスレコセクション - コンパクト版 */}
+                  <div>
+                    <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                      <span>⊖</span>
+                      サブロスレコ
+                      <button
+                        type="button"
+                        onClick={() => setSubLossRecordDialogOpen(true)}
+                        className="ml-auto text-slate-400 hover:text-slate-600"
+                        aria-label="サブロスレコを選択"
+                      >
+                        🔍
+                      </button>
+                    </h3>
+                    <LossRecordSlots
+                      lossRecordIds={subLossRecordIds}
+                      getLossRecordById={getLossRecordById}
+                      onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                      onDeselect={handleSubLossRecordDeselect}
+                      compact
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* モバイル: ステータス表示 */}
+              <div className="mt-2 rounded-lg bg-slate-200 p-2 dark:bg-slate-700">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-blue-500">ℹ</span>
+                  <span>
+                    選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                  </span>
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </div>
+
+              {/* モバイル: 登録ボタン */}
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={handleSaveBuild}
+                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 font-medium text-pink-600 text-sm transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                >
+                  ❤ 登録
+                </button>
+              </div>
+
+              {/* モバイル: 保存されたビルドリスト - 折りたたみ可能 */}
+              <Collapsible
+                open={isSavedBuildsOpen}
+                onOpenChange={setIsSavedBuildsOpen}
+                className="mt-2"
+              >
+                <CollapsibleTrigger
+                  className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
+                  aria-expanded={isSavedBuildsOpen}
+                >
+                  <span className="flex items-center gap-1">
+                    <span>📋</span>
+                    保存済み ({builds.length})
+                  </span>
+                  {isSavedBuildsOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-2">
+                  <SavedBuildList
+                    builds={builds}
+                    onRemove={removeBuild}
+                    currentUrl={currentUrl}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
+            </>
           ) : (
             <>
               {/* デスクトップ: 巡遊者（キャラクター）セクション */}
@@ -915,6 +968,43 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   onDeselect={handleSubLossRecordDeselect}
                 />
               </div>
+
+              {/* デスクトップ: ステータス表示 */}
+              <div className="mt-4 rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-blue-500">ℹ</span>
+                  <span>
+                    選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                  </span>
+                </div>
+              </div>
+
+              {/* デスクトップ: 登録ボタン */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleSaveBuild}
+                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                >
+                  ❤ 登録
+                </button>
+              </div>
+
+              {/* デスクトップ: 保存されたビルドリスト */}
+              <div className="mt-4 flex min-h-0 flex-1 flex-col">
+                <h3 className="mb-2 flex items-center gap-1 font-bold">
+                  <span>📋</span>
+                  保存済みビルド
+                </h3>
+                <div className="min-h-0 flex-1 overflow-hidden">
+                  <SavedBuildList
+                    builds={builds}
+                    onRemove={removeBuild}
+                    currentUrl={currentUrl}
+                  />
+                </div>
+              </div>
             </>
           )}
 
@@ -953,73 +1043,6 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             title="サブロスレコを選択"
             maxSelection={3}
           />
-
-          {/* ステータス表示 - モバイルではコンパクトに */}
-          <div className={`rounded-lg bg-slate-200 dark:bg-slate-700 ${isMobile ? 'mt-2 p-2' : 'mt-4 p-3'}`}>
-            <div className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-              <span className="text-blue-500">ℹ</span>
-              <span>
-                選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
-              </span>
-            </div>
-          </div>
-
-          {/* 登録ボタン */}
-          <div className={isMobile ? 'mt-2' : 'mt-4'}>
-            <button
-              type="button"
-              onClick={handleSaveBuild}
-              disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-              className={`flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800 ${isMobile ? 'py-1.5 text-sm' : 'py-2'}`}
-            >
-              ❤ 登録
-            </button>
-          </div>
-
-          {/* 保存されたビルドリスト - モバイルでは折りたたみ可能 */}
-          {isMobile ? (
-            <Collapsible
-              open={isSavedBuildsOpen}
-              onOpenChange={setIsSavedBuildsOpen}
-              className="mt-2"
-            >
-              <CollapsibleTrigger
-                className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-bold dark:bg-slate-700"
-                aria-expanded={isSavedBuildsOpen}
-              >
-                <span className="flex items-center gap-1">
-                  <span>📋</span>
-                  保存済み ({builds.length})
-                </span>
-                {isSavedBuildsOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2">
-                <SavedBuildList
-                  builds={builds}
-                  onRemove={removeBuild}
-                  currentUrl={currentUrl}
-                />
-              </CollapsibleContent>
-            </Collapsible>
-          ) : (
-            <div className="mt-4 flex min-h-0 flex-1 flex-col">
-              <h3 className="mb-2 flex items-center gap-1 font-bold">
-                <span>📋</span>
-                保存済みビルド
-              </h3>
-              <div className="min-h-0 flex-1 overflow-hidden">
-                <SavedBuildList
-                  builds={builds}
-                  onRemove={removeBuild}
-                  currentUrl={currentUrl}
-                />
-              </div>
-            </div>
-          )}
         </div>
 
         {/* 右パネル - 素質/ロスレコスキル */}

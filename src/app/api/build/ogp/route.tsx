@@ -4,8 +4,11 @@ import { type NextRequest } from 'next/server'
 export const runtime = 'edge'
 
 const API_BASE_URL = 'https://api.ennead.cc'
-const FETCH_TIMEOUT_MS = 8000 // 8秒タイムアウト
-const CACHE_REVALIDATE_SECONDS = 14400 // 4時間キャッシュ
+const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短縮）
+const API_CACHE_REVALIDATE_SECONDS = 86400 // 24時間キャッシュ（APIデータは頻繁に変更されない）
+const OGP_CACHE_MAX_AGE = 86400 // 24時間（ブラウザキャッシュ）
+const OGP_CACHE_STALE_WHILE_REVALIDATE = 604800 // 7日間（stale-while-revalidate）
+const OGP_CACHE_CONTROL = `public, max-age=${OGP_CACHE_MAX_AGE}, s-maxage=${OGP_CACHE_MAX_AGE}, stale-while-revalidate=${OGP_CACHE_STALE_WHILE_REVALIDATE}`
 
 /**
  * タイムアウト付きfetchヘルパー関数（キャッシュ対応）
@@ -17,7 +20,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number = FETCH_TIMEOUT_M
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      next: { revalidate: CACHE_REVALIDATE_SECONDS },
+      next: { revalidate: API_CACHE_REVALIDATE_SECONDS },
     })
     clearTimeout(timeoutId)
     return response
@@ -48,58 +51,57 @@ export async function GET(request: NextRequest) {
   const mainLossRecordIds = mainLossRecordsParam.split(',').filter(Boolean)
   const subLossRecordIds = subLossRecordsParam.split(',').filter(Boolean)
 
-  // キャラクターアイコンURLを取得
-  const characterIcons = await Promise.all(
-    characterNames.map(async (name) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
-
-  // ロスレコアイコンURLを取得
-  const mainLossRecordIcons = await Promise.all(
-    mainLossRecordIds.map(async (id) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
-
-  const subLossRecordIcons = await Promise.all(
-    subLossRecordIds.map(async (id) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
+  // すべてのアイコンデータを並列取得（高速化のため一度にすべてfetch）
+  const [characterIcons, mainLossRecordIcons, subLossRecordIcons] = await Promise.all([
+    // キャラクターアイコン
+    Promise.all(
+      characterNames.map(async (name) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+    // メインロスレコアイコン
+    Promise.all(
+      mainLossRecordIds.map(async (id) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+    // サブロスレコアイコン
+    Promise.all(
+      subLossRecordIds.map(async (id) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+  ])
 
   try {
-    return new ImageResponse(
+    const response = new ImageResponse(
       <div
         style={{
           display: 'flex',
@@ -395,6 +397,11 @@ export async function GET(request: NextRequest) {
         height: 630,
       },
     )
+    
+    // キャッシュヘッダーを設定（ブラウザとCDNでの長期キャッシュ）
+    response.headers.set('Cache-Control', OGP_CACHE_CONTROL)
+    
+    return response
   } catch (error) {
     // エラー詳細をログに記録（構造化ログとして出力）
     const errorInfo = {

@@ -6,6 +6,7 @@ import {
   type QualitiesData,
   type QualityInfo,
 } from 'types/quality'
+import { cleanQualityDescription } from 'utils/qualityDescriptionUtils'
 
 /**
  * StellaSoraAPI からキャラクターデータを取得する Server Action
@@ -183,25 +184,6 @@ function generateCharacterIconUrl(iconName: string): string {
 }
 
 /**
- * 説明文の&ParamN&プレースホルダーをparams配列の値で置換する
- * @param description - 説明文（&Param1&, &Param2&などを含む）
- * @param params - パラメータ配列（undefined可）
- * @example replaceDescriptionParams("ダメージが&Param1&%増加", ["10"]) => "ダメージが10%増加"
- */
-function replaceDescriptionParams(
-  description: string,
-  params?: string[],
-): string {
-  if (!params || params.length === 0) {
-    return description
-  }
-  return description.replace(/&Param(\d+)&/g, (match, index) => {
-    const paramIndex = Number.parseInt(index, 10) - 1 // &Param1& -> index 0
-    return params[paramIndex] ?? match // パラメータがなければ元のまま
-  })
-}
-
-/**
  * APIのポテンシャルデータをアプリケーションの形式に変換する
  * @param potential - APIのポテンシャルデータ
  * @param isCore - コア素質かどうか
@@ -210,11 +192,11 @@ function convertPotentialToQualityInfo(
   potential: ApiPotentialEntry,
   isCore: boolean,
 ): QualityInfo {
+  // descriptionが空の場合はshortDescriptionにフォールバック
+  const descriptionText = potential.description || potential.shortDescription
+
   return {
-    description: replaceDescriptionParams(
-      potential.shortDescription,
-      potential.params,
-    ),
+    description: cleanQualityDescription(descriptionText),
     fileName: generatePotentialIconUrl(potential.icon),
     isCore,
     params: potential.params,

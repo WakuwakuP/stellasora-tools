@@ -124,45 +124,26 @@ export async function GET(request: NextRequest) {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               alignItems: 'center',
               width: '100%',
               marginBottom: '40px',
+              paddingLeft: '60px',
             }}
           >
-            <div
+            <h1
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                fontSize: '56px',
+                fontWeight: 'bold',
+                background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
+                backgroundClip: 'text',
+                color: 'transparent',
+                margin: 0,
+                textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
               }}
             >
-              <div
-                style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#94a3b8',
-                  marginBottom: '8px',
-                  letterSpacing: '2px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Build Configuration
-              </div>
-              <h1
-                style={{
-                  fontSize: '56px',
-                  fontWeight: 'bold',
-                  background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  margin: 0,
-                  textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
-                }}
-              >
-                {buildName}
-              </h1>
-            </div>
+              {buildName}
+            </h1>
           </div>
 
           {/* キャラクター3人 */}
@@ -186,15 +167,15 @@ export async function GET(request: NextRequest) {
                   padding: '20px',
                   background:
                     index === 0
-                      ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
+                      ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
                       : 'linear-gradient(135deg, #475569 0%, #334155 100%)',
                   borderRadius: '20px',
                   width: '220px',
                   boxShadow:
                     index === 0
-                      ? '0 8px 24px rgba(220, 38, 38, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3)'
+                      ? '0 8px 24px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3)'
                       : '0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2)',
-                  border: index === 0 ? '2px solid rgba(252, 165, 165, 0.5)' : '2px solid rgba(71, 85, 105, 0.5)',
+                  border: index === 0 ? '2px solid rgba(252, 165, 165, 0.4)' : '2px solid rgba(71, 85, 105, 0.5)',
                 }}
               >
                 {characterIcons[index] ? (
@@ -268,170 +249,117 @@ export async function GET(request: NextRequest) {
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
+              gap: '14px',
               width: '100%',
             }}
           >
-            <div
-              style={{
-                fontSize: '14px',
-                fontWeight: '600',
-                color: '#94a3b8',
-                marginBottom: '16px',
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-              }}
-            >
-              Loss Records
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '14px',
-                width: '100%',
-              }}
-            >
-              {/* メインロスレコ */}
-              {mainLossRecordIds.map((id, index) => (
-                <div
-                  key={`main-${index}`}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    padding: '14px',
-                    background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                    borderRadius: '16px',
-                    width: '110px',
-                    boxShadow: '0 6px 16px rgba(251, 191, 36, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3)',
-                    border: '2px solid rgba(254, 243, 199, 0.5)',
-                  }}
-                >
-                  {mainLossRecordIcons[index] ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        borderRadius: '12px',
-                        marginBottom: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    >
-                      <img
-                        src={mainLossRecordIcons[index]!}
-                        width={70}
-                        height={70}
-                        alt={`Main Loss Record ${index + 1}`}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '70px',
-                        height: '70px',
-                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                        borderRadius: '12px',
-                        marginBottom: '10px',
-                        boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    >
-                      <span style={{ fontSize: '28px' }}>🎵</span>
-                    </div>
-                  )}
+            {/* メインロスレコ */}
+            {mainLossRecordIds.map((id, index) => (
+              <div
+                key={`main-${index}`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)',
+                  borderRadius: '16px',
+                  width: '110px',
+                  boxShadow: '0 6px 16px rgba(252, 211, 77, 0.3), 0 2px 6px rgba(0, 0, 0, 0.3)',
+                  border: '2px solid rgba(254, 243, 199, 0.4)',
+                }}
+              >
+                {mainLossRecordIcons[index] ? (
                   <div
                     style={{
                       display: 'flex',
-                      fontSize: '11px',
-                      fontWeight: '700',
-                      color: '#78350f',
-                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
-                      padding: '4px 10px',
-                      borderRadius: '8px',
-                      letterSpacing: '0.5px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
-                    MAIN {index + 1}
+                    <img
+                      src={mainLossRecordIcons[index]!}
+                      width={70}
+                      height={70}
+                      alt={`Main Loss Record ${index + 1}`}
+                    />
                   </div>
-                </div>
-              ))}
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '70px',
+                      height: '70px',
+                      background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                      borderRadius: '12px',
+                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
+                    }}
+                  >
+                    <span style={{ fontSize: '28px' }}>🎵</span>
+                  </div>
+                )}
+              </div>
+            ))}
 
-              {/* サブロスレコ */}
-              {subLossRecordIds.map((id, index) => (
-                <div
-                  key={`sub-${index}`}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    padding: '14px',
-                    background: 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)',
-                    borderRadius: '16px',
-                    width: '110px',
-                    boxShadow: '0 6px 16px rgba(100, 116, 139, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3)',
-                    border: '2px solid rgba(203, 213, 225, 0.4)',
-                  }}
-                >
-                  {subLossRecordIcons[index] ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        borderRadius: '12px',
-                        marginBottom: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    >
-                      <img
-                        src={subLossRecordIcons[index]!}
-                        width={70}
-                        height={70}
-                        alt={`Sub Loss Record ${index + 1}`}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '70px',
-                        height: '70px',
-                        background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
-                        borderRadius: '12px',
-                        marginBottom: '10px',
-                        boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    >
-                      <span style={{ fontSize: '28px' }}>🎵</span>
-                    </div>
-                  )}
+            {/* サブロスレコ */}
+            {subLossRecordIds.map((id, index) => (
+              <div
+                key={`sub-${index}`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)',
+                  borderRadius: '16px',
+                  width: '110px',
+                  boxShadow: '0 6px 16px rgba(100, 116, 139, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3)',
+                  border: '2px solid rgba(203, 213, 225, 0.4)',
+                }}
+              >
+                {subLossRecordIcons[index] ? (
                   <div
                     style={{
                       display: 'flex',
-                      fontSize: '11px',
-                      fontWeight: '700',
-                      color: '#0f172a',
-                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
-                      padding: '4px 10px',
-                      borderRadius: '8px',
-                      letterSpacing: '0.5px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
                     }}
                   >
-                    SUB {index + 1}
+                    <img
+                      src={subLossRecordIcons[index]!}
+                      width={70}
+                      height={70}
+                      alt={`Sub Loss Record ${index + 1}`}
+                    />
                   </div>
-                </div>
-              ))}
-            </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '70px',
+                      height: '70px',
+                      background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
+                      borderRadius: '12px',
+                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
+                    }}
+                  >
+                    <span style={{ fontSize: '28px' }}>🎵</span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>,

@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '20px',
+                  padding: '16px',
                   background:
                     index === 0
                       ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
@@ -190,16 +190,14 @@ export async function GET(request: NextRequest) {
                     style={{
                       display: 'flex',
                       borderRadius: '16px',
-                      marginBottom: '14px',
+                      marginBottom: '12px',
                       overflow: 'hidden',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
-                      border: '3px solid rgba(255, 255, 255, 0.15)',
                     }}
                   >
                     <img
                       src={characterIcons[index]!}
-                      width={140}
-                      height={140}
+                      width={188}
+                      height={188}
                       alt={name}
                     />
                   </div>
@@ -209,13 +207,11 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      width: '140px',
-                      height: '140px',
+                      width: '188px',
+                      height: '188px',
                       background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
                       borderRadius: '16px',
-                      marginBottom: '14px',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
-                      border: '3px solid rgba(255, 255, 255, 0.1)',
+                      marginBottom: '12px',
                     }}
                   >
                     <span style={{ fontSize: '56px', color: '#94a3b8' }}>
@@ -270,7 +266,7 @@ export async function GET(request: NextRequest) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '14px',
+                  padding: '12px',
                   background: 'linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)',
                   borderRadius: '16px',
                   width: '110px',
@@ -284,13 +280,12 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       borderRadius: '12px',
                       overflow: 'hidden',
-                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
                     }}
                   >
                     <img
                       src={mainLossRecordIcons[index]!}
-                      width={70}
-                      height={70}
+                      width={86}
+                      height={86}
                       alt={`Main Loss Record ${index + 1}`}
                     />
                   </div>
@@ -300,14 +295,13 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      width: '70px',
-                      height: '70px',
+                      width: '86px',
+                      height: '86px',
                       background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
                       borderRadius: '12px',
-                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
                     }}
                   >
-                    <span style={{ fontSize: '28px' }}>🎵</span>
+                    <span style={{ fontSize: '32px' }}>🎵</span>
                   </div>
                 )}
               </div>
@@ -321,7 +315,7 @@ export async function GET(request: NextRequest) {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '14px',
+                  padding: '12px',
                   background: 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)',
                   borderRadius: '16px',
                   width: '110px',
@@ -335,13 +329,12 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       borderRadius: '12px',
                       overflow: 'hidden',
-                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
                     }}
                   >
                     <img
                       src={subLossRecordIcons[index]!}
-                      width={70}
-                      height={70}
+                      width={86}
+                      height={86}
                       alt={`Sub Loss Record ${index + 1}`}
                     />
                   </div>
@@ -351,14 +344,13 @@ export async function GET(request: NextRequest) {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      width: '70px',
-                      height: '70px',
+                      width: '86px',
+                      height: '86px',
                       background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
                       borderRadius: '12px',
-                      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4)',
                     }}
                   >
-                    <span style={{ fontSize: '28px' }}>🎵</span>
+                    <span style={{ fontSize: '32px' }}>🎵</span>
                   </div>
                 )}
               </div>

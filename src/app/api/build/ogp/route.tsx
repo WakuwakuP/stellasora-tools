@@ -1,8 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { type NextRequest } from 'next/server'
 
-export const runtime = 'edge'
-
 const API_BASE_URL = 'https://api.ennead.cc'
 const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短縮）
 const API_CACHE_REVALIDATE_SECONDS = 86400 // 24時間キャッシュ（APIデータは頻繁に変更されない）

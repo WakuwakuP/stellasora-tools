@@ -79,3 +79,19 @@ export function safeParseDateToTimeString(dateValue: unknown): string | null {
 export function isValidDate(dateValue: unknown): boolean {
   return safeParseDateToDate(dateValue) !== null
 }
+
+/**
+ * Get copyright year display
+ * Shows "2025" if current year is 2025, otherwise shows "2025 - {current year}"
+ * @returns Copyright year string
+ */
+export function getCopyrightYear(): string {
+  const currentYear = new Date().getFullYear()
+  const startYear = 2025
+
+  if (currentYear === startYear) {
+    return String(startYear)
+  }
+
+  return `${startYear} - ${currentYear}`
+}

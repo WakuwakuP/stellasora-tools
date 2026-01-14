@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from 'components/ui/card'
+import { getCopyrightYear } from 'lib/date-utils'
 import { Hammer, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { type FC } from 'react'
@@ -59,7 +60,15 @@ const LandingPage: FC = () => (
     {/* フッター */}
     <footer className="border-slate-200 border-t bg-white/80 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
       <div className="container mx-auto px-4 py-4 text-center text-muted-foreground text-sm">
-        © {new Date().getFullYear()} Stellasora Tools
+        © {getCopyrightYear()}{' '}
+        <a
+          className="hover:underline"
+          href="https://www.miyulab.dev"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          miyulab.dev
+        </a>
       </div>
     </footer>
   </div>

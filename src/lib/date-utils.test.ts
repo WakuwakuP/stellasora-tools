@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
+  getCopyrightYear,
   isValidDate,
   safeParseDateToDate,
   safeParseDateToISOString,
@@ -91,6 +92,24 @@ describe('Date Utilities', () => {
       expect(isValidDate('invalid-date')).toBe(false)
       expect(isValidDate(null)).toBe(false)
       expect(isValidDate(undefined)).toBe(false)
+    })
+  })
+
+  describe('getCopyrightYear', () => {
+    it('should return a valid copyright year string', () => {
+      const result = getCopyrightYear()
+      const currentYear = new Date().getFullYear()
+
+      if (currentYear === 2025) {
+        expect(result).toBe('2025')
+      } else {
+        expect(result).toBe(`2025 - ${currentYear}`)
+      }
+    })
+
+    it('should return a string', () => {
+      const result = getCopyrightYear()
+      expect(typeof result).toBe('string')
     })
   })
 })

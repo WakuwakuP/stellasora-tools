@@ -138,24 +138,25 @@ export async function GET(request: NextRequest) {
                 justifyContent: 'flex-start',
               }}
             >
-              <h1
+              <div
                 style={{
                   fontSize: '56px',
                   fontWeight: 'bold',
                   background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
                   backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
                   color: 'transparent',
                   margin: 0,
-                  textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
                   overflow: 'hidden',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',
                   WebkitLineClamp: 2,
                   maxWidth: '716px',
+                  wordBreak: 'break-word',
                 }}
               >
                 {buildName}
-              </h1>
+              </div>
             </div>
           </div>
 

@@ -14,7 +14,7 @@ const meta: Meta<typeof QualityCard> = {
       description: '選択状態',
     },
     level: {
-      control: { type: 'number', min: 1, max: 6 },
+      control: { type: 'number', min: 1, max: 9 },
       description: '素質のレベル（通常素質のみ）',
     },
     isCore: {
@@ -75,6 +75,30 @@ export const SelectedMaxLevel: Story = {
 }
 
 /**
+ * 選択済みの通常素質（レベル7・外部要因）
+ */
+export const SelectedLevel7: Story = {
+  args: {
+    quality: sampleQuality,
+    isSelected: true,
+    level: 7,
+    isCore: false,
+  },
+}
+
+/**
+ * 選択済みの通常素質（レベル9・最大+外部要因）
+ */
+export const SelectedLevel9: Story = {
+  args: {
+    quality: sampleQuality,
+    isSelected: true,
+    level: 9,
+    isCore: false,
+  },
+}
+
+/**
  * 未選択のコア素質
  */
 export const CoreUnselected: Story = {
@@ -130,6 +154,36 @@ export const ComparisonView: Story = {
           quality={sampleQuality}
           isSelected={true}
           level={3}
+          isCore={false}
+          onClick={() => {}}
+        />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-sm font-medium">選択済み (Lv.6)</span>
+        <QualityCard
+          quality={sampleQuality}
+          isSelected={true}
+          level={6}
+          isCore={false}
+          onClick={() => {}}
+        />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-sm font-medium">選択済み (Lv.7)・赤枠</span>
+        <QualityCard
+          quality={sampleQuality}
+          isSelected={true}
+          level={7}
+          isCore={false}
+          onClick={() => {}}
+        />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-sm font-medium">選択済み (Lv.9)・赤枠</span>
+        <QualityCard
+          quality={sampleQuality}
+          isSelected={true}
+          level={9}
           isCore={false}
           onClick={() => {}}
         />

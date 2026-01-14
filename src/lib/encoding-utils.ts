@@ -1,7 +1,7 @@
 /**
  * 共通エンコード/デコードユーティリティ
  *
- * Base64URL変換と7進数変換のための共通関数を提供します。
+ * Base64URL変換と10進数変換のための共通関数を提供します。
  * build-encoder-v2.ts と BuildCreator.tsx の両方から使用されます。
  */
 
@@ -12,12 +12,12 @@ export const BASE64URL_CHARS =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
 
 /**
- * 素質レベルの基数（0-6の7進数）
+ * 素質レベルの基数（0-9の10進数）
  */
-export const TALENT_LEVELS = 7
+export const TALENT_LEVELS = 10
 
 /**
- * 数値配列を7進数としてBigIntに変換
+ * 数値配列を10進数としてBigIntに変換
  * 最下位桁から順に処理します
  */
 export function arrayToBase7BigInt(arr: number[]): bigint {
@@ -33,11 +33,28 @@ export function arrayToBase7BigInt(arr: number[]): bigint {
 }
 
 /**
- * BigIntから指定個数の7進数配列に変換
+ * BigIntから指定個数の10進数配列に変換
  */
 export function base7BigIntToArray(value: bigint, count: number): number[] {
   const result: number[] = []
   const base = BigInt(TALENT_LEVELS)
+  let remaining = value
+
+  for (let i = 0; i < count; i++) {
+    result.push(Number(remaining % base))
+    remaining = remaining / base
+  }
+
+  return result
+}
+
+/**
+ * BigIntから指定個数の7進数配列に変換（v1互換性のため）
+ * 旧形式（レベル0-6）のデコード用
+ */
+export function base7ToArray(value: bigint, count: number): number[] {
+  const result: number[] = []
+  const base = BigInt(7)
   let remaining = value
 
   for (let i = 0; i < count; i++) {

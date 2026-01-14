@@ -5,8 +5,8 @@
  * /{キャラ名1}/{キャラ名2}/{キャラ名3}/{素質コード}
  *
  * 素質コード:
- * - 16素質 × 3人 = 48個の素質レベル（0-6）を7進数で表現
- * - 7進数の数値をBase64URL変換
+ * - v2: 16素質 × 3人 = 48個の素質レベル（0-9）を10進数で表現し、Base64URL変換後に"v2_"プレフィックスを追加
+ * - v1（旧形式）: 16素質 × 3人 = 48個の素質レベル（0-6）を7進数で表現し、Base64URL変換（プレフィックスなし）
  */
 
 import {
@@ -33,10 +33,13 @@ const SUB_LOSS_RECORD_COUNT = 3
 const SUPPORT_COUNT = 2
 const TOTAL_CHARACTERS = 3
 const MIN_TALENT_LEVEL = 1
-const MAX_TALENT_LEVEL = 6
+const MAX_TALENT_LEVEL = 9 // v2: 9（徽章などで+3可能）, v1: 6（後方互換性）
 const MAIN_CHAR_INDEX = 0
 const SUPPORT0_INDEX = 1
 const SUPPORT1_INDEX = 2
+
+/** URLバージョンプレフィックス */
+const URL_VERSION_PREFIX = 'v2_'
 
 /**
  * キャラクターの素質を16個の配列に変換（0-6の値）
@@ -65,6 +68,7 @@ function talentsToArray(talents: CharacterTalents): number[] {
 
 /**
  * 16個の配列からCharacterTalentsに変換
+ * レベル0-9までサポート（v2形式）
  */
 function arrayToTalents(arr: number[]): CharacterTalents {
   const core: CharacterTalents['core'] = []
@@ -73,7 +77,10 @@ function arrayToTalents(arr: number[]): CharacterTalents {
   // コア素質（インデックス0-3）
   for (let i = 0; i < CORE_TALENTS_COUNT; i++) {
     if (arr[i] > 0 && arr[i] <= MAX_TALENT_LEVEL) {
-      core.push({ id: i, level: arr[i] as TalentLevel })
+      core.push({
+        id: i,
+        level: Math.min(arr[i], MAX_TALENT_LEVEL) as TalentLevel,
+      })
     }
   }
 
@@ -81,7 +88,10 @@ function arrayToTalents(arr: number[]): CharacterTalents {
   for (let i = 0; i < SUB_TALENTS_COUNT; i++) {
     const idx = CORE_TALENTS_COUNT + i
     if (arr[idx] > 0 && arr[idx] <= MAX_TALENT_LEVEL) {
-      sub.push({ id: i, level: arr[idx] as TalentLevel })
+      sub.push({
+        id: i,
+        level: Math.min(arr[idx], MAX_TALENT_LEVEL) as TalentLevel,
+      })
     }
   }
 
@@ -89,8 +99,8 @@ function arrayToTalents(arr: number[]): CharacterTalents {
 }
 
 /**
- * 素質情報をエンコード
- * 3人分の素質（48個）を7進数でBigIntに変換し、Base64URLに変換
+ * 素質情報をエンコード（v2形式: 10進数、レベル0-9対応）
+ * 3人分の素質（48個）を10進数でBigIntに変換し、Base64URLに変換後、v2_プレフィックスを追加
  */
 export function encodeTalents(build: Build): string {
   const mainTalents = talentsToArray(build.main.talents)
@@ -99,17 +109,24 @@ export function encodeTalents(build: Build): string {
 
   const allTalents = [...mainTalents, ...support0Talents, ...support1Talents]
   const bigIntValue = arrayToBase7BigInt(allTalents)
+  const encoded = bigIntToBase64Url(bigIntValue)
 
-  return bigIntToBase64Url(bigIntValue)
+  return `${URL_VERSION_PREFIX}${encoded}`
 }
 
 /**
- * 素質情報をデコード
+ * 素質情報をデコード（v1/v2両対応）
+ * v2形式（"v2_"プレフィックス付き）: 10進数、レベル0-9対応
+ * v1形式（プレフィックスなし）: 7進数、レベル0-6対応（後方互換性）
  */
 export function decodeTalents(
   encoded: string,
 ): [CharacterTalents, CharacterTalents, CharacterTalents] {
-  const bigIntValue = base64UrlToBigInt(encoded)
+  // v2形式かチェック
+  const isV2 = encoded.startsWith(URL_VERSION_PREFIX)
+  const cleanEncoded = isV2 ? encoded.slice(URL_VERSION_PREFIX.length) : encoded
+
+  const bigIntValue = base64UrlToBigInt(cleanEncoded)
   const totalTalents = TOTAL_TALENTS_PER_CHAR * TOTAL_CHARACTERS
   const allTalents = base7BigIntToArray(bigIntValue, totalTalents)
 

@@ -37,6 +37,7 @@ import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
+  base7ToArray,
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
@@ -50,6 +51,13 @@ import type { CharacterQualities } from 'types/quality'
 const TALENTS_PER_CHARACTER = 16
 const TOTAL_CHARACTERS = 3
 const TOTAL_TALENTS = TALENTS_PER_CHARACTER * TOTAL_CHARACTERS
+
+/**
+ * エンコード形式の判定閾値
+ * Base-7 (v1): 最大23文字、Base-10 (v2): 24文字以上
+ * 長さで自動判別することでプレフィックス不要
+ */
+const BASE7_MAX_LENGTH = 23
 
 /**
  * 選択された素質情報を48個の配列に変換
@@ -156,7 +164,10 @@ function encodeBuildToQueryString(
 }
 
 /**
- * URLクエリからビルド情報をデコード
+ * URLクエリからビルド情報をデコード（v1/v2両対応）
+ * 長さで自動判別:
+ * - 長さ <= 23: v1形式（Base-7、レベル0-6）
+ * - 長さ >= 24: v2形式（Base-10、レベル0-9）
  */
 function decodeBuildFromQuery(
   char1: string | null,
@@ -181,8 +192,13 @@ function decodeBuildFromQuery(
   }
 
   try {
+    // 長さで判別（Base-7は最大23文字、Base-10は24文字以上）
+    const isBase10 = talentsCode.length > BASE7_MAX_LENGTH
+    
     const bigIntValue = base64UrlToBigInt(talentsCode)
-    const talentsArray = base7BigIntToArray(bigIntValue, TOTAL_TALENTS)
+    const talentsArray = isBase10
+      ? base7BigIntToArray(bigIntValue, TOTAL_TALENTS) // v2: Base-10
+      : base7ToArray(bigIntValue, TOTAL_TALENTS) // v1: Base-7
     const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
     return { characters, selectedTalents }
   } catch (error) {
@@ -438,8 +454,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         }
         // 通常素質はレベルアップ、最大レベルで解除
         if (existing.level < MAX_TALENT_LEVEL) {
+          const newLevel = (existing.level + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
           return prev.map((t) =>
-            t === existing ? { ...t, level: t.level + 1 } : t,
+            t === existing ? { ...t, level: newLevel } : t,
           )
         }
         return prev.filter((t) => t !== existing)
@@ -487,6 +504,24 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         },
       ]
     })
+  }
+
+  const handleTalentDeselect = (
+    characterName: string,
+    role: 'main' | 'sub',
+    index: number,
+  ) => {
+    setHasUserMadeChanges(true)
+    setSelectedTalents((prev) =>
+      prev.filter(
+        (t) =>
+          !(
+            t.characterName === characterName &&
+            t.role === role &&
+            t.index === index
+          ),
+      ),
+    )
   }
 
   const calculateTotalLevel = (characterName: string) => {
@@ -898,6 +933,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="main"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(mainCharacter.name)}
                   />
                 )}
@@ -910,6 +946,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="sub"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(support1.name)}
                   />
                 )}
@@ -922,6 +959,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="sub"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(support2.name)}
                   />
                 )}

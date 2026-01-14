@@ -12,7 +12,7 @@ export const CORE_TALENT_INDICES = [0, 1, 2, 3]
 export const MAX_CORE_TALENTS = 2
 
 /** 通常素質の最大レベル */
-export const MAX_TALENT_LEVEL = 6
+export const MAX_TALENT_LEVEL = 9
 
 /** 素質がコア素質かどうかを判定（インデックスまたはisCoreプロパティで判定） */
 export const isCoreTalent = (
@@ -52,6 +52,8 @@ export interface CharacterQualitiesSectionProps {
   selectedTalents: SelectedTalent[]
   /** 素質選択時のハンドラー */
   onTalentSelect: (characterName: string, role: 'main' | 'sub', index: number) => void
+  /** 素質右クリック時のハンドラー（未取得状態に戻す） */
+  onTalentDeselect?: (characterName: string, role: 'main' | 'sub', index: number) => void
   /** 選択した素質の合計レベル */
   totalLevel: number
 }
@@ -62,6 +64,7 @@ export interface CharacterQualitiesSectionProps {
  * キャラクターごとの素質をコア/サブでグループ分けして表示する。
  * サブ素質はレアリティ順（rarity1 → rarity2）で並べる。
  * 各素質はクリックで選択/レベルアップ/選択解除できる。
+ * 右クリックで素質を未取得状態に戻すことができる。
  */
 export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
   characterName,
@@ -69,6 +72,7 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
   role,
   selectedTalents,
   onTalentSelect,
+  onTalentDeselect,
   totalLevel,
 }) => {
   // 素質をコア/サブにグループ分けし、サブはレアリティでソート
@@ -120,6 +124,11 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
               level={selectedTalent?.level}
               isCore={isCore}
               onClick={() => onTalentSelect(characterName, role, originalIndex)}
+              onRightClick={
+                onTalentDeselect
+                  ? () => onTalentDeselect(characterName, role, originalIndex)
+                  : undefined
+              }
             />
           )
         })}

@@ -147,11 +147,10 @@ export async function GET(request: NextRequest) {
                   color: 'transparent',
                   margin: 0,
                   textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
-                  lineHeight: '1.2',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 2,
                   maxWidth: '716px',
                 }}
               >

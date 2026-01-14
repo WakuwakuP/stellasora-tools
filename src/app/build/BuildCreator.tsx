@@ -51,6 +51,9 @@ const TALENTS_PER_CHARACTER = 16
 const TOTAL_CHARACTERS = 3
 const TOTAL_TALENTS = TALENTS_PER_CHARACTER * TOTAL_CHARACTERS
 
+/** URLバージョンプレフィックス（v2形式: 10進数、レベル0-9対応） */
+const URL_VERSION_PREFIX = 'v2_'
+
 /**
  * 選択された素質情報を48個の配列に変換
  * コア素質（0, 1, 5, 6）は選択時にlevel=1として扱う（レベル表示はしない）
@@ -156,7 +159,9 @@ function encodeBuildToQueryString(
 }
 
 /**
- * URLクエリからビルド情報をデコード
+ * URLクエリからビルド情報をデコード（v1/v2両対応）
+ * v2形式（"v2_"プレフィックス付き）: 10進数、レベル0-9対応
+ * v1形式（プレフィックスなし）: 7進数、レベル0-6対応（後方互換性）
  */
 function decodeBuildFromQuery(
   char1: string | null,
@@ -181,7 +186,11 @@ function decodeBuildFromQuery(
   }
 
   try {
-    const bigIntValue = base64UrlToBigInt(talentsCode)
+    // v2形式かチェックし、プレフィックスを除去
+    const isV2 = talentsCode.startsWith(URL_VERSION_PREFIX)
+    const cleanTalentsCode = isV2 ? talentsCode.slice(URL_VERSION_PREFIX.length) : talentsCode
+    
+    const bigIntValue = base64UrlToBigInt(cleanTalentsCode)
     const talentsArray = base7BigIntToArray(bigIntValue, TOTAL_TALENTS)
     const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
     return { characters, selectedTalents }

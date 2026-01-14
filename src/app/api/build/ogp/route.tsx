@@ -124,26 +124,33 @@ export async function GET(request: NextRequest) {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'flex-start',
+              justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
               marginBottom: '40px',
-              paddingLeft: '60px',
             }}
           >
-            <h1
+            <div
               style={{
-                fontSize: '56px',
-                fontWeight: 'bold',
-                background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-                backgroundClip: 'text',
-                color: 'transparent',
-                margin: 0,
-                textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                display: 'flex',
+                width: '716px',
+                justifyContent: 'flex-start',
               }}
             >
-              {buildName}
-            </h1>
+              <h1
+                style={{
+                  fontSize: '56px',
+                  fontWeight: 'bold',
+                  background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                  margin: 0,
+                  textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                {buildName}
+              </h1>
+            </div>
           </div>
 
           {/* キャラクター3人 */}

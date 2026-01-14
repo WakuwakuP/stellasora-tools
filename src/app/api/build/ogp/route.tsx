@@ -5,16 +5,20 @@ export const runtime = 'edge'
 
 const API_BASE_URL = 'https://api.ennead.cc'
 const FETCH_TIMEOUT_MS = 8000 // 8秒タイムアウト
+const CACHE_REVALIDATE_SECONDS = 14400 // 4時間キャッシュ
 
 /**
- * タイムアウト付きfetchヘルパー関数
+ * タイムアウト付きfetchヘルパー関数（キャッシュ対応）
  */
 async function fetchWithTimeout(url: string, timeoutMs: number = FETCH_TIMEOUT_MS): Promise<Response> {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
   
   try {
-    const response = await fetch(url, { signal: controller.signal })
+    const response = await fetch(url, {
+      signal: controller.signal,
+      next: { revalidate: CACHE_REVALIDATE_SECONDS },
+    })
     clearTimeout(timeoutId)
     return response
   } catch (error) {

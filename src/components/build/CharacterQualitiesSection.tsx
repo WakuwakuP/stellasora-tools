@@ -1,6 +1,7 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
+import { User } from 'lucide-react'
 import { type FC, useMemo } from 'react'
 import type { QualityInfo } from 'types/quality'
 import { QualityCard } from './QualityCard'
@@ -142,7 +143,9 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
         <div className="flex items-center gap-2">
           <Avatar className="h-10 w-10">
             <AvatarImage src="/placeholder-character.png" alt={characterName} />
-            <AvatarFallback>{characterName.charAt(0)}</AvatarFallback>
+            <AvatarFallback>
+              <User className="h-5 w-5" />
+            </AvatarFallback>
           </Avatar>
           <span className="font-bold text-lg">{characterName}</span>
         </div>

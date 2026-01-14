@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from 'components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
+import { User } from 'lucide-react'
 import { type FC, useEffect, useMemo, useState } from 'react'
 
 /**
@@ -222,7 +223,9 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
               >
                 <Avatar className="h-14 w-14">
                   <AvatarImage src={char.iconUrl || '/placeholder-character.png'} alt={char.name} />
-                  <AvatarFallback className="text-xl">{char.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-xl">
+                    <User className="h-8 w-8" />
+                  </AvatarFallback>
                 </Avatar>
                 <span className="mt-2 text-center text-sm font-medium">{char.name}</span>
               </button>

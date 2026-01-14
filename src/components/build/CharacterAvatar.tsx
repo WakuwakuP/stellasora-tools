@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
 import { Badge } from 'components/ui/badge'
+import { User } from 'lucide-react'
 import type { FC } from 'react'
 
 export interface CharacterAvatarProps {
@@ -54,7 +55,7 @@ export const CharacterAvatar: FC<CharacterAvatarProps> = ({
     <Avatar className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
       <AvatarImage src={iconUrl || '/placeholder-character.png'} alt={name || 'キャラクター'} />
       <AvatarFallback className="text-base sm:text-lg">
-        {name ? name.charAt(0) : '?'}
+        <User className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10" />
       </AvatarFallback>
     </Avatar>
     <span className="mt-0.5 sm:mt-1 text-center text-xs sm:text-sm font-medium line-clamp-1">{name || '未選択'}</span>

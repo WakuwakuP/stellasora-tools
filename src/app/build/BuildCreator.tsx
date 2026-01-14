@@ -37,6 +37,7 @@ import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
+  base7ToArray,
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
@@ -51,8 +52,12 @@ const TALENTS_PER_CHARACTER = 16
 const TOTAL_CHARACTERS = 3
 const TOTAL_TALENTS = TALENTS_PER_CHARACTER * TOTAL_CHARACTERS
 
-/** URLバージョンプレフィックス（v2形式: 10進数、レベル0-9対応） */
-const URL_VERSION_PREFIX = 'v2_'
+/**
+ * エンコード形式の判定閾値
+ * Base-7 (v1): 最大23文字、Base-10 (v2): 24文字以上
+ * 長さで自動判別することでプレフィックス不要
+ */
+const BASE7_MAX_LENGTH = 23
 
 /**
  * 選択された素質情報を48個の配列に変換
@@ -160,8 +165,9 @@ function encodeBuildToQueryString(
 
 /**
  * URLクエリからビルド情報をデコード（v1/v2両対応）
- * v2形式（"v2_"プレフィックス付き）: 10進数、レベル0-9対応
- * v1形式（プレフィックスなし）: 7進数、レベル0-6対応（後方互換性）
+ * 長さで自動判別:
+ * - 長さ <= 23: v1形式（Base-7、レベル0-6）
+ * - 長さ >= 24: v2形式（Base-10、レベル0-9）
  */
 function decodeBuildFromQuery(
   char1: string | null,
@@ -186,12 +192,13 @@ function decodeBuildFromQuery(
   }
 
   try {
-    // v2形式かチェックし、プレフィックスを除去
-    const isV2 = talentsCode.startsWith(URL_VERSION_PREFIX)
-    const cleanTalentsCode = isV2 ? talentsCode.slice(URL_VERSION_PREFIX.length) : talentsCode
+    // 長さで判別（Base-7は最大23文字、Base-10は24文字以上）
+    const isBase10 = talentsCode.length > BASE7_MAX_LENGTH
     
-    const bigIntValue = base64UrlToBigInt(cleanTalentsCode)
-    const talentsArray = base7BigIntToArray(bigIntValue, TOTAL_TALENTS)
+    const bigIntValue = base64UrlToBigInt(talentsCode)
+    const talentsArray = isBase10
+      ? base7BigIntToArray(bigIntValue, TOTAL_TALENTS) // v2: Base-10
+      : base7ToArray(bigIntValue, TOTAL_TALENTS) // v1: Base-7
     const selectedTalents = arrayToSelectedTalents(talentsArray, characters)
     return { characters, selectedTalents }
   } catch (error) {

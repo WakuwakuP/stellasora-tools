@@ -49,6 +49,23 @@ export function base7BigIntToArray(value: bigint, count: number): number[] {
 }
 
 /**
+ * BigIntから指定個数の7進数配列に変換（v1互換性のため）
+ * 旧形式（レベル0-6）のデコード用
+ */
+export function base7ToArray(value: bigint, count: number): number[] {
+  const result: number[] = []
+  const base = BigInt(7)
+  let remaining = value
+
+  for (let i = 0; i < count; i++) {
+    result.push(Number(remaining % base))
+    remaining = remaining / base
+  }
+
+  return result
+}
+
+/**
  * BigIntをBase64URL文字列に変換
  */
 export function bigIntToBase64Url(value: bigint): string {

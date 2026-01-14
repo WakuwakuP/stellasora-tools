@@ -53,15 +53,15 @@ export function processQualityDescription(
   }
 
   // 2. <color=#...>...</color> タグを削除（内容のみ残す）
-  processed = processed.replace(/<color=#[^>]+>([^<]*)<\/color>/g, '$1')
+  processed = processed.replace(/<color=#[^>]+>([^<]+)<\/color>/g, '$1')
 
   // 3. ##テキスト#数字# 形式のリンク表現を「テキスト」のみに変換
   processed = processed.replace(/##([^#]+)#\d+#/g, '$1')
 
   // 4. 特殊文字（絵文字）を削除
-  // Unicode絵文字の範囲を削除
+  // Unicode絵文字の主要な範囲を削除
   processed = processed.replace(
-    /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu,
+    /[\u{1F000}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F1E0}-\u{1F1FF}]/gu,
     '',
   )
 

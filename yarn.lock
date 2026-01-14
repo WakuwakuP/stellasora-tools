@@ -5481,6 +5481,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/analytics@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@vercel/analytics@npm:1.6.1"
+  peerDependencies:
+    "@remix-run/react": ^2
+    "@sveltejs/kit": ^1 || ^2
+    next: ">= 13"
+    react: ^18 || ^19 || ^19.0.0-rc
+    svelte: ">= 4"
+    vue: ^3
+    vue-router: ^4
+  peerDependenciesMeta:
+    "@remix-run/react":
+      optional: true
+    "@sveltejs/kit":
+      optional: true
+    next:
+      optional: true
+    react:
+      optional: true
+    svelte:
+      optional: true
+    vue:
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10c0/df39ec419299b43350ad80a06fe835502f22f71c32d21d58855ac39ef352d3478b8922e44375dbc5b0c02ceae04a9d23b32579eb517a602656f6460c90f5802a
+  languageName: node
+  linkType: hard
+
 "@vercel/blob@npm:^2.0.0":
   version: 2.0.0
   resolution: "@vercel/blob@npm:2.0.0"
@@ -12768,6 +12798,7 @@ __metadata:
     "@types/node": "npm:^25.0.6"
     "@types/react": "npm:^19.2.8"
     "@types/react-dom": "npm:^19.2.3"
+    "@vercel/analytics": "npm:^1.6.1"
     "@vercel/blob": "npm:^2.0.0"
     "@vercel/postgres": "npm:^0.10.0"
     "@vitejs/plugin-react": "npm:^5.1.2"

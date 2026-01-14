@@ -6,7 +6,7 @@ import {
   type QualitiesData,
   type QualityInfo,
 } from 'types/quality'
-import { processQualityDescription } from 'utils/qualityDescriptionUtils'
+import { cleanQualityDescription } from 'utils/qualityDescriptionUtils'
 
 /**
  * StellaSoraAPI からキャラクターデータを取得する Server Action
@@ -196,11 +196,7 @@ function convertPotentialToQualityInfo(
   const descriptionText = potential.description || potential.shortDescription
 
   return {
-    description: processQualityDescription(
-      descriptionText,
-      potential.params,
-      1,
-    ),
+    description: cleanQualityDescription(descriptionText),
     fileName: generatePotentialIconUrl(potential.icon),
     isCore,
     params: potential.params,

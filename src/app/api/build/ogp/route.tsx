@@ -5,7 +5,9 @@ export const runtime = 'edge'
 
 const API_BASE_URL = 'https://api.ennead.cc'
 const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短縮）
-const CACHE_REVALIDATE_SECONDS = 14400 // 4時間キャッシュ
+const API_CACHE_REVALIDATE_SECONDS = 86400 // 24時間キャッシュ（APIデータは頻繁に変更されない）
+const OGP_CACHE_MAX_AGE = 86400 // 24時間（ブラウザキャッシュ）
+const OGP_CACHE_STALE_WHILE_REVALIDATE = 604800 // 7日間（stale-while-revalidate）
 
 /**
  * タイムアウト付きfetchヘルパー関数（キャッシュ対応）
@@ -17,7 +19,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number = FETCH_TIMEOUT_M
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      next: { revalidate: CACHE_REVALIDATE_SECONDS },
+      next: { revalidate: API_CACHE_REVALIDATE_SECONDS },
     })
     clearTimeout(timeoutId)
     return response
@@ -98,7 +100,7 @@ export async function GET(request: NextRequest) {
   ])
 
   try {
-    return new ImageResponse(
+    const response = new ImageResponse(
       <div
         style={{
           display: 'flex',
@@ -394,6 +396,14 @@ export async function GET(request: NextRequest) {
         height: 630,
       },
     )
+    
+    // キャッシュヘッダーを設定（ブラウザとCDNでの長期キャッシュ）
+    response.headers.set(
+      'Cache-Control',
+      `public, max-age=${OGP_CACHE_MAX_AGE}, s-maxage=${OGP_CACHE_MAX_AGE}, stale-while-revalidate=${OGP_CACHE_STALE_WHILE_REVALIDATE}`
+    )
+    
+    return response
   } catch (error) {
     // エラー詳細をログに記録（構造化ログとして出力）
     const errorInfo = {

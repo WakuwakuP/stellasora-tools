@@ -15,7 +15,9 @@ const API_BASE_URL = 'https://api.ennead.cc'
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
-  const buildName = searchParams.get('name') || 'ビルド'
+  const rawBuildName = searchParams.get('name') || 'ビルド'
+  // ビルド名を18文字に制限し、超える場合は…を付ける
+  const buildName = rawBuildName.length > 18 ? `${rawBuildName.slice(0, 18)}…` : rawBuildName
   const charactersParam = searchParams.get('characters') || ''
   const mainLossRecordsParam = searchParams.get('mainLossRecords') || ''
   const subLossRecordsParam = searchParams.get('subLossRecords') || ''
@@ -147,12 +149,6 @@ export async function GET(request: NextRequest) {
                   WebkitBackgroundClip: 'text',
                   color: 'transparent',
                   margin: 0,
-                  overflow: 'hidden',
-                  display: '-webkit-box',
-                  WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: 2,
-                  maxWidth: '716px',
-                  wordBreak: 'break-word',
                 }}
               >
                 {buildName}

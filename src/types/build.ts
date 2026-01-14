@@ -7,14 +7,14 @@
  * - ロスレコ: メイン3つ、サブ3つ
  */
 
-/** 素質のレベル（1-6） */
-export type TalentLevel = 1 | 2 | 3 | 4 | 5 | 6
+/** 素質のレベル（1-9） */
+export type TalentLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 /** 素質情報 */
 export interface Talent {
   /** 素質ID（0-indexed） */
   id: number
-  /** レベル（1-6） */
+  /** レベル（1-9） */
   level: TalentLevel
 }
 
@@ -22,7 +22,7 @@ export interface Talent {
 export interface CharacterTalents {
   /** コア素質（最大2個、4つから選択） */
   core: Talent[]
-  /** サブ素質（主力6個、支援5個、12個から選択） */
+  /** サブ素質（主力6個、支援5個、12個から選択、レベル1-9） */
   sub: Talent[]
 }
 

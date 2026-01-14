@@ -439,7 +439,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         // 通常素質はレベルアップ、最大レベルで解除
         if (existing.level < MAX_TALENT_LEVEL) {
           return prev.map((t) =>
-            t === existing ? { ...t, level: t.level + 1 } : t,
+            t === existing ? { ...t, level: (t.level + 1) as any } : t,
           )
         }
         return prev.filter((t) => t !== existing)
@@ -487,6 +487,24 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         },
       ]
     })
+  }
+
+  const handleTalentDeselect = (
+    characterName: string,
+    role: 'main' | 'sub',
+    index: number,
+  ) => {
+    setHasUserMadeChanges(true)
+    setSelectedTalents((prev) =>
+      prev.filter(
+        (t) =>
+          !(
+            t.characterName === characterName &&
+            t.role === role &&
+            t.index === index
+          ),
+      ),
+    )
   }
 
   const calculateTotalLevel = (characterName: string) => {
@@ -898,6 +916,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="main"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(mainCharacter.name)}
                   />
                 )}
@@ -910,6 +929,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="sub"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(support1.name)}
                   />
                 )}
@@ -922,6 +942,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     role="sub"
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
+                    onTalentDeselect={handleTalentDeselect}
                     totalLevel={calculateTotalLevel(support2.name)}
                   />
                 )}

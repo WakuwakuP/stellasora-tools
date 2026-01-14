@@ -46,13 +46,17 @@ export interface QualityCardProps {
   isCore: boolean
   /** クリックハンドラー */
   onClick: () => void
+  /** 右クリックハンドラー（素質を未取得状態に戻す） */
+  onRightClick?: () => void
 }
 
 /**
  * 素質カードコンポーネント
  *
  * 素質の情報を表示し、クリックで選択/レベルアップ/選択解除を行う。
+ * 右クリックで素質を未取得状態に戻すことができる。
  * ホバーで素質の詳細説明を表示する。
+ * Lv 7-9 の素質は赤い枠で表示される。
  */
 export const QualityCard: FC<QualityCardProps> = ({
   quality,
@@ -60,11 +64,22 @@ export const QualityCard: FC<QualityCardProps> = ({
   level,
   isCore,
   onClick,
+  onRightClick,
 }) => {
   // quality.isCoreが存在すればそれを使用、なければpropsのisCoreを使用
   const isCoreQuality = quality.isCore ?? isCore
   const rarity = quality.rarity ?? 1
   const backgroundUrl = getBackgroundImageUrl(isCoreQuality, rarity)
+  
+  // Lv 7-9 の素質は赤枠で表示
+  const isHighLevel = level !== undefined && level >= 7
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (onRightClick && isSelected) {
+      onRightClick()
+    }
+  }
 
   return (
     <HoverCard openDelay={200} closeDelay={100}>
@@ -72,12 +87,15 @@ export const QualityCard: FC<QualityCardProps> = ({
         <button
           type="button"
           onClick={onClick}
+          onContextMenu={handleContextMenu}
           aria-label={`${quality.title}${isSelected ? (isCoreQuality ? '、選択中' : `、レベル${level}選択中`) : ''}`}
           className={`relative flex w-full flex-col items-center rounded-lg border-2 p-1 transition-colors ${
             isSelected
               ? isCoreQuality
                 ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
-                : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
+                : isHighLevel
+                  ? 'border-red-500 bg-red-50 shadow-lg dark:bg-red-950'
+                  : 'border-amber-400 bg-amber-50 shadow-lg dark:bg-amber-950'
               : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800'
           }`}
         >
@@ -85,7 +103,7 @@ export const QualityCard: FC<QualityCardProps> = ({
           {isSelected && (
             <Badge
               className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
-                isCoreQuality ? 'bg-pink-500' : 'bg-blue-600'
+                isCoreQuality ? 'bg-pink-500' : isHighLevel ? 'bg-red-600' : 'bg-blue-600'
               }`}
             >
               {isCoreQuality ? '✓' : level}

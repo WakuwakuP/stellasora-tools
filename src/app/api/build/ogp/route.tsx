@@ -4,7 +4,7 @@ import { type NextRequest } from 'next/server'
 export const runtime = 'edge'
 
 const API_BASE_URL = 'https://api.ennead.cc'
-const FETCH_TIMEOUT_MS = 8000 // 8秒タイムアウト
+const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短縮）
 const CACHE_REVALIDATE_SECONDS = 14400 // 4時間キャッシュ
 
 /**
@@ -48,55 +48,54 @@ export async function GET(request: NextRequest) {
   const mainLossRecordIds = mainLossRecordsParam.split(',').filter(Boolean)
   const subLossRecordIds = subLossRecordsParam.split(',').filter(Boolean)
 
-  // キャラクターアイコンURLを取得
-  const characterIcons = await Promise.all(
-    characterNames.map(async (name) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
-
-  // ロスレコアイコンURLを取得
-  const mainLossRecordIcons = await Promise.all(
-    mainLossRecordIds.map(async (id) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
-
-  const subLossRecordIcons = await Promise.all(
-    subLossRecordIds.map(async (id) => {
-      try {
-        const response = await fetchWithTimeout(
-          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
-        )
-        if (!response.ok) return null
-        const data = await response.json()
-        return `${API_BASE_URL}/stella/assets/${data.icon}`
-      } catch (error) {
-        // タイムアウトまたは取得失敗時はnullを返す
-        return null
-      }
-    }),
-  )
+  // すべてのアイコンデータを並列取得（高速化のため一度にすべてfetch）
+  const [characterIcons, mainLossRecordIcons, subLossRecordIcons] = await Promise.all([
+    // キャラクターアイコン
+    Promise.all(
+      characterNames.map(async (name) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+    // メインロスレコアイコン
+    Promise.all(
+      mainLossRecordIds.map(async (id) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+    // サブロスレコアイコン
+    Promise.all(
+      subLossRecordIds.map(async (id) => {
+        try {
+          const response = await fetchWithTimeout(
+            `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+          )
+          if (!response.ok) return null
+          const data = await response.json()
+          return `${API_BASE_URL}/stella/assets/${data.icon}`
+        } catch (error) {
+          return null
+        }
+      }),
+    ),
+  ])
 
   try {
     return new ImageResponse(

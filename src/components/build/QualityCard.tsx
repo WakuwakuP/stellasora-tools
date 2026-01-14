@@ -51,11 +51,49 @@ export interface QualityCardProps {
 }
 
 /**
+ * 説明文のプレースホルダーを指定レベルのパラメータで置換する
+ * @param description - 説明文（&Param1&, &Param2&などを含む）
+ * @param params - パラメータ配列（各レベルの値を含む）
+ * @param targetLevel - 表示するレベル（1-9）
+ */
+function replaceDescriptionWithLevel(
+  description: string,
+  params: string[] | undefined,
+  targetLevel: number,
+): string {
+  if (!params || params.length === 0) {
+    return description
+  }
+  
+  // paramsは通常、各レベルのパラメータを含む配列
+  // 例: params = ["10,15,20,25,30,35,40,45,50"] (Lv1-9の値がカンマ区切り)
+  // または params = ["10", "15", "20", ...] (各要素が1レベルの値)
+  
+  return description.replace(/&Param(\d+)&/g, (match, index) => {
+    const paramIndex = Number.parseInt(index, 10) - 1
+    if (paramIndex >= params.length) {
+      return match
+    }
+    
+    const param = params[paramIndex]
+    // カンマ区切りの場合、レベルに応じた値を取得
+    if (param.includes(',')) {
+      const values = param.split(',')
+      const levelIndex = Math.min(targetLevel - 1, values.length - 1)
+      return values[levelIndex]?.trim() ?? match
+    }
+    
+    // カンマ区切りでない場合はそのまま返す
+    return param
+  })
+}
+
+/**
  * 素質カードコンポーネント
  *
  * 素質の情報を表示し、クリックで選択/レベルアップ/選択解除を行う。
  * 右クリックで素質を未取得状態に戻すことができる。
- * ホバーで素質の詳細説明を表示する。
+ * ホバーで素質の詳細説明を表示する（レベル別の数値を表示）。
  * Lv 7-9 の素質は赤い枠で表示される。
  */
 export const QualityCard: FC<QualityCardProps> = ({
@@ -73,6 +111,15 @@ export const QualityCard: FC<QualityCardProps> = ({
   
   // Lv 7-9 の素質は赤枠で表示
   const isHighLevel = level !== undefined && level >= 7
+  
+  // ホバー時に表示する説明文（レベル別の数値を適用）
+  // 未取得の場合はLv1、選択済みの場合は現在のレベルの説明を表示
+  const displayLevel = isCoreQuality ? 1 : (level ?? 1)
+  const hoverDescription = replaceDescriptionWithLevel(
+    quality.description,
+    quality.params,
+    displayLevel,
+  )
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -137,9 +184,16 @@ export const QualityCard: FC<QualityCardProps> = ({
       </HoverCardTrigger>
       <HoverCardContent className="w-72" side="top" align="center">
         <div className="space-y-2">
-          <h4 className="font-bold text-sm">{quality.title}</h4>
+          <h4 className="font-bold text-sm">
+            {quality.title}
+            {!isCoreQuality && (
+              <span className="ml-2 text-muted-foreground text-xs">
+                Lv.{displayLevel}
+              </span>
+            )}
+          </h4>
           <p className="text-muted-foreground whitespace-pre-wrap text-xs">
-            {quality.description}
+            {hoverDescription}
           </p>
         </div>
       </HoverCardContent>

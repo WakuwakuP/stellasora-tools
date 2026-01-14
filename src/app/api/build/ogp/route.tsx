@@ -4,6 +4,7 @@ import { type NextRequest } from 'next/server'
 const API_BASE_URL = 'https://api.ennead.cc'
 const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短縮）
 const API_CACHE_REVALIDATE_SECONDS = 86400 // 24時間キャッシュ（APIデータは頻繁に変更されない）
+const IMAGE_CACHE_REVALIDATE_SECONDS = 86400 * 7 // 7日間キャッシュ（画像は頻繁に変更されない）
 const OGP_CACHE_MAX_AGE = 86400 // 24時間（ブラウザキャッシュ）
 const OGP_CACHE_STALE_WHILE_REVALIDATE = 604800 // 7日間（stale-while-revalidate）
 const OGP_CACHE_CONTROL = `public, max-age=${OGP_CACHE_MAX_AGE}, s-maxage=${OGP_CACHE_MAX_AGE}, stale-while-revalidate=${OGP_CACHE_STALE_WHILE_REVALIDATE}`
@@ -25,6 +26,31 @@ async function fetchWithTimeout(url: string, timeoutMs: number = FETCH_TIMEOUT_M
   } catch (error) {
     clearTimeout(timeoutId)
     throw error
+  }
+}
+
+/**
+ * 画像を取得してBase64データURIに変換する（キャッシュ対応）
+ */
+async function fetchImageAsDataUri(imageUrl: string): Promise<string | null> {
+  try {
+    const response = await fetch(imageUrl, {
+      next: { revalidate: IMAGE_CACHE_REVALIDATE_SECONDS },
+    })
+    
+    if (!response.ok) return null
+    
+    const arrayBuffer = await response.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const base64 = buffer.toString('base64')
+    
+    // Content-Typeを取得、デフォルトはimage/png
+    const contentType = response.headers.get('content-type') || 'image/png'
+    
+    return `data:${contentType};base64,${base64}`
+  } catch (error) {
+    console.error('Failed to fetch image:', imageUrl, error)
+    return null
   }
 }
 
@@ -60,7 +86,9 @@ export async function GET(request: NextRequest) {
           )
           if (!response.ok) return null
           const data = await response.json()
-          return `${API_BASE_URL}/stella/assets/${data.icon}`
+          const iconUrl = `${API_BASE_URL}/stella/assets/${data.icon}`
+          // 画像を取得してData URIに変換（キャッシュされる）
+          return await fetchImageAsDataUri(iconUrl)
         } catch (error) {
           return null
         }
@@ -75,7 +103,9 @@ export async function GET(request: NextRequest) {
           )
           if (!response.ok) return null
           const data = await response.json()
-          return `${API_BASE_URL}/stella/assets/${data.icon}`
+          const iconUrl = `${API_BASE_URL}/stella/assets/${data.icon}`
+          // 画像を取得してData URIに変換（キャッシュされる）
+          return await fetchImageAsDataUri(iconUrl)
         } catch (error) {
           return null
         }
@@ -90,7 +120,9 @@ export async function GET(request: NextRequest) {
           )
           if (!response.ok) return null
           const data = await response.json()
-          return `${API_BASE_URL}/stella/assets/${data.icon}`
+          const iconUrl = `${API_BASE_URL}/stella/assets/${data.icon}`
+          // 画像を取得してData URIに変換（キャッシュされる）
+          return await fetchImageAsDataUri(iconUrl)
         } catch (error) {
           return null
         }

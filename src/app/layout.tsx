@@ -7,8 +7,15 @@ import Providers from '../components/providers/ClientProviders'
 import './globals.css'
 
 export const metadata: Metadata = {
-  description: 'Nextjs Template With ZenStack, shadcn',
-  title: 'Nextjs Template',
+  description: 'Stellasoraツール集 - ゲームプレイを便利にするツールを提供',
+  title: 'Stellasora Tools',
+}
+
+export const viewport = {
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  width: 'device-width',
 }
 
 export default function RootLayout({

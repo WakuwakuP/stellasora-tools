@@ -99,7 +99,7 @@ export const QualityCard: FC<QualityCardProps> = ({
           onClick={onClick}
           onContextMenu={handleContextMenu}
           aria-label={`${quality.title}${isSelected ? (isCoreQuality ? '、選択中' : `、レベル${level}選択中`) : ''}`}
-          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-1 transition-colors ${
+          className={`relative flex w-full flex-col items-center rounded-lg border-2 p-0.5 sm:p-1 transition-colors ${
             isSelected
               ? isCoreQuality
                 ? 'border-pink-400 bg-pink-50 shadow-lg dark:bg-pink-950'
@@ -112,7 +112,7 @@ export const QualityCard: FC<QualityCardProps> = ({
           {/* コア素質は選択時にチェックマーク、通常素質はレベル表示 */}
           {isSelected && (
             <Badge
-              className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white ${
+              className={`absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg text-white text-[10px] sm:text-xs px-1 py-0 ${
                 isCoreQuality ? 'bg-pink-500' : isHighLevel ? 'bg-red-600' : 'bg-blue-600'
               }`}
             >
@@ -135,12 +135,12 @@ export const QualityCard: FC<QualityCardProps> = ({
               src={quality.fileName}
               alt={quality.title}
               fill
-              sizes="150px"
+              sizes="(max-width: 640px) 80px, 150px"
               className="relative z-[1] object-contain"
               style={{ objectPosition: 'center 25%' }}
             />
           </div>
-          <span className="mt-1 line-clamp-1 w-full text-center text-xs">
+          <span className="mt-0.5 sm:mt-1 line-clamp-1 w-full text-center text-[10px] sm:text-xs">
             {quality.title}
           </span>
         </button>

@@ -103,9 +103,9 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
     <div key={groupName}>
       <div className="mb-1 font-medium text-slate-500 text-xs">{groupName}</div>
       <div
-        className="grid gap-2"
+        className="grid gap-1.5 sm:gap-2"
         style={{
-          gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
         }}
       >
         {items.map(({ quality, originalIndex }) => {

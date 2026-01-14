@@ -327,6 +327,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // 横向きモード用の左パネルタブ状態
   const [leftPanelTab, setLeftPanelTab] = useState('characters')
 
+  // モード切替時にタブ状態をリセット
+  useEffect(() => {
+    // デスクトップモードで landscape 専用タブが選択されている場合は characters にリセット
+    if (!isMobile && !isLandscape) {
+      if (leftPanelTab === 'main-lr' || leftPanelTab === 'sub-lr') {
+        setLeftPanelTab('characters')
+      }
+    }
+  }, [isMobile, isLandscape, leftPanelTab])
+
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 
@@ -902,110 +912,119 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               </Collapsible>
             </>
           ) : (
-            <>
-              {/* デスクトップ: 巡遊者（キャラクター）セクション */}
-              <div className="mb-4">
-                <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-                  <span className="text-lg">🏆</span>
-                  巡遊者
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {characters.map((char, index) => (
-                    <CharacterAvatar
-                      key={char.label}
-                      name={char.name}
-                      iconUrl={getCharacterIconUrl(char.name)}
-                      label={char.label}
-                      isMain={char.role === 'main'}
-                      totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
-                      onClick={() => openCharacterDialog(index)}
-                    />
-                  ))}
-                </div>
-              </div>
+            /* デスクトップ: タブ表示（キャラクターとビルドの2タブ） */
+            <Tabs value={leftPanelTab} onValueChange={setLeftPanelTab} className="flex min-h-0 flex-1 flex-col">
+              <TabsList className="w-full shrink-0 grid grid-cols-2 rounded-lg p-1">
+                <TabsTrigger value="characters" className="text-sm">
+                  キャラクター
+                </TabsTrigger>
+                <TabsTrigger value="builds" className="text-sm">
+                  ビルド
+                </TabsTrigger>
+              </TabsList>
 
-              {/* デスクトップ: メインロスレコセクション */}
-              <div className="mb-4">
-                <h3 className="mb-2 flex items-center gap-1 font-bold">
-                  <span>⊕</span>
-                  メインロスレコ
+              <TabsContent value="characters" className="mt-2 min-h-0 flex-1 flex flex-col">
+                <ScrollArea className="min-h-0 flex-1">
+                  <div className="space-y-2 pr-3">
+                    {/* 巡遊者（キャラクター）セクション */}
+                    <div>
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold text-amber-600">
+                        <span>🏆</span>
+                        巡遊者
+                      </h3>
+                      <div className="grid grid-cols-3 gap-2">
+                        {characters.map((char, index) => (
+                          <CharacterAvatar
+                            key={char.label}
+                            name={char.name}
+                            iconUrl={getCharacterIconUrl(char.name)}
+                            label={char.label}
+                            isMain={char.role === 'main'}
+                            totalLevel={char.name ? calculateTotalLevel(char.name) : 0}
+                            onClick={() => openCharacterDialog(index)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* メインロスレコセクション */}
+                    <div>
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                        <span>⊕</span>
+                        メインロスレコ
+                        <button
+                          type="button"
+                          onClick={() => setMainLossRecordDialogOpen(true)}
+                          className="ml-auto text-slate-400 hover:text-slate-600"
+                          aria-label="メインロスレコを選択"
+                        >
+                          🔍
+                        </button>
+                      </h3>
+                      <LossRecordSlots
+                        lossRecordIds={mainLossRecordIds}
+                        getLossRecordById={getLossRecordById}
+                        onSlotClick={() => setMainLossRecordDialogOpen(true)}
+                        onDeselect={handleMainLossRecordDeselect}
+                        showSecondaryNotes
+                      />
+                    </div>
+
+                    {/* サブロスレコセクション */}
+                    <div>
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
+                        <span>⊖</span>
+                        サブロスレコ
+                        <button
+                          type="button"
+                          onClick={() => setSubLossRecordDialogOpen(true)}
+                          className="ml-auto text-slate-400 hover:text-slate-600"
+                          aria-label="サブロスレコを選択"
+                        >
+                          🔍
+                        </button>
+                      </h3>
+                      <LossRecordSlots
+                        lossRecordIds={subLossRecordIds}
+                        getLossRecordById={getLossRecordById}
+                        onSlotClick={() => setSubLossRecordDialogOpen(true)}
+                        onDeselect={handleSubLossRecordDeselect}
+                      />
+                    </div>
+
+                    {/* ステータス表示 */}
+                    <div className="rounded-lg bg-slate-200 p-2 dark:bg-slate-700">
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-blue-500">ℹ</span>
+                        <span>
+                          選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </ScrollArea>
+
+                {/* 登録ボタン */}
+                <div className="mt-2 shrink-0">
                   <button
                     type="button"
-                    onClick={() => setMainLossRecordDialogOpen(true)}
-                    className="ml-auto text-slate-400 hover:text-slate-600"
-                    aria-label="メインロスレコを選択"
+                    onClick={handleSaveBuild}
+                    disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                    className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 text-sm font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
                   >
-                    🔍
+                    ❤ 登録
                   </button>
-                </h3>
-                <LossRecordSlots
-                  lossRecordIds={mainLossRecordIds}
-                  getLossRecordById={getLossRecordById}
-                  onSlotClick={() => setMainLossRecordDialogOpen(true)}
-                  onDeselect={handleMainLossRecordDeselect}
-                  showSecondaryNotes
-                />
-              </div>
-
-              {/* デスクトップ: サブロスレコセクション */}
-              <div className="mb-4">
-                <h3 className="mb-2 flex items-center gap-1 font-bold">
-                  <span>⊖</span>
-                  サブロスレコ
-                  <button
-                    type="button"
-                    onClick={() => setSubLossRecordDialogOpen(true)}
-                    className="ml-auto text-slate-400 hover:text-slate-600"
-                    aria-label="サブロスレコを選択"
-                  >
-                    🔍
-                  </button>
-                </h3>
-                <LossRecordSlots
-                  lossRecordIds={subLossRecordIds}
-                  getLossRecordById={getLossRecordById}
-                  onSlotClick={() => setSubLossRecordDialogOpen(true)}
-                  onDeselect={handleSubLossRecordDeselect}
-                />
-              </div>
-
-              {/* デスクトップ: ステータス表示 */}
-              <div className="mt-4 rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-blue-500">ℹ</span>
-                  <span>
-                    選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
-                  </span>
                 </div>
-              </div>
+              </TabsContent>
 
-              {/* デスクトップ: 登録ボタン */}
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={handleSaveBuild}
-                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
-                >
-                  ❤ 登録
-                </button>
-              </div>
-
-              {/* デスクトップ: 保存されたビルドリスト */}
-              <div className="mt-4 flex min-h-0 flex-1 flex-col">
-                <h3 className="mb-2 flex items-center gap-1 font-bold">
-                  <span>📋</span>
-                  保存済みビルド
-                </h3>
-                <div className="min-h-0 flex-1 overflow-hidden">
-                  <SavedBuildList
-                    builds={builds}
-                    onRemove={removeBuild}
-                    currentUrl={currentUrl}
-                  />
-                </div>
-              </div>
-            </>
+              <TabsContent value="builds" className="mt-2 min-h-0 flex-1 overflow-hidden">
+                <SavedBuildList
+                  builds={builds}
+                  onRemove={removeBuild}
+                  currentUrl={currentUrl}
+                />
+              </TabsContent>
+            </Tabs>
           )}
 
           {/* キャラクター選択ダイアログ */}

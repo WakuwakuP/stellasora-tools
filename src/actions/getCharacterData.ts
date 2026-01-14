@@ -192,9 +192,12 @@ function convertPotentialToQualityInfo(
   potential: ApiPotentialEntry,
   isCore: boolean,
 ): QualityInfo {
+  // descriptionが空の場合はshortDescriptionにフォールバック
+  const descriptionText = potential.description || potential.shortDescription
+
   return {
     description: processQualityDescription(
-      potential.description,
+      descriptionText,
       potential.params,
       1,
     ),

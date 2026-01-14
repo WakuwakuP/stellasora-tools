@@ -628,11 +628,11 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
-      <div className="flex h-full flex-col gap-2 p-2 md:gap-3 md:p-3 lg:gap-4 lg:p-4 md:flex-row">
+      <div className="flex h-full flex-col gap-2 p-2 md:gap-3 md:p-3 lg:gap-4 lg:p-4 md:flex-row landscape:gap-1.5 landscape:p-1.5">
         {/* 左パネル - ビルド情報 */}
-        <div className={`flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 md:h-full md:w-64 lg:w-80 xl:w-96 ${isMobile ? 'p-2' : 'p-3 lg:p-4'}`}>
+        <div className={`flex w-full shrink-0 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 md:h-full md:w-64 lg:w-80 xl:w-96 landscape:rounded-lg ${isMobile ? 'p-2' : 'p-3 lg:p-4'} landscape:p-2`}>
           {/* ビルド名 - モバイルではコンパクトに */}
-          <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
+          <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'} landscape:mb-1.5 landscape:p-1.5`}>
             <div className="flex items-center gap-2">
               <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
               <div className="flex-1">
@@ -906,25 +906,25 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         </div>
 
         {/* 右パネル - 素質/ロスレコスキル */}
-        <div className="flex min-h-0 flex-1 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80">
+        <div className="flex min-h-0 flex-1 flex-col rounded-xl border-2 border-slate-300 bg-slate-50/80 shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-800/80 landscape:rounded-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex min-h-0 flex-1 flex-col">
-            <TabsList className="w-full shrink-0 justify-start rounded-none rounded-t-xl border-b bg-slate-100 p-0 dark:bg-slate-900">
+            <TabsList className="w-full shrink-0 justify-start rounded-none rounded-t-xl border-b bg-slate-100 p-0 dark:bg-slate-900 landscape:rounded-t-lg">
               <TabsTrigger
                 value="qualities"
-                className="rounded-none rounded-tl-xl border-r px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 text-xs sm:text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
+                className="rounded-none rounded-tl-xl border-r px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 text-xs sm:text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 landscape:rounded-tl-lg landscape:px-2.5 landscape:py-1.5"
               >
                 素質収集
               </TabsTrigger>
               <TabsTrigger
                 value="lossreco"
-                className="rounded-none border-r px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 text-xs sm:text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
+                className="rounded-none border-r px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 text-xs sm:text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 landscape:px-2.5 landscape:py-1.5"
               >
                 ロスレコスキル
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="qualities" className="mt-0 min-h-0 flex-1">
-              <ScrollArea className="h-full p-2 sm:p-3 md:p-4">
+              <ScrollArea className="h-full p-2 sm:p-3 md:p-4 landscape:p-1.5">
                 {/* 主力キャラクターの素質 */}
                 {mainCharacter.name && qualitiesData[mainCharacter.name] && (
                   <CharacterQualitiesSection
@@ -967,7 +967,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             </TabsContent>
 
             <TabsContent value="lossreco" className="mt-0 min-h-0 flex-1">
-              <ScrollArea className="h-full p-2 sm:p-3 md:p-4">
+              <ScrollArea className="h-full p-2 sm:p-3 md:p-4 landscape:p-1.5">
                 <LossRecordSkillSection
                   mainLossRecords={mainLossRecordIds
                     .map((id) => getLossRecordById(id))

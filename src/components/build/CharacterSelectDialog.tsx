@@ -141,7 +141,7 @@ export const CharacterSelectDialog: FC<CharacterSelectDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden sm:max-w-4xl landscape:max-h-[85vh]">
+      <DialogContent className="flex min-h-[400px] max-h-[90vh] max-w-4xl flex-col gap-0 overflow-hidden sm:max-w-4xl landscape:max-h-[85vh]">
         <DialogHeader className="shrink-0 pb-4">
           <DialogTitle>{slotLabel}を選択</DialogTitle>
         </DialogHeader>

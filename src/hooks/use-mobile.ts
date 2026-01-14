@@ -1,7 +1,13 @@
 import * as React from 'react'
 
 const MOBILE_BREAKPOINT = 768
-const LANDSCAPE_HEIGHT_THRESHOLD = 500 // 横向きモバイルの判定閾値
+
+/**
+ * 横向きモバイルの高さ閾値
+ * この値はglobals.cssのlandscapeバリアント定義と一致させる必要があります
+ * @see src/app/globals.css - @custom-variant landscape
+ */
+export const LANDSCAPE_HEIGHT_THRESHOLD = 500
 
 export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)

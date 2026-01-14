@@ -656,16 +656,16 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           {isLandscape ? (
             <Tabs value={leftPanelTab} onValueChange={setLeftPanelTab} className="flex min-h-0 flex-1 flex-col">
               <TabsList className="w-full shrink-0 grid grid-cols-4 rounded-lg p-0.5">
-                <TabsTrigger value="characters" className="px-1 py-1 text-[10px]">
+                <TabsTrigger value="characters" className="px-1 py-1 text-xs">
                   キャラクター
                 </TabsTrigger>
-                <TabsTrigger value="main-lr" className="px-1 py-1 text-[10px]">
+                <TabsTrigger value="main-lr" className="px-1 py-1 text-xs">
                   メイン
                 </TabsTrigger>
-                <TabsTrigger value="sub-lr" className="px-1 py-1 text-[10px]">
+                <TabsTrigger value="sub-lr" className="px-1 py-1 text-xs">
                   サブ
                 </TabsTrigger>
-                <TabsTrigger value="builds" className="px-1 py-1 text-[10px]">
+                <TabsTrigger value="builds" className="px-1 py-1 text-xs">
                   ビルド
                 </TabsTrigger>
               </TabsList>
@@ -745,7 +745,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
               {/* ステータス表示 */}
               <div className="mt-1.5 rounded-lg bg-slate-200 p-1.5 dark:bg-slate-700">
-                <div className="flex items-center gap-1 text-[10px]">
+                <div className="flex items-center gap-1 text-xs">
                   <span className="text-blue-500">ℹ</span>
                   <span>
                     選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}

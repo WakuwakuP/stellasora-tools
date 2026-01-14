@@ -923,13 +923,13 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="characters" className="mt-3 min-h-0 flex-1 flex flex-col">
+              <TabsContent value="characters" className="mt-2 min-h-0 flex-1 flex flex-col">
                 <ScrollArea className="min-h-0 flex-1">
-                  <div className="space-y-4 pr-3">
+                  <div className="space-y-2 pr-3">
                     {/* 巡遊者（キャラクター）セクション */}
                     <div>
-                      <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-                        <span className="text-lg">🏆</span>
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold text-amber-600">
+                        <span>🏆</span>
                         巡遊者
                       </h3>
                       <div className="grid grid-cols-3 gap-2">
@@ -949,7 +949,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
                     {/* メインロスレコセクション */}
                     <div>
-                      <h3 className="mb-2 flex items-center gap-1 font-bold">
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
                         <span>⊕</span>
                         メインロスレコ
                         <button
@@ -972,7 +972,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
 
                     {/* サブロスレコセクション */}
                     <div>
-                      <h3 className="mb-2 flex items-center gap-1 font-bold">
+                      <h3 className="mb-1 flex items-center gap-1 text-sm font-bold">
                         <span>⊖</span>
                         サブロスレコ
                         <button
@@ -993,8 +993,8 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     </div>
 
                     {/* ステータス表示 */}
-                    <div className="rounded-lg bg-slate-200 p-3 dark:bg-slate-700">
-                      <div className="flex items-center gap-2 text-sm">
+                    <div className="rounded-lg bg-slate-200 p-2 dark:bg-slate-700">
+                      <div className="flex items-center gap-2 text-xs">
                         <span className="text-blue-500">ℹ</span>
                         <span>
                           選択素質: {selectedTalents.length}個 / 合計Lv: {selectedTalents.reduce((sum, t) => sum + t.level, 0)}
@@ -1005,19 +1005,19 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 </ScrollArea>
 
                 {/* 登録ボタン */}
-                <div className="mt-3 shrink-0">
+                <div className="mt-2 shrink-0">
                   <button
                     type="button"
                     onClick={handleSaveBuild}
                     disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-                    className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-2 font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                    className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 text-sm font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
                   >
                     ❤ 登録
                   </button>
                 </div>
               </TabsContent>
 
-              <TabsContent value="builds" className="mt-3 min-h-0 flex-1 overflow-hidden">
+              <TabsContent value="builds" className="mt-2 min-h-0 flex-1 overflow-hidden">
                 <SavedBuildList
                   builds={builds}
                   onRemove={removeBuild}

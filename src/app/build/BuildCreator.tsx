@@ -924,7 +924,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
               </TabsList>
 
               <TabsContent value="characters" className="mt-3 min-h-0 flex-1 flex flex-col">
-                <ScrollArea className="flex-1 min-h-0">
+                <ScrollArea className="min-h-0 flex-1">
                   <div className="space-y-4 pr-3">
                     {/* 巡遊者（キャラクター）セクション */}
                     <div>

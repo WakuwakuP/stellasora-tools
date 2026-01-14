@@ -195,3 +195,32 @@ export const Interactive: Story = {
     )
   },
 }
+
+/**
+ * アイコンなしキャラクター（フォールバック表示のテスト）
+ * アイコンURLが読み込めない場合にUserアイコンが表示されることを確認
+ */
+export const WithoutIcons: Story = {
+  args: {
+    open: true,
+    characters: [
+      {
+        element: '火',
+        name: 'キャラA',
+        position: 'アタッカー',
+      },
+      {
+        element: '水',
+        name: 'キャラB',
+        position: 'サポーター',
+      },
+      {
+        element: '風',
+        name: 'キャラC',
+        position: 'バランサー',
+      },
+    ],
+    selectedName: null,
+    slotLabel: 'フォールバックテスト',
+  },
+}

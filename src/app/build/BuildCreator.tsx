@@ -32,6 +32,7 @@ import {
 import { Input } from 'components/ui/input'
 import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
+import { useBuildScore } from 'hooks/useBuildScore'
 import { useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
 import {
@@ -300,6 +301,48 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   const [mainLossRecordDialogOpen, setMainLossRecordDialogOpen] = useState(false)
   const [subLossRecordDialogOpen, setSubLossRecordDialogOpen] = useState(false)
 
+  // ビルドスコアの計算
+  const {
+    effectContributions,
+    isCalculating: isCalculatingScore,
+    score: totalBuildScore,
+  } = useBuildScore(
+    characters,
+    selectedTalents,
+    mainLossRecordIds,
+    subLossRecordIds,
+  )
+
+  // スコア詳細の表示状態
+  const [isScoreDetailOpen, setIsScoreDetailOpen] = useState(false)
+
+  // effectContributionsから素質ごとのスコアマップを構築
+  // キー形式: `${characterName}-${index}-${level}`
+  const talentScores = useMemo<Record<string, number>>(() => {
+    if (!effectContributions || effectContributions.length === 0) {
+      return {}
+    }
+
+    const scores: Record<string, number> = {}
+
+    // effectContributionsから素質のスコアを直接マッピング
+    // 新しい構造ではcharacterName, talentIndex, levelが含まれている
+    for (const contribution of effectContributions) {
+      if (
+        contribution.sourceType === 'talent' &&
+        contribution.characterName &&
+        contribution.talentIndex !== undefined &&
+        contribution.level !== undefined
+      ) {
+        const scoreKey = `${contribution.characterName}-${contribution.talentIndex}-${contribution.level}`
+        // 同じキーの場合は加算（複数の効果を持つ素質の場合）
+        scores[scoreKey] = (scores[scoreKey] ?? 0) + contribution.averageIncrease
+      }
+    }
+
+    return scores
+  }, [effectContributions])
+
   // モバイル判定
   const isMobile = useIsMobile()
 
@@ -502,7 +545,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         setPendingBuildName('')
         setBuildNameDialogOpen(true)
       } else {
-        addBuild(buildName, currentUrl)
+        addBuild(buildName, currentUrl, totalBuildScore)
       }
     }
   }
@@ -520,7 +563,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
         mainLossRecordIds,
         subLossRecordIds,
       )
-      addBuild(trimmedName, newUrl)
+      addBuild(trimmedName, newUrl, totalBuildScore)
       setBuildNameDialogOpen(false)
       setHasUserMadeChanges(true)
     }
@@ -600,16 +643,14 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           <div className={`rounded-lg bg-gradient-to-r from-slate-700 to-slate-600 text-white ${isMobile ? 'mb-2 p-2' : 'mb-4 p-4'}`}>
             <div className="flex items-center gap-2">
               <Pencil className={`shrink-0 text-slate-400 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
-              <div className="flex-1">
-                <input
-                  type="text"
-                  value={buildName}
-                  onChange={(e) => setBuildName(e.target.value)}
-                  aria-label="ビルド名"
-                  placeholder="新規ビルド"
-                  className={`w-full bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
-                />
-              </div>
+              <input
+                type="text"
+                value={buildName}
+                onChange={(e) => setBuildName(e.target.value)}
+                aria-label="ビルド名"
+                placeholder="新規ビルド"
+                className={`flex-1 bg-transparent font-bold outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-400 focus:rounded ${isMobile ? 'text-base' : 'text-xl'}`}
+              />
             </div>
           </div>
 
@@ -624,11 +665,30 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   <span>🏆</span>
                   巡遊者・ロスレコ
                 </span>
-                {isBuildInfoOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+                <div className="flex items-center gap-2">
+                  {isCalculatingScore && (
+                    <span className="text-slate-400 font-bold text-xs bg-slate-300/50 px-2 py-0.5 rounded animate-pulse dark:bg-slate-600/50">
+                      計算中...
+                    </span>
+                  )}
+                  {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setIsScoreDetailOpen(true)
+                      }}
+                      className="text-emerald-600 font-bold text-xs bg-emerald-100/50 px-2 py-0.5 rounded dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200/50 dark:hover:bg-emerald-900/50"
+                    >
+                      +{totalBuildScore.toFixed(1)}%
+                    </button>
+                  )}
+                  {isBuildInfoOpen ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </div>
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-2">
                 {/* 巡遊者（キャラクター）セクション - コンパクト版 */}
@@ -700,9 +760,27 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
             <>
               {/* デスクトップ: 巡遊者（キャラクター）セクション */}
               <div className="mb-4">
-                <h3 className="mb-2 flex items-center gap-1 font-bold text-amber-600">
-                  <span className="text-lg">🏆</span>
-                  巡遊者
+                <h3 className="mb-2 flex items-center justify-between font-bold text-amber-600">
+                  <span className="flex items-center gap-1">
+                    <span className="text-lg">🏆</span>
+                    巡遊者
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {isCalculatingScore && (
+                      <span className="text-slate-400 font-bold text-xs bg-slate-200 px-2 py-1 rounded animate-pulse dark:bg-slate-700">
+                        計算中...
+                      </span>
+                    )}
+                    {!isCalculatingScore && totalBuildScore !== undefined && totalBuildScore > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setIsScoreDetailOpen(true)}
+                        className="text-emerald-600 font-bold text-sm bg-emerald-100 px-2 py-1 rounded dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors cursor-pointer"
+                      >
+                        +{totalBuildScore.toFixed(1)}%
+                      </button>
+                    )}
+                  </div>
                 </h3>
                 <div className="grid grid-cols-3 gap-2">
                   {characters.map((char, index) => (
@@ -899,6 +977,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(mainCharacter.name)}
+                    talentScores={talentScores}
                   />
                 )}
 
@@ -911,6 +990,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(support1.name)}
+                    talentScores={talentScores}
                   />
                 )}
 
@@ -923,6 +1003,7 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                     selectedTalents={selectedTalents}
                     onTalentSelect={handleTalentSelect}
                     totalLevel={calculateTotalLevel(support2.name)}
+                    talentScores={talentScores}
                   />
                 )}
               </ScrollArea>
@@ -943,6 +1024,101 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
           </Tabs>
         </div>
       </div>
+
+      {/* スコア詳細ダイアログ */}
+      <Dialog open={isScoreDetailOpen} onOpenChange={setIsScoreDetailOpen}>
+        <DialogContent className="max-w-lg max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>ビルドスコア詳細</span>
+              {totalBuildScore !== undefined && (
+                <span className="text-emerald-600 font-bold text-lg bg-emerald-100 px-3 py-1 rounded dark:bg-emerald-900/30 dark:text-emerald-400">
+                  合計: +{totalBuildScore.toFixed(1)}%
+                </span>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              各効果のダメージ増加率の内訳
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[50vh] pr-4">
+            {effectContributions.length > 0 ? (
+              <div className="space-y-2">
+                {/* 素質の効果 */}
+                {effectContributions.filter((e) => e.name.includes('(素質)')).length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-amber-600 mb-2">🎭 素質効果</h4>
+                    <div className="space-y-1">
+                      {effectContributions
+                        .filter((e) => e.name.includes('(素質)'))
+                        .sort((a, b) => b.averageIncrease - a.averageIncrease)
+                        .map((effect, index) => (
+                          <div
+                            key={`talent-${index}`}
+                            className="flex items-center justify-between text-sm py-1 px-2 rounded bg-slate-50 dark:bg-slate-800"
+                          >
+                            <span className="text-slate-700 dark:text-slate-300 truncate flex-1 mr-2">
+                              {effect.name.replace(' (素質)', '')}
+                            </span>
+                            <span
+                              className={`font-mono font-bold ${
+                                effect.averageIncrease > 0
+                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  : 'text-slate-400'
+                              }`}
+                            >
+                              {effect.averageIncrease > 0 ? '+' : ''}
+                              {effect.averageIncrease.toFixed(1)}%
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ロスレコの効果 */}
+                {effectContributions.filter((e) => !e.name.includes('(素質)')).length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-purple-600 mb-2 mt-4">💿 ロスレコ効果</h4>
+                    <div className="space-y-1">
+                      {effectContributions
+                        .filter((e) => !e.name.includes('(素質)'))
+                        .sort((a, b) => b.averageIncrease - a.averageIncrease)
+                        .map((effect, index) => (
+                          <div
+                            key={`disc-${index}`}
+                            className="flex items-center justify-between text-sm py-1 px-2 rounded bg-slate-50 dark:bg-slate-800"
+                          >
+                            <span className="text-slate-700 dark:text-slate-300 truncate flex-1 mr-2">
+                              {effect.name}
+                            </span>
+                            <span
+                              className={`font-mono font-bold ${
+                                effect.averageIncrease > 0
+                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  : 'text-slate-400'
+                              }`}
+                            >
+                              {effect.averageIncrease > 0 ? '+' : ''}
+                              {effect.averageIncrease.toFixed(1)}%
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-slate-500 text-center py-4">
+                スコア情報がありません
+              </p>
+            )}
+          </ScrollArea>
+          <DialogFooter>
+            <Button onClick={() => setIsScoreDetailOpen(false)}>閉じる</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ビルド名入力ダイアログ */}
       <Dialog open={buildNameDialogOpen} onOpenChange={setBuildNameDialogOpen}>

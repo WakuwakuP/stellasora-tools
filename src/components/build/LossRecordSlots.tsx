@@ -87,10 +87,17 @@ export const LossRecordSlots: FC<LossRecordSlotsProps> = ({
         const lr = lrId ? getLossRecordById(lrId) : undefined
         return (
           <div key={slotIndex} className="flex flex-col">
-            <button
-              type="button"
+            <div
+              role="button"
+              tabIndex={0}
               onClick={onSlotClick}
-              className="relative aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onSlotClick()
+                }
+              }}
+              className="relative aspect-square cursor-pointer rounded-lg border-2 border-dashed border-slate-300 bg-slate-100 transition-colors hover:border-slate-400 dark:border-slate-600 dark:bg-slate-700"
             >
               {lr ? (
                 <>
@@ -117,7 +124,7 @@ export const LossRecordSlots: FC<LossRecordSlotsProps> = ({
                   <Plus className={iconSize} />
                 </div>
               )}
-            </button>
+            </div>
             {/* メインロスレコ用: サブスキル必要音符を表示 */}
             {showSecondaryNotes &&
               lr &&

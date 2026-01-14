@@ -8,6 +8,8 @@ export interface SavedBuild {
   id: string
   name: string
   url: string
+  /** 総合平均ダメージ増加率（%） */
+  totalScore?: number
 }
 
 const STORAGE_KEY = 'stellasora-saved-builds'
@@ -45,7 +47,8 @@ function isValidSavedBuilds(data: unknown): data is SavedBuild[] {
       typeof item.id === 'string' &&
       typeof item.name === 'string' &&
       typeof item.url === 'string' &&
-      typeof item.createdAt === 'number',
+      typeof item.createdAt === 'number' &&
+      (item.totalScore === undefined || typeof item.totalScore === 'number'),
   )
 }
 
@@ -79,28 +82,33 @@ export function useSavedBuilds() {
    * ビルドをローカルストレージに追加
    * @param name - ビルド名
    * @param url - ビルドのURL（/build/...形式）
+   * @param totalScore - 総合平均ダメージ増加率（%）
    * @returns 追加されたビルド情報
    */
-  const addBuild = useCallback((name: string, url: string) => {
-    const newBuild: SavedBuild = {
-      createdAt: Date.now(),
-      id: generateUniqueId(),
-      name,
-      url,
-    }
-
-    setBuilds((prev) => {
-      const updated = [newBuild, ...prev]
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-      } catch (error) {
-        console.warn('Failed to save build:', error)
+  const addBuild = useCallback(
+    (name: string, url: string, totalScore?: number) => {
+      const newBuild: SavedBuild = {
+        createdAt: Date.now(),
+        id: generateUniqueId(),
+        name,
+        totalScore,
+        url,
       }
-      return updated
-    })
 
-    return newBuild
-  }, [])
+      setBuilds((prev) => {
+        const updated = [newBuild, ...prev]
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        } catch (error) {
+          console.warn('Failed to save build:', error)
+        }
+        return updated
+      })
+
+      return newBuild
+    },
+    [],
+  )
 
   /**
    * ビルドをローカルストレージから削除

@@ -46,6 +46,8 @@ export interface QualityCardProps {
   isCore: boolean
   /** クリックハンドラー */
   onClick: () => void
+  /** 平均ダメージ増加率（%）- レベル別 */
+  damageIncrease?: number
 }
 
 /**
@@ -60,6 +62,7 @@ export const QualityCard: FC<QualityCardProps> = ({
   level,
   isCore,
   onClick,
+  damageIncrease,
 }) => {
   // quality.isCoreが存在すればそれを使用、なければpropsのisCoreを使用
   const isCoreQuality = quality.isCore ?? isCore
@@ -115,6 +118,12 @@ export const QualityCard: FC<QualityCardProps> = ({
           <span className="mt-1 line-clamp-1 w-full text-center text-xs">
             {quality.title}
           </span>
+          {/* 平均ダメージ増加率の表示（選択されている場合のみ） */}
+          {isSelected && damageIncrease !== undefined && damageIncrease > 0 && (
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              +{damageIncrease.toFixed(1)}%
+            </span>
+          )}
         </button>
       </HoverCardTrigger>
       <HoverCardContent className="w-72" side="top" align="center">

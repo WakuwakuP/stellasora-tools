@@ -42,8 +42,12 @@ export interface SelectedTalent {
 }
 
 export interface CharacterQualitiesSectionProps {
+  /** キャラクターID */
+  characterId?: number
   /** キャラクター名 */
   characterName: string
+  /** 属性 */
+  element?: string
   /** 素質データの配列 */
   qualities: QualityInfo[]
   /** キャラクターの役割 */
@@ -54,6 +58,8 @@ export interface CharacterQualitiesSectionProps {
   onTalentSelect: (characterName: string, role: 'main' | 'sub', index: number) => void
   /** 選択した素質の合計レベル */
   totalLevel: number
+  /** 素質レベル別スコアマップ */
+  talentScores?: Record<string, number>
 }
 
 /**
@@ -64,12 +70,15 @@ export interface CharacterQualitiesSectionProps {
  * 各素質はクリックで選択/レベルアップ/選択解除できる。
  */
 export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
+  characterId,
   characterName,
+  element,
   qualities,
   role,
   selectedTalents,
   onTalentSelect,
   totalLevel,
+  talentScores,
 }) => {
   // 素質をコア/サブにグループ分けし、サブはレアリティでソート
   const { coreQualities, subQualities } = useMemo(() => {
@@ -112,6 +121,10 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
               t.index === originalIndex,
           )
           const isCore = isCoreTalent(originalIndex, quality)
+          const level = selectedTalent?.level ?? 1
+          const scoreKey = `${characterName}-${originalIndex}-${level}`
+          const damageIncrease = talentScores?.[scoreKey]
+
           return (
             <QualityCard
               key={`${characterName}-${role}-${originalIndex}`}
@@ -120,6 +133,7 @@ export const CharacterQualitiesSection: FC<CharacterQualitiesSectionProps> = ({
               level={selectedTalent?.level}
               isCore={isCore}
               onClick={() => onTalentSelect(characterName, role, originalIndex)}
+              damageIncrease={damageIncrease}
             />
           )
         })}

@@ -9,6 +9,7 @@ import {
 import Image from 'next/image'
 import type { FC } from 'react'
 import type { QualityInfo } from 'types/quality'
+import { replaceDescriptionWithLevel } from 'utils/qualityDescriptionUtils'
 
 /** 素質画像のアスペクト比 (width / height = 432 / 606) */
 const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606
@@ -48,44 +49,6 @@ export interface QualityCardProps {
   onClick: () => void
   /** 右クリックハンドラー（素質を未取得状態に戻す） */
   onRightClick?: () => void
-}
-
-/**
- * 説明文のプレースホルダーを指定レベルのパラメータで置換する
- * @param description - 説明文（&Param1&, &Param2&などを含む）
- * @param params - パラメータ配列（各レベルの値を含む）
- * @param targetLevel - 表示するレベル（1-9）
- */
-function replaceDescriptionWithLevel(
-  description: string,
-  params: string[] | undefined,
-  targetLevel: number,
-): string {
-  if (!params || params.length === 0) {
-    return description
-  }
-  
-  // paramsは通常、各レベルのパラメータを含む配列
-  // 例: params = ["10,15,20,25,30,35,40,45,50"] (Lv1-9の値がカンマ区切り)
-  // または params = ["10", "15", "20", ...] (各要素が1レベルの値)
-  
-  return description.replace(/&Param(\d+)&/g, (match, index) => {
-    const paramIndex = Number.parseInt(index, 10) - 1
-    if (paramIndex >= params.length) {
-      return match
-    }
-    
-    const param = params[paramIndex]
-    // カンマ区切りの場合、レベルに応じた値を取得
-    if (param.includes(',')) {
-      const values = param.split(',')
-      const levelIndex = Math.min(targetLevel - 1, values.length - 1)
-      return values[levelIndex]?.trim() ?? match
-    }
-    
-    // カンマ区切りでない場合はそのまま返す
-    return param
-  })
 }
 
 /**

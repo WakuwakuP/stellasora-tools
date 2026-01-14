@@ -8,6 +8,7 @@ const FETCH_TIMEOUT_MS = 2000 // 2秒タイムアウト（高速化のため短�
 const API_CACHE_REVALIDATE_SECONDS = 86400 // 24時間キャッシュ（APIデータは頻繁に変更されない）
 const OGP_CACHE_MAX_AGE = 86400 // 24時間（ブラウザキャッシュ）
 const OGP_CACHE_STALE_WHILE_REVALIDATE = 604800 // 7日間（stale-while-revalidate）
+const OGP_CACHE_CONTROL = `public, max-age=${OGP_CACHE_MAX_AGE}, s-maxage=${OGP_CACHE_MAX_AGE}, stale-while-revalidate=${OGP_CACHE_STALE_WHILE_REVALIDATE}`
 
 /**
  * タイムアウト付きfetchヘルパー関数（キャッシュ対応）
@@ -398,10 +399,7 @@ export async function GET(request: NextRequest) {
     )
     
     // キャッシュヘッダーを設定（ブラウザとCDNでの長期キャッシュ）
-    response.headers.set(
-      'Cache-Control',
-      `public, max-age=${OGP_CACHE_MAX_AGE}, s-maxage=${OGP_CACHE_MAX_AGE}, stale-while-revalidate=${OGP_CACHE_STALE_WHILE_REVALIDATE}`
-    )
+    response.headers.set('Cache-Control', OGP_CACHE_CONTROL)
     
     return response
   } catch (error) {

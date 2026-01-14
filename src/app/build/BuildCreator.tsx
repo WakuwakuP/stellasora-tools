@@ -34,6 +34,7 @@ import { ScrollArea } from 'components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
 import { useIsLandscape, useIsMobile } from 'hooks/use-mobile'
 import { useSavedBuilds } from 'hooks/useSavedBuilds'
+import { useShare } from 'hooks/useShare'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
@@ -41,7 +42,7 @@ import {
   base64UrlToBigInt,
   bigIntToBase64Url,
 } from 'lib/encoding-utils'
-import { ChevronDown, ChevronUp, Pencil } from 'lucide-react'
+import { ChevronDown, ChevronUp, Pencil, Share2 } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { LossRecordInfo } from 'types/lossRecord'
@@ -340,6 +341,9 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
   // 保存されたビルドの管理
   const { builds, addBuild, removeBuild } = useSavedBuilds()
 
+  // URL共有機能
+  const { share } = useShare()
+
   // 現在のURL（保存用）
   const currentUrl = useMemo(
     () =>
@@ -575,6 +579,17 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     }
   }
 
+  const handleShareBuild = () => {
+    if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
+      const shareTitle = buildName || '新規ビルド'
+      share({
+        title: `${shareTitle} - Stellasora Tools`,
+        text: `ビルド編成: ${characters[0].name}, ${characters[1].name}, ${characters[2].name}`,
+        url: currentUrl,
+      })
+    }
+  }
+
   const handleCharacterChange = (slotIndex: number, newName: string) => {
     setHasUserMadeChanges(true)
     // 変更前のキャラクター名とロールを取得
@@ -763,15 +778,24 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 </div>
               </div>
 
-              {/* 登録ボタン */}
-              <div className="mt-1.5">
+              {/* 登録・共有ボタン */}
+              <div className="mt-1.5 grid grid-cols-2 gap-1">
                 <button
                   type="button"
                   onClick={handleSaveBuild}
                   disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1 text-xs font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                  className="flex items-center justify-center gap-0.5 rounded-lg bg-pink-100 py-1 text-xs font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
                 >
                   ❤ 登録
+                </button>
+                <button
+                  type="button"
+                  onClick={handleShareBuild}
+                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                  className="flex items-center justify-center gap-0.5 rounded-lg bg-blue-100 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                >
+                  <Share2 className="h-3 w-3" />
+                  共有
                 </button>
               </div>
             </Tabs>
@@ -870,15 +894,24 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                 </div>
               </div>
 
-              {/* モバイル: 登録ボタン */}
-              <div className="mt-2">
+              {/* モバイル: 登録・共有ボタン */}
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={handleSaveBuild}
                   disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-                  className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 font-medium text-pink-600 text-sm transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                  className="flex items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 font-medium text-pink-600 text-sm transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
                 >
                   ❤ 登録
+                </button>
+                <button
+                  type="button"
+                  onClick={handleShareBuild}
+                  disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                  className="flex items-center justify-center gap-1 rounded-lg bg-blue-100 py-1.5 font-medium text-blue-600 text-sm transition-colors hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                >
+                  <Share2 className="h-4 w-4" />
+                  共有
                 </button>
               </div>
 
@@ -1004,15 +1037,24 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
                   </div>
                 </ScrollArea>
 
-                {/* 登録ボタン */}
-                <div className="mt-2 shrink-0">
+                {/* 登録・共有ボタン */}
+                <div className="mt-2 shrink-0 grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={handleSaveBuild}
                     disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
-                    className="flex w-full items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 text-sm font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
+                    className="flex items-center justify-center gap-1 rounded-lg bg-pink-100 py-1.5 text-sm font-medium text-pink-600 transition-colors hover:bg-pink-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-pink-900 dark:text-pink-300 dark:hover:bg-pink-800"
                   >
                     ❤ 登録
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleShareBuild}
+                    disabled={!characters[0]?.name || !characters[1]?.name || !characters[2]?.name}
+                    className="flex items-center justify-center gap-1 rounded-lg bg-blue-100 py-1.5 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    共有
                   </button>
                 </div>
               </TabsContent>

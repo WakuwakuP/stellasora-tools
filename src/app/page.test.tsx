@@ -71,15 +71,23 @@ describe('Landing Page', () => {
     expect(heading).toBeInTheDocument()
   })
 
-  it('renders footer with copyright information', () => {
+  it('renders footer with copyright information and link to miyulab.dev', () => {
     render(
       <SessionProvider session={null}>
         <LandingPage />
       </SessionProvider>,
     )
     const currentYear = new Date().getFullYear()
-    expect(
-      screen.getByText(`© ${currentYear} Stellasora Tools`),
-    ).toBeInTheDocument()
+    const expectedYear = currentYear === 2025 ? '2025' : `2025 - ${currentYear}`
+
+    // Check copyright year text
+    expect(screen.getByText(new RegExp(`© ${expectedYear}`))).toBeInTheDocument()
+
+    // Check link to miyulab.dev
+    const link = screen.getByRole('link', { name: /miyulab\.dev/i })
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute('href', 'https://www.miyulab.dev')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })
 })

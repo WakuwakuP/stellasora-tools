@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
           width: '100%',
           height: '100%',
           background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
-          padding: '60px',
+          padding: '50px 60px',
           fontFamily: 'system-ui, sans-serif',
           position: 'relative',
         }}
@@ -114,6 +114,7 @@ export async function GET(request: NextRequest) {
           style={{
             display: 'flex',
             flexDirection: 'column',
+            justifyContent: 'center',
             width: '100%',
             height: '100%',
             position: 'relative',
@@ -127,7 +128,7 @@ export async function GET(request: NextRequest) {
               justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
-              marginBottom: '40px',
+              marginBottom: '32px',
             }}
           >
             <div
@@ -161,7 +162,7 @@ export async function GET(request: NextRequest) {
               alignItems: 'center',
               gap: '28px',
               width: '100%',
-              marginBottom: '36px',
+              marginBottom: '28px',
             }}
           >
             {characterNames.map((name, index) => (

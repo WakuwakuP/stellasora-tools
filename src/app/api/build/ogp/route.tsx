@@ -119,113 +119,95 @@ export async function GET(request: NextRequest) {
           ))}
         </div>
 
-        {/* ロスレコ6個 (メイン3個 + サブ3個) */}
+        {/* ロスレコ6個 (メイン3個 + サブ3個) - 全て横並び */}
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
+            justifyContent: 'center',
             alignItems: 'center',
-            width: '100%',
             gap: '16px',
+            width: '100%',
           }}
         >
           {/* メインロスレコ */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '16px',
-              width: '100%',
-            }}
-          >
-            {mainLossRecords.map((lossRecord, index) => (
+          {mainLossRecords.map((lossRecord, index) => (
+            <div
+              key={`main-${index}`}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '12px',
+                backgroundColor: '#fbbf24',
+                borderRadius: '12px',
+                width: '100px',
+              }}
+            >
               <div
-                key={`main-${index}`}
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  padding: '12px',
-                  backgroundColor: '#fbbf24',
-                  borderRadius: '12px',
-                  width: '100px',
+                  width: '60px',
+                  height: '60px',
+                  backgroundColor: '#f59e0b',
+                  borderRadius: '8px',
+                  marginBottom: '8px',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#f59e0b',
-                    borderRadius: '8px',
-                    marginBottom: '8px',
-                  }}
-                >
-                  <span style={{ fontSize: '24px' }}>🎵</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: '12px',
-                    color: '#78350f',
-                    textAlign: 'center',
-                  }}
-                >
-                  M{index + 1}
-                </span>
+                <span style={{ fontSize: '24px' }}>🎵</span>
               </div>
-            ))}
-          </div>
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: '#78350f',
+                  textAlign: 'center',
+                }}
+              >
+                M{index + 1}
+              </span>
+            </div>
+          ))}
 
           {/* サブロスレコ */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '16px',
-              width: '100%',
-            }}
-          >
-            {subLossRecords.map((lossRecord, index) => (
+          {subLossRecords.map((lossRecord, index) => (
+            <div
+              key={`sub-${index}`}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '12px',
+                backgroundColor: '#94a3b8',
+                borderRadius: '12px',
+                width: '100px',
+              }}
+            >
               <div
-                key={`sub-${index}`}
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  padding: '12px',
-                  backgroundColor: '#94a3b8',
-                  borderRadius: '12px',
-                  width: '100px',
+                  width: '60px',
+                  height: '60px',
+                  backgroundColor: '#64748b',
+                  borderRadius: '8px',
+                  marginBottom: '8px',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#64748b',
-                    borderRadius: '8px',
-                    marginBottom: '8px',
-                  }}
-                >
-                  <span style={{ fontSize: '24px' }}>🎵</span>
-                </div>
-                <span
-                  style={{
-                    fontSize: '12px',
-                    color: '#1e293b',
-                    textAlign: 'center',
-                  }}
-                >
-                  S{index + 1}
-                </span>
+                <span style={{ fontSize: '24px' }}>🎵</span>
               </div>
-            ))}
-          </div>
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: '#1e293b',
+                  textAlign: 'center',
+                }}
+              >
+                S{index + 1}
+              </span>
+            </div>
+          ))}
         </div>
       </div>,
       {

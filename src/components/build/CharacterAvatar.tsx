@@ -37,29 +37,29 @@ export const CharacterAvatar: FC<CharacterAvatarProps> = ({
     type="button"
     onClick={onClick}
     aria-label={`${label}を変更${name ? `（現在: ${name}）` : '（未選択）'}`}
-    className={`group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
+    className={`group relative flex flex-col items-center rounded-lg border-2 p-1.5 sm:p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 ${
       isMain ? 'border-red-500' : 'border-slate-300'
     }`}
   >
     {isMain && (
-      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-red-500 text-white text-xs">
+      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-red-500 text-white text-[10px] sm:text-xs px-1 py-0">
         主力
       </Badge>
     )}
     {!isMain && label && (
-      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-slate-500 text-white text-xs">
+      <Badge className="absolute top-0 left-0 z-10 rounded-br-lg rounded-tl-lg bg-slate-500 text-white text-[10px] sm:text-xs px-1 py-0">
         支援
       </Badge>
     )}
-    <Avatar className="h-16 w-16">
+    <Avatar className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16">
       <AvatarImage src={iconUrl || '/placeholder-character.png'} alt={name || 'キャラクター'} />
-      <AvatarFallback className="text-lg">
+      <AvatarFallback className="text-base sm:text-lg">
         {name ? name.charAt(0) : '?'}
       </AvatarFallback>
     </Avatar>
-    <span className="mt-1 text-center text-sm font-medium">{name || '未選択'}</span>
+    <span className="mt-0.5 sm:mt-1 text-center text-xs sm:text-sm font-medium line-clamp-1">{name || '未選択'}</span>
     {totalLevel > 0 && (
-      <div className="mt-0.5 flex items-center gap-0.5 text-xs text-slate-500">
+      <div className="mt-0.5 flex items-center gap-0.5 text-[10px] sm:text-xs text-slate-500">
         <span>⊕</span>
         <span>{totalLevel}</span>
       </div>

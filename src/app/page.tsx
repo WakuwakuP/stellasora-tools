@@ -14,27 +14,27 @@ const LandingPage: FC = () => (
   <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
     {/* ヘッダー */}
     <header className="border-slate-200 border-b bg-white/80 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
-      <div className="container mx-auto flex items-center justify-between px-4 py-4">
-        <h1 className="flex items-center gap-2 font-bold text-xl">
-          <Sparkles className="h-6 w-6 text-amber-500" />
+      <div className="container mx-auto flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4">
+        <h1 className="flex items-center gap-2 font-bold text-lg sm:text-xl">
+          <Sparkles className="h-5 w-5 text-amber-500 sm:h-6 sm:w-6" />
           Stellasora Tools
         </h1>
       </div>
     </header>
 
     {/* メインコンテンツ */}
-    <main className="container mx-auto flex flex-1 flex-col items-center justify-center px-4 py-12">
-      <div className="mb-8 text-center">
-        <h2 className="mb-2 font-bold text-3xl md:text-4xl">
+    <main className="container mx-auto flex flex-1 flex-col items-center justify-center px-3 py-8 sm:px-4 sm:py-12">
+      <div className="mb-6 text-center sm:mb-8">
+        <h2 className="mb-2 font-bold text-2xl sm:text-3xl md:text-4xl">
           Stellasoraツール集
         </h2>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-base text-muted-foreground sm:text-lg">
           ゲームプレイを便利にするツールを提供します
         </p>
       </div>
 
       {/* ツールカード */}
-      <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {/* ビルドメーカーカード */}
         <Link aria-label="ビルドメーカー" className="group" href="/build">
           <Card className="h-full cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg">
@@ -59,7 +59,7 @@ const LandingPage: FC = () => (
 
     {/* フッター */}
     <footer className="border-slate-200 border-t bg-white/80 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80">
-      <div className="container mx-auto px-4 py-4 text-center text-muted-foreground text-sm">
+      <div className="container mx-auto px-3 py-3 text-center text-muted-foreground text-xs sm:px-4 sm:py-4 sm:text-sm">
         © {getCopyrightYear()}{' '}
         <a
           className="hover:underline"

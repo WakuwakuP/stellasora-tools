@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant landscape (@media (orientation: landscape) and (
+    max-height: 500px
+  ));
 
 @theme inline {
   --font-sans:

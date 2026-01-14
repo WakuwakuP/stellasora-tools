@@ -3,6 +3,8 @@ import { type NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
+const API_BASE_URL = 'https://api.ennead.cc'
+
 /**
  * OGP画像生成API
  * クエリパラメータ:
@@ -18,9 +20,56 @@ export async function GET(request: NextRequest) {
   const mainLossRecordsParam = searchParams.get('mainLossRecords') || ''
   const subLossRecordsParam = searchParams.get('subLossRecords') || ''
 
-  const characters = charactersParam.split(',').filter(Boolean)
-  const mainLossRecords = mainLossRecordsParam.split(',').filter(Boolean)
-  const subLossRecords = subLossRecordsParam.split(',').filter(Boolean)
+  const characterNames = charactersParam.split(',').filter(Boolean)
+  const mainLossRecordIds = mainLossRecordsParam.split(',').filter(Boolean)
+  const subLossRecordIds = subLossRecordsParam.split(',').filter(Boolean)
+
+  // キャラクターアイコンURLを取得
+  const characterIcons = await Promise.all(
+    characterNames.map(async (name) => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/stella/character/${encodeURIComponent(name)}?lang=JP`,
+        )
+        if (!response.ok) return null
+        const data = await response.json()
+        return `${API_BASE_URL}/stella/assets/${data.icon}`
+      } catch {
+        return null
+      }
+    }),
+  )
+
+  // ロスレコアイコンURLを取得
+  const mainLossRecordIcons = await Promise.all(
+    mainLossRecordIds.map(async (id) => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+        )
+        if (!response.ok) return null
+        const data = await response.json()
+        return `${API_BASE_URL}/stella/assets/${data.icon}`
+      } catch {
+        return null
+      }
+    }),
+  )
+
+  const subLossRecordIcons = await Promise.all(
+    subLossRecordIds.map(async (id) => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/stella/disc/${id}?lang=JP`,
+        )
+        if (!response.ok) return null
+        const data = await response.json()
+        return `${API_BASE_URL}/stella/assets/${data.icon}`
+      } catch {
+        return null
+      }
+    }),
+  )
 
   try {
     return new ImageResponse(
@@ -68,7 +117,7 @@ export async function GET(request: NextRequest) {
             marginBottom: '32px',
           }}
         >
-          {characters.map((char, index) => (
+          {characterNames.map((name, index) => (
             <div
               key={`char-${index}`}
               style={{
@@ -81,22 +130,35 @@ export async function GET(request: NextRequest) {
                 width: '200px',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '120px',
-                  height: '120px',
-                  backgroundColor: '#334155',
-                  borderRadius: '12px',
-                  marginBottom: '12px',
-                }}
-              >
-                <span style={{ fontSize: '48px', color: '#94a3b8' }}>
-                  {char.charAt(0)}
-                </span>
-              </div>
+              {characterIcons[index] ? (
+                <img
+                  src={characterIcons[index]!}
+                  width={120}
+                  height={120}
+                  style={{
+                    borderRadius: '12px',
+                    marginBottom: '12px',
+                  }}
+                  alt={name}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '120px',
+                    height: '120px',
+                    backgroundColor: '#334155',
+                    borderRadius: '12px',
+                    marginBottom: '12px',
+                  }}
+                >
+                  <span style={{ fontSize: '48px', color: '#94a3b8' }}>
+                    {name.charAt(0)}
+                  </span>
+                </div>
+              )}
               <span
                 style={{
                   fontSize: '20px',
@@ -104,7 +166,7 @@ export async function GET(request: NextRequest) {
                   color: '#f1f5f9',
                 }}
               >
-                {char}
+                {name}
               </span>
               <span
                 style={{
@@ -130,7 +192,7 @@ export async function GET(request: NextRequest) {
           }}
         >
           {/* メインロスレコ */}
-          {mainLossRecords.map((lossRecord, index) => (
+          {mainLossRecordIds.map((id, index) => (
             <div
               key={`main-${index}`}
               style={{
@@ -143,20 +205,33 @@ export async function GET(request: NextRequest) {
                 width: '100px',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '60px',
-                  height: '60px',
-                  backgroundColor: '#f59e0b',
-                  borderRadius: '8px',
-                  marginBottom: '8px',
-                }}
-              >
-                <span style={{ fontSize: '24px' }}>🎵</span>
-              </div>
+              {mainLossRecordIcons[index] ? (
+                <img
+                  src={mainLossRecordIcons[index]!}
+                  width={60}
+                  height={60}
+                  style={{
+                    borderRadius: '8px',
+                    marginBottom: '8px',
+                  }}
+                  alt={`Main Loss Record ${index + 1}`}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '60px',
+                    height: '60px',
+                    backgroundColor: '#f59e0b',
+                    borderRadius: '8px',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <span style={{ fontSize: '24px' }}>🎵</span>
+                </div>
+              )}
               <span
                 style={{
                   fontSize: '12px',
@@ -170,7 +245,7 @@ export async function GET(request: NextRequest) {
           ))}
 
           {/* サブロスレコ */}
-          {subLossRecords.map((lossRecord, index) => (
+          {subLossRecordIds.map((id, index) => (
             <div
               key={`sub-${index}`}
               style={{
@@ -183,20 +258,33 @@ export async function GET(request: NextRequest) {
                 width: '100px',
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '60px',
-                  height: '60px',
-                  backgroundColor: '#64748b',
-                  borderRadius: '8px',
-                  marginBottom: '8px',
-                }}
-              >
-                <span style={{ fontSize: '24px' }}>🎵</span>
-              </div>
+              {subLossRecordIcons[index] ? (
+                <img
+                  src={subLossRecordIcons[index]!}
+                  width={60}
+                  height={60}
+                  style={{
+                    borderRadius: '8px',
+                    marginBottom: '8px',
+                  }}
+                  alt={`Sub Loss Record ${index + 1}`}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '60px',
+                    height: '60px',
+                    backgroundColor: '#64748b',
+                    borderRadius: '8px',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <span style={{ fontSize: '24px' }}>🎵</span>
+                </div>
+              )}
               <span
                 style={{
                   fontSize: '12px',

@@ -12587,13 +12587,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-resizable-panels@npm:^4.5.2":
-  version: 4.5.2
-  resolution: "react-resizable-panels@npm:4.5.2"
+"react-resizable-panels@npm:^4.5.7":
+  version: 4.5.7
+  resolution: "react-resizable-panels@npm:4.5.7"
   peerDependencies:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
-  checksum: 10c0/fd032335095556280fe33d3af89445eb39c585162107c64144930be8995496f366cd31b2e7ff63ecbf11ae3f86a5da3c34ae2191075293d20de2844b3e504c8a
+  checksum: 10c0/5dbabbc82848162a3719a2a376cef0d47d41625b89b8f7b6a8e65972c3cbc307e1ed9b54efd56df54b68b47f5ff1f5aa3892c0ff72c29081f935973a2f2881f1
   languageName: node
   linkType: hard
 
@@ -13015,7 +13015,7 @@ __metadata:
     react-day-picker: "npm:^9.13.0"
     react-dom: "npm:^19.2.4"
     react-hook-form: "npm:^7.71.1"
-    react-resizable-panels: "npm:^4.5.2"
+    react-resizable-panels: "npm:^4.5.7"
     recharts: "npm:^3.7.0"
     shadcn: "npm:^3.7.0"
     sonner: "npm:^2.0.7"

@@ -10804,12 +10804,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.563.0":
-  version: 0.563.0
-  resolution: "lucide-react@npm:0.563.0"
+"lucide-react@npm:^0.564.0":
+  version: 0.564.0
+  resolution: "lucide-react@npm:0.564.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/4a2027be255755d64ce18040062426dec07a5da920c000d9cd330e383fa10716a584c927dc03e91daccc6e05f6f486d4f49d1bd009e5f7763aa6fcf704806554
+  checksum: 10c0/b2f58ed64d98102ab49d78956200958afcd30a033f3e2c3fc47b4890317d6c41671592f4ca5840e6884d973e4b193c01e42a72fb39c62d5c080d7725b21dc249
   languageName: node
   linkType: hard
 
@@ -12577,16 +12577,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-day-picker@npm:^9.13.1":
-  version: 9.13.1
-  resolution: "react-day-picker@npm:9.13.1"
+"react-day-picker@npm:^9.13.2":
+  version: 9.13.2
+  resolution: "react-day-picker@npm:9.13.2"
   dependencies:
     "@date-fns/tz": "npm:^1.4.1"
     date-fns: "npm:^4.1.0"
     date-fns-jalali: "npm:^4.1.0-0"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: 10c0/7f5f78937da273aef628319175991b09c7cc873fb4cfd1b2b97f5e4da352374afdfba5d44eaf0e349e798c13a150c151930483569664d9c0be6e5ed4418491eb
+  checksum: 10c0/08bc8453d1743fd23644836acca3c655dbd442473b3b0a647a0599c2320998f1cf975dc607216bcdabaa2b09808e227fc6f2851cac9b323817d6838afe5e0759
   languageName: node
   linkType: hard
 
@@ -12741,13 +12741,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-resizable-panels@npm:^4.6.2":
-  version: 4.6.2
-  resolution: "react-resizable-panels@npm:4.6.2"
+"react-resizable-panels@npm:^4.6.4":
+  version: 4.6.4
+  resolution: "react-resizable-panels@npm:4.6.4"
   peerDependencies:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
-  checksum: 10c0/cc1c1b65b67c18ffb9ff0962a2aaaeb46e091d92514efd10f37a3596dd46600ca9dd6a429337474c19795526b246e557a167d2bd1fff455a08744d09453cdf06
+  checksum: 10c0/0ffb5abc8a700ca542957bdf267e9dda881d9204d0c8b2091dc505a197b7518d278f23c9da76ea3ba11d523e07e29cb2f90b0d440bd8f02407cdf503555c73cc
   languageName: node
   linkType: hard
 
@@ -13158,7 +13158,7 @@ __metadata:
     input-otp: "npm:^1.4.2"
     jsdom: "npm:^28.1.0"
     lint-staged: "npm:^16.2.7"
-    lucide-react: "npm:^0.563.0"
+    lucide-react: "npm:^0.564.0"
     next: "npm:^16.1.6"
     next-auth: "npm:4.24.13"
     next-router-mock: "npm:^1.0.5"
@@ -13166,15 +13166,15 @@ __metadata:
     nuqs: "npm:^2.8.8"
     prisma: "npm:6.19.0"
     react: "npm:^19.2.4"
-    react-day-picker: "npm:^9.13.1"
+    react-day-picker: "npm:^9.13.2"
     react-dom: "npm:^19.2.4"
     react-hook-form: "npm:^7.71.1"
-    react-resizable-panels: "npm:^4.6.2"
+    react-resizable-panels: "npm:^4.6.4"
     recharts: "npm:^3.7.0"
     shadcn: "npm:^3.8.4"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.2.7"
-    tailwind-merge: "npm:3.4.0"
+    tailwind-merge: "npm:^3.4.1"
     tailwindcss: "npm:^4.1.18"
     tailwindcss-animate: "npm:^1.0.7"
     typescript: "npm:5.9.3"
@@ -14177,10 +14177,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwind-merge@npm:3.4.0, tailwind-merge@npm:^3.0.1":
+"tailwind-merge@npm:^3.0.1":
   version: 3.4.0
   resolution: "tailwind-merge@npm:3.4.0"
   checksum: 10c0/eaf17bb695c51c7bb7a90366a9c62be295473ee97fcfd1da54287714d4a5788a88ff4ad1ab9e0128638257fda777d6c9ea88682e36195e31a7fa2cf43f45e310
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "tailwind-merge@npm:3.4.1"
+  checksum: 10c0/0b601ac81673871eb5056dc2e300140d0d7b9998ce5bff2223514126ae1c4275a6537ddc9ae1bc49367b7d1b2d20d609916e5e072a80405947a78b438f06c282
   languageName: node
   linkType: hard
 

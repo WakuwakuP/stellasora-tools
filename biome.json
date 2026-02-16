@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -83,6 +83,9 @@
       "complexity": {
         "noExcessiveCognitiveComplexity": "warn",
         "noImplicitCoercions": "warn",
+        "noUselessCatchBinding": "info",
+        "noUselessUndefined": "on",
+        "useMaxParams": "on",
         "useSimplifiedLogicExpression": "warn"
       },
       "correctness": {
@@ -96,17 +99,9 @@
         "useSingleJsDocAsterisk": "error"
       },
       "nursery": {
-        "noDeprecatedImports": "warn",
-        "noImportCycles": "warn",
-        "noReactForwardRef": "error",
         "noShadow": "warn",
         "noUnnecessaryConditions": "warn",
-        "noUnusedExpressions": "warn",
-        "noUselessCatchBinding": "info",
-        "noUselessUndefined": "on",
-        "useConsistentArrowReturn": "on",
         "useExhaustiveSwitchCases": "error",
-        "useMaxParams": "on",
         "useSortedClasses": {
           "fix": "safe",
           "level": "error",
@@ -128,6 +123,7 @@
         "noMagicNumbers": "on",
         "useComponentExportOnlyModules": "off",
         "useConsistentArrayType": "error",
+        "useConsistentArrowReturn": "on",
         "useConsistentTypeDefinitions": "on",
         "useImportType": {
           "level": "error",
@@ -138,7 +134,11 @@
         "useReactFunctionComponents": "error"
       },
       "suspicious": {
-        "noNonNullAssertedOptionalChain": "error"
+        "noDeprecatedImports": "warn",
+        "noImportCycles": "warn",
+        "noNonNullAssertedOptionalChain": "error",
+        "noReactForwardRef": "error",
+        "noUnusedExpressions": "warn"
       }
     }
   },

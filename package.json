@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",
-    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/eslintrc": "^3.3.4",
     "@storybook/addon-docs": "^10.2.13",
     "@storybook/addon-onboarding": "^10.2.13",
     "@storybook/addon-themes": "^10.2.13",

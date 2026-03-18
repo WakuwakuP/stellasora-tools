@@ -45,6 +45,8 @@ import {
 import { ChevronDown, ChevronUp, Pencil, Share2 } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { createShortenedUrl } from 'actions/shortenUrl'
 import type { LossRecordInfo } from 'types/lossRecord'
 import type { CharacterQualities } from 'types/quality'
 
@@ -579,9 +581,28 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     }
   }
 
-  const handleShareBuild = () => {
+  const handleShareBuild = async () => {
     if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
       const shareTitle = buildName || '新規ビルド'
+      const absoluteUrl = `${window.location.origin}${currentUrl}`
+
+      // 短縮URL生成を試みる
+      try {
+        const result = await createShortenedUrl(absoluteUrl)
+        if ('code' in result) {
+          const shortUrl = `${window.location.origin}/s/${result.code}`
+          share({
+            title: `${shareTitle} - Stellasora Tools`,
+            text: `ビルド編成: ${characters[0].name}, ${characters[1].name}, ${characters[2].name}`,
+            url: shortUrl,
+          })
+          return
+        }
+      } catch {
+        // 短縮URL生成失敗時はフォールバック
+      }
+
+      // フォールバック: 元のURLで共有
       share({
         title: `${shareTitle} - Stellasora Tools`,
         text: `ビルド編成: ${characters[0].name}, ${characters[1].name}, ${characters[2].name}`,

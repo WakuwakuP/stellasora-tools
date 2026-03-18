@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@public': path.resolve(__dirname, './public'),
+      actions: path.resolve(__dirname, './src/actions'),
       components: path.resolve(__dirname, './src/components'),
       hooks: path.resolve(__dirname, './src/hooks'),
       lib: path.resolve(__dirname, './src/lib'),

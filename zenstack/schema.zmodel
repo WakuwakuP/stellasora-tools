@@ -1,9 +1,4 @@
-// ZenStack schema for authentication and gallery
-// This will generate Prisma schema
-
-generator client {
-    provider = "prisma-client-js"
-}
+// ZenStack v3 schema for authentication, gallery, and shortened URLs
 
 datasource db {
     provider = "postgresql"
@@ -13,21 +8,14 @@ datasource db {
 model User {
     id            String    @id @default(cuid())
     name          String?
-    email         String    @unique @allow('read', auth() == this) // Only user can read their own email
-    emailVerified DateTime? @allow('read', auth() == this) // Only user can read their own email verification status
+    email         String    @unique
+    emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
 
-
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
-
-    // Access control rules
-    @@allow('create', true) // Allow user registration
-    @@allow('read', auth() != null) // Authenticated users can read basic user info (id, name, image)
-    @@allow('update', auth() == this) // Users can only update their own profile
-    @@deny('delete', true) // Prevent direct user deletion
 }
 
 model Account {
@@ -36,18 +24,17 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
+    refresh_token     String?
+    access_token      String?
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.Text
+    id_token          String?
     session_state     String?
 
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
-    @@allow('all', true)
 }
 
 model Session {
@@ -56,8 +43,6 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@allow('all', true)
 }
 
 model VerificationToken {
@@ -66,5 +51,18 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
-    @@allow('all', true)
+}
+
+/// 短縮URLモデル
+/// ビルドデータの長いURLを短いコードに変換して保存
+model ShortenedUrl {
+    id          String   @id @default(cuid())
+    /// 短縮コード（ランダム生成、ユニーク）
+    code        String   @unique
+    /// 元のURL（/build?... 形式のパスとクエリ部分）
+    originalUrl String
+    /// 作成日時
+    createdAt   DateTime @default(now())
+
+    @@index([code])
 }

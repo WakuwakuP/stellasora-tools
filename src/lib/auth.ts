@@ -1,17 +1,15 @@
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { PrismaClient } from '@prisma/client'
+import { db } from 'lib/db'
+import { ZenStackAdapter } from 'lib/next-auth-adapter'
 import { type NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 
-// Create Prisma client only if in runtime environment
-const prisma: PrismaClient | undefined =
+// DATABASE_URLが設定されている場合のみDBアダプターを使用
+const hasDatabase =
   typeof window === 'undefined' && process.env.DATABASE_URL != null
-    ? new PrismaClient()
-    : undefined
 
 export const authOptions: NextAuthOptions = {
-  // Only use Prisma adapter if we have a working database connection
-  ...(prisma !== undefined && { adapter: PrismaAdapter(prisma) }),
+  // ZenStack v3アダプターを使用
+  ...(hasDatabase && { adapter: ZenStackAdapter(db) }),
   callbacks: {
     session: async ({
       session,
@@ -48,6 +46,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: prisma !== undefined ? 'database' : 'jwt',
+    strategy: hasDatabase ? 'database' : 'jwt',
   },
 }

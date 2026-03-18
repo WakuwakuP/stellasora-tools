@@ -64,7 +64,10 @@ export async function createShortenedUrl(
         },
       })
       return { code }
-    } catch {}
+    } catch {
+      // ユニーク制約違反（コード衝突）の場合は次のコードでリトライ
+      continue
+    }
   }
 
   return { error: '短縮URLの生成に失敗しました。再度お試しください。' }

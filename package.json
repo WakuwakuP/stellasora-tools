@@ -98,7 +98,7 @@
   "packageManager": "yarn@4.13.0",
   "private": true,
   "scripts": {
-    "build": "yarn db:generate & next build",
+    "build": "yarn db:generate && next build",
     "build-storybook": "storybook build",
     "check": "biome check .",
     "check:fix": "biome check --write .",
@@ -113,7 +113,7 @@
     "format:fix": "biome format --write .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
-    "prebuild": "zen generate & zen migrate deploy",
+    "prebuild": "zen generate && zen migrate deploy",
     "prepare": "husky",
     "start": "next start",
     "storybook": "storybook dev -p 6006",

@@ -1,5 +1,5 @@
 import { type Meta, type StoryObj } from '@storybook/react'
-import type { LossRecordInfo } from 'types/lossRecord'
+import type { LossRecordInfo } from '@/types/lossRecord'
 import { LossRecordSkillSection } from './LossRecordSkillSection'
 
 // サンプルロスレコデータを生成

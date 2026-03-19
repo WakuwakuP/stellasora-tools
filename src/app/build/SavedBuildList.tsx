@@ -1,11 +1,11 @@
 'use client'
 
-import { Button } from 'components/ui/button'
-import { ScrollArea } from 'components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { X } from 'lucide-react'
 import Link from 'next/link'
 import type { FC } from 'react'
-import type { SavedBuild } from 'hooks/useSavedBuilds'
+import type { SavedBuild } from '@/hooks/useSavedBuilds'
 
 interface SavedBuildListProps {
   builds: SavedBuild[]

@@ -1,8 +1,8 @@
 import {
   getAvailableCharacters as getAvailableCharactersAction,
   getQualitiesData as getQualitiesDataAction,
-} from 'actions/getCharacterData'
-import { getLossRecordData as getLossRecordDataAction } from 'actions/getLossRecordData'
+} from '@/actions/getCharacterData'
+import { getLossRecordData as getLossRecordDataAction } from '@/actions/getLossRecordData'
 
 /**
  * StellaSoraAPIから素質データを取得する Server Action

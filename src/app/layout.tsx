@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
-import { Toaster } from 'components/ui/sonner'
 import { type Metadata } from 'next'
 import { type JSX } from 'react'
+import { Toaster } from '@/components/ui/sonner'
 import Providers from '../components/providers/ClientProviders'
 
 import './globals.css'

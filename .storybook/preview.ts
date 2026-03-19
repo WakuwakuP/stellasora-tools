@@ -10,7 +10,6 @@ import mockRouter from 'next-router-mock'
 import { useMemo } from 'react'
 import '../src/app/globals.css'
 
-import { MockAuthGlobalTypes, withMockAuth } from './MockAuth'
 import { withTailwindTheme } from './withTailwindTheme.decorator'
 
 const preview: Preview = {
@@ -33,9 +32,6 @@ const preview: Preview = {
       )
       return searchParams
     })
-  },
-  globalTypes: {
-    ...MockAuthGlobalTypes,
   },
   parameters: {
     chromatic: {
@@ -72,5 +68,4 @@ export const decorators: Decorator[] = [
       light: 'light bg-background text-foreground',
     },
   }),
-  withMockAuth,
 ]

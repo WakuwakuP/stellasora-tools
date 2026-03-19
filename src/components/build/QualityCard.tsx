@@ -1,15 +1,15 @@
 'use client'
 
-import { Badge } from 'components/ui/badge'
+import { Badge } from '@/components/ui/badge'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from 'components/ui/hover-card'
+} from '@/components/ui/hover-card'
 import Image from 'next/image'
 import type { FC } from 'react'
-import type { QualityInfo } from 'types/quality'
-import { replaceDescriptionWithLevel } from 'utils/qualityDescriptionUtils'
+import type { QualityInfo } from '@/types/quality'
+import { replaceDescriptionWithLevel } from '@/utils/qualityDescriptionUtils'
 
 /** 素質画像のアスペクト比 (width / height = 432 / 606) */
 const QUALITY_IMAGE_ASPECT_RATIO = 432 / 606

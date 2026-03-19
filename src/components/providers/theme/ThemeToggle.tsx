@@ -2,7 +2,7 @@
 
 import { Check, Monitor, Moon, Sun } from 'lucide-react'
 import { type JSX, useEffect, useState } from 'react'
-import { ExhaustiveError } from 'utils/Error'
+import { ExhaustiveError } from '@/utils/Error'
 import { Button } from '../../ui/button'
 import {
   DropdownMenu,

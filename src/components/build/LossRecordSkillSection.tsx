@@ -1,14 +1,14 @@
 'use client'
 
-import { Badge } from 'components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card'
-import { Slider } from 'components/ui/slider'
-import { ELEMENT_COLORS, STAR_COLORS } from 'constants/lossRecordColors'
-import { getNoteImagePath } from 'constants/noteImageMap'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Slider } from '@/components/ui/slider'
+import { ELEMENT_COLORS, STAR_COLORS } from '@/constants/lossRecordColors'
+import { getNoteImagePath } from '@/constants/noteImageMap'
 import Image from 'next/image'
 import { type FC, useMemo, useState } from 'react'
-import type { LossRecordInfo, SkillRequirement, SupportNote } from 'types/lossRecord'
-import { replaceSkillParams } from 'utils/skillUtils'
+import type { LossRecordInfo, SkillRequirement, SupportNote } from '@/types/lossRecord'
+import { replaceSkillParams } from '@/utils/skillUtils'
 
 /**
  * 複数のロスレコのサポート音符を合計する

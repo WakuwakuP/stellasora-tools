@@ -37,7 +37,8 @@
       "!**/.storybook/MockAuth.tsx",
       "!**/*.test.ts",
       "!**/*.test.tsx",
-      "!**/素質カード抽出ツール.jsx"
+      "!**/素質カード抽出ツール.jsx",
+      "!**/src/zenstack/*"
     ]
   },
   "formatter": {

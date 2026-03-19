@@ -1,17 +1,17 @@
 'use client'
 
-import { NOTE_IMAGE_MAP } from 'constants/noteImageMap'
+import { NOTE_IMAGE_MAP } from '@/constants/noteImageMap'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from 'components/ui/dialog'
-import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
+} from '@/components/ui/dialog'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import Image from 'next/image'
 import { type FC, useEffect, useMemo, useState } from 'react'
-import type { LossRecordInfo } from 'types/lossRecord'
-import { sortLossRecords } from 'utils/lossRecordSort'
+import type { LossRecordInfo } from '@/types/lossRecord'
+import { sortLossRecords } from '@/utils/lossRecordSort'
 import { LossRecordCard } from './LossRecordCard'
 import { STAR_FILTERS } from './LossRecordSelectDialog'
 

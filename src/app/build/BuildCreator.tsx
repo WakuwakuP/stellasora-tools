@@ -1,7 +1,7 @@
 'use client'
 
-import { buildSearchParamKeys, buildSerializer } from 'app/build/searchParams'
-import { SavedBuildList } from 'app/build/SavedBuildList'
+import { buildSearchParamKeys, buildSerializer } from '@/app/build/searchParams'
+import { SavedBuildList } from '@/app/build/SavedBuildList'
 import {
   CharacterAvatar,
   CharacterQualitiesSection,
@@ -13,14 +13,14 @@ import {
   MAX_CORE_TALENTS,
   MAX_TALENT_LEVEL,
   SubLossRecordSelectDialog,
-} from 'components/build'
-import type { CharacterInfo, SelectedTalent } from 'components/build'
-import { Button } from 'components/ui/button'
+} from '@/components/build'
+import type { CharacterInfo, SelectedTalent } from '@/components/build'
+import { Button } from '@/components/ui/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from 'components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import {
   Dialog,
   DialogContent,
@@ -28,25 +28,27 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from 'components/ui/dialog'
-import { Input } from 'components/ui/input'
-import { ScrollArea } from 'components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'components/ui/tabs'
-import { useIsLandscape, useIsMobile } from 'hooks/use-mobile'
-import { useSavedBuilds } from 'hooks/useSavedBuilds'
-import { useShare } from 'hooks/useShare'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useIsLandscape, useIsMobile } from '@/hooks/use-mobile'
+import { useSavedBuilds } from '@/hooks/useSavedBuilds'
+import { useShare } from '@/hooks/useShare'
 import {
   arrayToBase7BigInt,
   base7BigIntToArray,
   base7ToArray,
   base64UrlToBigInt,
   bigIntToBase64Url,
-} from 'lib/encoding-utils'
+} from '@/lib/encoding-utils'
 import { ChevronDown, ChevronUp, Pencil, Share2 } from 'lucide-react'
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { LossRecordInfo } from 'types/lossRecord'
-import type { CharacterQualities } from 'types/quality'
+import { toast } from 'sonner'
+import { createShortenedUrl } from '@/actions/shortenUrl'
+import type { LossRecordInfo } from '@/types/lossRecord'
+import type { CharacterQualities } from '@/types/quality'
 
 /** 素質数（1キャラクター16個 × 3人 = 48個） */
 const TALENTS_PER_CHARACTER = 16
@@ -579,9 +581,28 @@ export const BuildCreator: FC<BuildCreatorProps> = ({
     }
   }
 
-  const handleShareBuild = () => {
+  const handleShareBuild = async () => {
     if (characters[0]?.name && characters[1]?.name && characters[2]?.name) {
       const shareTitle = buildName || '新規ビルド'
+      const absoluteUrl = `${window.location.origin}${currentUrl}`
+
+      // 短縮URL生成を試みる
+      try {
+        const result = await createShortenedUrl(absoluteUrl)
+        if ('code' in result) {
+          const shortUrl = `${window.location.origin}/s/${result.code}`
+          share({
+            title: `${shareTitle} - Stellasora Tools`,
+            text: `ビルド編成: ${characters[0].name}, ${characters[1].name}, ${characters[2].name}`,
+            url: shortUrl,
+          })
+          return
+        }
+      } catch {
+        // 短縮URL生成失敗時はフォールバック
+      }
+
+      // フォールバック: 元のURLで共有
       share({
         title: `${shareTitle} - Stellasora Tools`,
         text: `ビルド編成: ${characters[0].name}, ${characters[1].name}, ${characters[2].name}`,

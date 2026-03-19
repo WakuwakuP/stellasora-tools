@@ -15,11 +15,3 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
   usePathname: () => '/',
 }));
-
-// Mock next-auth
-vi.mock('next-auth/react', () => ({
-  useSession: () => ({ data: null, status: 'loading' }),
-  signIn: vi.fn(),
-  signOut: vi.fn(),
-  SessionProvider: ({ children }: { children: React.ReactNode }) => children,
-}));

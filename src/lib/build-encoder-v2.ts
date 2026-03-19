@@ -14,12 +14,12 @@ import {
   base7BigIntToArray,
   base64UrlToBigInt,
   bigIntToBase64Url,
-} from 'lib/encoding-utils'
+} from '@/lib/encoding-utils'
 import {
   type Build,
   type CharacterTalents,
   type TalentLevel,
-} from 'types/build'
+} from '@/types/build'
 
 /** 定数 */
 const CORE_TALENTS_COUNT = 4

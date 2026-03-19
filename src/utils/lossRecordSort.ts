@@ -1,4 +1,4 @@
-import { type LossRecordInfo } from 'types/lossRecord'
+import { type LossRecordInfo } from '@/types/lossRecord'
 
 /** 属性のソート順序定数 */
 const ELEMENT_ORDER_FIRE = 0

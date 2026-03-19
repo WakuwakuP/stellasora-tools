@@ -1,5 +1,5 @@
 import { type Meta, type StoryObj } from '@storybook/react'
-import type { LossRecordInfo } from 'types/lossRecord'
+import type { LossRecordInfo } from '@/types/lossRecord'
 import { LossRecordCard } from './LossRecordCard'
 
 const meta: Meta<typeof LossRecordCard> = {

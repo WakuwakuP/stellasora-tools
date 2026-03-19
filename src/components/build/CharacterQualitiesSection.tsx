@@ -1,8 +1,8 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { type FC, useMemo } from 'react'
-import type { QualityInfo } from 'types/quality'
+import type { QualityInfo } from '@/types/quality'
 import { QualityCard } from './QualityCard'
 
 /** コア素質のインデックス（API: mainCore/supportCoreは最初の4つ） */

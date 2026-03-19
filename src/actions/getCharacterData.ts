@@ -5,8 +5,8 @@ import {
   type CharacterQualities,
   type QualitiesData,
   type QualityInfo,
-} from 'types/quality'
-import { cleanQualityDescription } from 'utils/qualityDescriptionUtils'
+} from '@/types/quality'
+import { cleanQualityDescription } from '@/utils/qualityDescriptionUtils'
 
 /**
  * StellaSoraAPI からキャラクターデータを取得する Server Action

@@ -7,13 +7,13 @@ const mockDbShortenedUrl = {
   findUnique: vi.fn(),
 }
 
-vi.mock('lib/db', () => ({
+vi.mock('@/lib/db', () => ({
   db: {
     shortenedUrl: mockDbShortenedUrl,
   },
 }))
 
-vi.mock('lib/url-utils', () => ({
+vi.mock('@/lib/url-utils', () => ({
   getBaseUrl: () => 'https://example.com',
 }))
 

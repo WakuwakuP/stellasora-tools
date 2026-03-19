@@ -35,5 +35,11 @@ export default async function ShortUrlPage({
     notFound()
   }
 
-  redirect(originalUrl as Route)
+  // フルURLからパス+クエリ部分を抽出し、エンコード済みURLでリダイレクト
+  // DBにはフルURL（https://...）が保存されているが、redirect にそのまま渡すと
+  // クエリパラメータ内の不正文字で ERR_INVALID_CHAR が発生する
+  const parsed = new URL(originalUrl)
+  const destination = `${parsed.pathname}${parsed.search}`
+
+  redirect(destination as Route)
 }

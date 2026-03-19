@@ -95,25 +95,25 @@
     ]
   },
   "name": "ridar-gallery",
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.13.0",
   "private": true,
   "scripts": {
-    "build": "zen generate --schema zenstack/schema.zmodel && next build",
+    "build": "yarn db:generate & next build",
     "build-storybook": "storybook build",
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "chromatic": "chromatic --exit-zero-on-changes",
     "datasets:merge": "node scripts/merge-datasets.js",
-    "db:generate": "zen generate --schema zenstack/schema.zmodel",
-    "db:migrate": "zen migrate deploy --schema zenstack/schema.zmodel",
-    "db:migrate:dev": "zen migrate dev --schema zenstack/schema.zmodel",
-    "db:studio": "zen studio --schema zenstack/schema.zmodel",
+    "db:generate": "zen generate",
+    "db:migrate": "zen migrate deploy",
+    "db:migrate:dev": "zen migrate dev",
+    "db:studio": "zen studio",
     "dev": "next dev --turbopack",
     "format": "biome format .",
     "format:fix": "biome format --write .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
-    "prebuild": "zen generate --schema zenstack/schema.zmodel && zen migrate deploy --schema zenstack/schema.zmodel",
+    "prebuild": "zen generate & zen migrate deploy",
     "prepare": "husky",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
@@ -122,5 +122,8 @@
     "test:ui": "vitest --ui"
   },
   "type": "module",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "zenstack": {
+    "output": "src/zenstack"
+  }
 }

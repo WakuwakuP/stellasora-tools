@@ -18,7 +18,8 @@
       "hooks/*": ["./src/hooks/*"],
       "lib/*": ["./src/lib/*"],
       "types/*": ["./src/types/*"],
-      "utils/*": ["./src/utils/*"]
+      "utils/*": ["./src/utils/*"],
+      "zenstack/*": ["./src/zenstack/*"]
     },
     "plugins": [
       {

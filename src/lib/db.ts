@@ -7,7 +7,7 @@
 import { type ClientContract, ZenStackClient } from '@zenstackhq/orm'
 import { PostgresDialect } from '@zenstackhq/orm/dialects/postgres'
 import { Pool } from 'pg'
-import { type SchemaType, schema } from '../../zenstack/schema'
+import { type SchemaType, schema } from 'zenstack/schema'
 
 type DbClient = ClientContract<SchemaType>
 

@@ -1,14 +1,14 @@
+import { Hammer, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+import { type FC } from 'react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from 'components/ui/card'
-import { getCopyrightYear } from 'lib/date-utils'
-import { Hammer, Sparkles } from 'lucide-react'
-import Link from 'next/link'
-import { type FC } from 'react'
+} from '@/components/ui/card'
+import { getCopyrightYear } from '@/lib/date-utils'
 
 const LandingPage: FC = () => (
   <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">

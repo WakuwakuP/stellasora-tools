@@ -10,16 +10,8 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "@public/*": ["./public/*"],
-      "actions/*": ["./src/actions/*"],
-      "app/*": ["./src/app/*"],
-      "components/*": ["./src/components/*"],
-      "constants/*": ["./src/constants/*"],
-      "hooks/*": ["./src/hooks/*"],
-      "lib/*": ["./src/lib/*"],
-      "types/*": ["./src/types/*"],
-      "utils/*": ["./src/utils/*"],
-      "zenstack/*": ["./src/zenstack/*"]
+      "@/*": ["./src/*"],
+      "@public/*": ["./public/*"]
     },
     "plugins": [
       {

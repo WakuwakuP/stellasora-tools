@@ -1,7 +1,7 @@
 'use server'
 
-import { db } from 'lib/db'
-import { getBaseUrl } from 'lib/url-utils'
+import { db } from '@/lib/db'
+import { getBaseUrl } from '@/lib/url-utils'
 
 /** 短縮コードの長さ */
 const SHORT_CODE_LENGTH = 8
@@ -64,10 +64,7 @@ export async function createShortenedUrl(
         },
       })
       return { code }
-    } catch {
-      // ユニーク制約違反（コード衝突）の場合は次のコードでリトライ
-      continue
-    }
+    } catch {}
   }
 
   return { error: '短縮URLの生成に失敗しました。再度お試しください。' }

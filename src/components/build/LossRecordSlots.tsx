@@ -1,11 +1,11 @@
 'use client'
 
-import { getNoteImagePath } from 'constants/noteImageMap'
+import { getNoteImagePath } from '@/constants/noteImageMap'
 import { Plus, X } from 'lucide-react'
 import Image from 'next/image'
 import type { FC } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
-import type { LossRecordInfo, SupportNote } from 'types/lossRecord'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import type { LossRecordInfo, SupportNote } from '@/types/lossRecord'
 
 export interface LossRecordSlotsProps {
   /** ロスレコIDの配列 */

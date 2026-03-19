@@ -12,7 +12,7 @@ import {
   MAX_SUB_SUPPORT,
   SUB_TALENTS_COUNT,
 } from './build-encoder-v2'
-import type { Build } from 'types/build'
+import type { Build } from '@/types/build'
 
 describe('build-encoder-v2', () => {
   describe('encodeTalents and decodeTalents', () => {

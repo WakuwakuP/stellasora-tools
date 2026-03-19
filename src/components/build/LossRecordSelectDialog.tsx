@@ -5,11 +5,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from 'components/ui/dialog'
-import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
+} from '@/components/ui/dialog'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { type FC, useEffect, useMemo, useState } from 'react'
-import type { LossRecordInfo } from 'types/lossRecord'
-import { sortLossRecords } from 'utils/lossRecordSort'
+import type { LossRecordInfo } from '@/types/lossRecord'
+import { sortLossRecords } from '@/utils/lossRecordSort'
 import { LossRecordCard } from './LossRecordCard'
 
 /** 属性フィルター定義 */

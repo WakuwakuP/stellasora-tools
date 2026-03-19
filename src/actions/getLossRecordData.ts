@@ -6,8 +6,8 @@ import {
   type LossRecordInfo,
   type LossRecordListItem,
   type SupportNote,
-} from 'types/lossRecord'
-import { replaceSkillParams } from 'utils/skillUtils'
+} from '@/types/lossRecord'
+import { replaceSkillParams } from '@/utils/skillUtils'
 
 /**
  * StellaSoraAPI からロスレコデータを取得する Server Action

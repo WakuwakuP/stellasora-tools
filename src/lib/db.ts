@@ -4,10 +4,11 @@
  * 依存: zenstack/schema.ts（自動生成ファイル）
  * 使用前に `yarn db:generate` または `yarn prebuild` でスキーマ生成が必要
  */
+
 import { type ClientContract, ZenStackClient } from '@zenstackhq/orm'
 import { PostgresDialect } from '@zenstackhq/orm/dialects/postgres'
 import { Pool } from 'pg'
-import { type SchemaType, schema } from 'zenstack/schema'
+import { type SchemaType, schema } from '@/zenstack/schema'
 
 type DbClient = ClientContract<SchemaType>
 

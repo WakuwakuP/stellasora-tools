@@ -1,13 +1,13 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from 'components/ui/dialog'
-import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group'
+} from '@/components/ui/dialog'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { type FC, useEffect, useMemo, useState } from 'react'
 
 /**

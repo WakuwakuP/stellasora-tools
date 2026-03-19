@@ -1,16 +1,16 @@
 'use client'
 
-import { Badge } from 'components/ui/badge'
+import { Badge } from '@/components/ui/badge'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from 'components/ui/hover-card'
-import { ELEMENT_COLORS, STAR_COLORS } from 'constants/lossRecordColors'
-import { getNoteImagePath } from 'constants/noteImageMap'
+} from '@/components/ui/hover-card'
+import { ELEMENT_COLORS, STAR_COLORS } from '@/constants/lossRecordColors'
+import { getNoteImagePath } from '@/constants/noteImageMap'
 import Image from 'next/image'
 import type { FC } from 'react'
-import type { LossRecordInfo, SupportNote } from 'types/lossRecord'
+import type { LossRecordInfo, SupportNote } from '@/types/lossRecord'
 
 export interface LossRecordCardProps {
   /** ロスレコ情報 */

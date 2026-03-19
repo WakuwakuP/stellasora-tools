@@ -1,14 +1,14 @@
 import { type Metadata } from 'next'
 import { Suspense } from 'react'
 
-import { buildSearchParamsCache } from 'app/build/searchParams'
-import { BuildCreator } from 'app/build/BuildCreator'
+import { buildSearchParamsCache } from '@/app/build/searchParams'
+import { BuildCreator } from '@/app/build/BuildCreator'
 import {
   BuildCreatorFallback,
   getAvailableCharacters,
   getLossRecordData,
-} from 'app/build/utils'
-import { generateBuildOgpUrl } from 'lib/build-ogp'
+} from '@/app/build/utils'
+import { generateBuildOgpUrl } from '@/lib/build-ogp'
 
 type BuildPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

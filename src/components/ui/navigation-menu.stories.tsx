@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './navigation-menu';
-import { cn } from 'lib/utils';
+import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
 
 const meta: Meta<typeof NavigationMenu> = {

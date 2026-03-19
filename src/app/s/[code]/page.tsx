@@ -1,6 +1,6 @@
-import { db } from 'lib/db'
 import { type Route } from 'next'
 import { notFound, redirect } from 'next/navigation'
+import { db } from '@/lib/db'
 
 interface Params {
   code: string

@@ -41,11 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# zenstack generated files
-src/zenstack/schema.ts
-src/zenstack/models.ts
-src/zenstack/input.ts
-
 *storybook.log
 storybook-static
 

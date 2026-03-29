@@ -74,7 +74,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.2",
     "@zenstackhq/cli": "^3.4.6",
     "@zenstackhq/schema": "^3.4.6",
     "chromatic": "^15.3.0",
@@ -87,7 +87,7 @@
     "typescript": "5.9.3",
     "typescript-eslint": "^8.57.1",
     "vite": "^8.0.1",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,jsonc}": [

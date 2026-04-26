@@ -6691,9 +6691,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "chromatic@npm:16.3.0"
+"chromatic@npm:^16.6.0":
+  version: 16.6.0
+  resolution: "chromatic@npm:16.6.0"
+  dependencies:
+    semver: "npm:^7.3.5"
   peerDependencies:
     "@chromatic-com/cypress": ^0.*.* || ^1.0.0
     "@chromatic-com/playwright": ^0.*.* || ^1.0.0
@@ -6706,10 +6708,10 @@ __metadata:
     "@chromatic-com/vitest":
       optional: true
   bin:
-    chroma: dist/bin.js
-    chromatic: dist/bin.js
-    chromatic-cli: dist/bin.js
-  checksum: 10c0/6dcdbf70b29f88e6c43580e451abd10ae39ca24662937aeb6ddecfb5528ce77549d56fbdd465223169484519f10e006c3eb12aa26eac9b4da58796615f7fb7a7
+    chroma: dist/bin.cjs
+    chromatic: dist/bin.cjs
+    chromatic-cli: dist/bin.cjs
+  checksum: 10c0/27f905e3d8cc1a865e354b0a09ac533daea1a5be0e60f82ae489cda5e5c5d2ff773a749bd5e904cf712ca040d19561e0c4e7877d3e49e32f7010c50b0a94346f
   languageName: node
   linkType: hard
 
@@ -12437,7 +12439,7 @@ __metadata:
     "@zenstackhq/cli": "npm:^3.6.3"
     "@zenstackhq/orm": "npm:^3.6.3"
     "@zenstackhq/schema": "npm:^3.6.3"
-    chromatic: "npm:^16.3.0"
+    chromatic: "npm:^16.6.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"

@@ -6,7 +6,7 @@
 /* eslint-disable */
 
 import { type SchemaType as $Schema } from "./schema";
-import type { FindManyArgs as $FindManyArgs, FindUniqueArgs as $FindUniqueArgs, FindFirstArgs as $FindFirstArgs, ExistsArgs as $ExistsArgs, CreateArgs as $CreateArgs, CreateManyArgs as $CreateManyArgs, CreateManyAndReturnArgs as $CreateManyAndReturnArgs, UpdateArgs as $UpdateArgs, UpdateManyArgs as $UpdateManyArgs, UpdateManyAndReturnArgs as $UpdateManyAndReturnArgs, UpsertArgs as $UpsertArgs, DeleteArgs as $DeleteArgs, DeleteManyArgs as $DeleteManyArgs, CountArgs as $CountArgs, AggregateArgs as $AggregateArgs, GroupByArgs as $GroupByArgs, WhereInput as $WhereInput, SelectInput as $SelectInput, IncludeInput as $IncludeInput, OmitInput as $OmitInput, QueryOptions as $QueryOptions } from "@zenstackhq/orm";
+import type { FindManyArgs as $FindManyArgs, FindUniqueArgs as $FindUniqueArgs, FindFirstArgs as $FindFirstArgs, ExistsArgs as $ExistsArgs, CreateArgs as $CreateArgs, CreateManyArgs as $CreateManyArgs, CreateManyAndReturnArgs as $CreateManyAndReturnArgs, UpdateArgs as $UpdateArgs, UpdateManyArgs as $UpdateManyArgs, UpdateManyAndReturnArgs as $UpdateManyAndReturnArgs, UpsertArgs as $UpsertArgs, DeleteArgs as $DeleteArgs, DeleteManyArgs as $DeleteManyArgs, CountArgs as $CountArgs, AggregateArgs as $AggregateArgs, GroupByArgs as $GroupByArgs, WhereInput as $WhereInput, SelectInput as $SelectInput, IncludeInput as $IncludeInput, OmitInput as $OmitInput, UncheckedCreateInput as $UncheckedCreateInput, CheckedCreateInput as $CheckedCreateInput, UncheckedUpdateInput as $UncheckedUpdateInput, CheckedUpdateInput as $CheckedUpdateInput, QueryOptions as $QueryOptions } from "@zenstackhq/orm";
 import type { SimplifiedPlainResult as $Result, SelectIncludeOmit as $SelectIncludeOmit } from "@zenstackhq/orm";
 export type ShortenedUrlFindManyArgs = $FindManyArgs<$Schema, "ShortenedUrl">;
 export type ShortenedUrlFindUniqueArgs = $FindUniqueArgs<$Schema, "ShortenedUrl">;
@@ -28,4 +28,8 @@ export type ShortenedUrlWhereInput = $WhereInput<$Schema, "ShortenedUrl">;
 export type ShortenedUrlSelect = $SelectInput<$Schema, "ShortenedUrl">;
 export type ShortenedUrlInclude = $IncludeInput<$Schema, "ShortenedUrl">;
 export type ShortenedUrlOmit = $OmitInput<$Schema, "ShortenedUrl">;
+export type ShortenedUrlUncheckedCreateInput = $UncheckedCreateInput<$Schema, "ShortenedUrl">;
+export type ShortenedUrlCheckedCreateInput = $CheckedCreateInput<$Schema, "ShortenedUrl">;
+export type ShortenedUrlUncheckedUpdateInput = $UncheckedUpdateInput<$Schema, "ShortenedUrl">;
+export type ShortenedUrlCheckedUpdateInput = $CheckedUpdateInput<$Schema, "ShortenedUrl">;
 export type ShortenedUrlGetPayload<Args extends $SelectIncludeOmit<$Schema, "ShortenedUrl", true>, Options extends $QueryOptions<$Schema> = $QueryOptions<$Schema>> = $Result<$Schema, "ShortenedUrl", Args, Options>;

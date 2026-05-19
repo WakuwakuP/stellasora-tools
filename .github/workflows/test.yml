@@ -3,7 +3,7 @@ name: Test
 on:
   push:
     branches: [main, master, develop]
-  pull_request_target:
+  pull_request:
     branches: [main, master, develop]
 
 jobs:
@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - run: corepack enable yarn
 
@@ -36,7 +34,7 @@ jobs:
 
       - name: Comment test coverage
         uses: davelosert/vitest-coverage-report-action@v2
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         with:
           json-summary-path: "./coverage/coverage-summary.json"
           json-final-path: "./coverage/coverage-final.json"

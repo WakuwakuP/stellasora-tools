@@ -3,7 +3,7 @@ name: Lint & Format
 on:
   push:
     branches: [main, master, develop]
-  pull_request_target:
+  pull_request:
     branches: [main, master, develop]
 
 jobs:
@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - run: corepack enable yarn
 

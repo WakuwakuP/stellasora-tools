@@ -172,6 +172,7 @@ Before finishing, update the cache memory with:
 - **Never skip the verification step** — every upgrade must pass `yarn check` and `yarn build`
 - **Do not modify source code unnecessarily** — only make changes required to fix breaking changes from upgrades
 - **Preserve the `resolutions` field** in `package.json` if it exists — update version numbers there when upgrading resolved packages
+- **Preserve exact version pins** — if a dependency in `package.json` has no `^` prefix (exact version like `"5.2.2"`), keep it exact after upgrade (e.g. `"5.4.0"`, not `"^5.4.0"`). Use `yarn up package@version` with an explicit version when needed
 - **Keep commits atomic** — one commit per package (or related package group)
 - If there were no successful upgrades at all, call the `noop` safe output explaining which packages were attempted and why they failed
 

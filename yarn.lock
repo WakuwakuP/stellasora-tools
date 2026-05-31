@@ -12951,7 +12951,7 @@ __metadata:
     react-hook-form: "npm:^7.77.0"
     react-resizable-panels: "npm:^4.11.2"
     recharts: "npm:^3.8.1"
-    shadcn: "npm:^4.8.0"
+    shadcn: "npm:^4.9.0"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.4.1"
     tailwind-merge: "npm:^3.6.0"
@@ -13336,9 +13336,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shadcn@npm:^4.8.0":
-  version: 4.8.0
-  resolution: "shadcn@npm:4.8.0"
+"shadcn@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "shadcn@npm:4.9.0"
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/parser": "npm:^7.28.0"
@@ -13376,7 +13376,7 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.6"
   bin:
     shadcn: dist/index.js
-  checksum: 10c0/f93f63da6a69f8f6b439a345a4186f4badcf497ad0d34dad06789520165cd6b975670f7b11717b9633ccf355ab479e9984099d150543072bc9380c71f8586ca9
+  checksum: 10c0/1cb36db8ed85e7b91aa303cae93b9274bee230b0cbfe96bd3c91868c2a07eb01096fc20c3ba4f22ca293731e1c2dca9306b7303c9e0b89b3714639ffe8c94923
   languageName: node
   linkType: hard
 

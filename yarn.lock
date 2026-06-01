@@ -1578,18 +1578,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:^2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/biome@npm:2.4.15"
+"@biomejs/biome@npm:^2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/biome@npm:2.4.16"
   dependencies:
-    "@biomejs/cli-darwin-arm64": "npm:2.4.15"
-    "@biomejs/cli-darwin-x64": "npm:2.4.15"
-    "@biomejs/cli-linux-arm64": "npm:2.4.15"
-    "@biomejs/cli-linux-arm64-musl": "npm:2.4.15"
-    "@biomejs/cli-linux-x64": "npm:2.4.15"
-    "@biomejs/cli-linux-x64-musl": "npm:2.4.15"
-    "@biomejs/cli-win32-arm64": "npm:2.4.15"
-    "@biomejs/cli-win32-x64": "npm:2.4.15"
+    "@biomejs/cli-darwin-arm64": "npm:2.4.16"
+    "@biomejs/cli-darwin-x64": "npm:2.4.16"
+    "@biomejs/cli-linux-arm64": "npm:2.4.16"
+    "@biomejs/cli-linux-arm64-musl": "npm:2.4.16"
+    "@biomejs/cli-linux-x64": "npm:2.4.16"
+    "@biomejs/cli-linux-x64-musl": "npm:2.4.16"
+    "@biomejs/cli-win32-arm64": "npm:2.4.16"
+    "@biomejs/cli-win32-x64": "npm:2.4.16"
   dependenciesMeta:
     "@biomejs/cli-darwin-arm64":
       optional: true
@@ -1609,62 +1609,62 @@ __metadata:
       optional: true
   bin:
     biome: bin/biome
-  checksum: 10c0/46ac114b97f00e5fe0d22590337c80c7a2467d2aabf57d7f99b92356fd01cf76bb7d972782508e0f51c34e08a1a7f8e9eefec6fe72aa7b5f53b9161b7fe582e2
+  checksum: 10c0/c52c4309daf241888b43912a43d1ba8bae7c2160751c33900088517da3e47d1428bb1c1f64f657efa5f42f5866e6400325b39fc41c3adf7cc7aa3f237f6fa286
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-arm64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-darwin-arm64@npm:2.4.15"
+"@biomejs/cli-darwin-arm64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-darwin-arm64@npm:2.4.16"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-x64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-darwin-x64@npm:2.4.15"
+"@biomejs/cli-darwin-x64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-darwin-x64@npm:2.4.16"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64-musl@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.4.15"
+"@biomejs/cli-linux-arm64-musl@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.4.16"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-linux-arm64@npm:2.4.15"
+"@biomejs/cli-linux-arm64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-linux-arm64@npm:2.4.16"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64-musl@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-linux-x64-musl@npm:2.4.15"
+"@biomejs/cli-linux-x64-musl@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-linux-x64-musl@npm:2.4.16"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-linux-x64@npm:2.4.15"
+"@biomejs/cli-linux-x64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-linux-x64@npm:2.4.16"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-arm64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-win32-arm64@npm:2.4.15"
+"@biomejs/cli-win32-arm64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-win32-arm64@npm:2.4.16"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-x64@npm:2.4.15":
-  version: 2.4.15
-  resolution: "@biomejs/cli-win32-x64@npm:2.4.15"
+"@biomejs/cli-win32-x64@npm:2.4.16":
+  version: 2.4.16
+  resolution: "@biomejs/cli-win32-x64@npm:2.4.16"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -5947,16 +5947,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zenstackhq/cli@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/cli@npm:3.7.1"
+"@zenstackhq/cli@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/cli@npm:3.7.2"
   dependencies:
-    "@zenstackhq/common-helpers": "npm:3.7.1"
-    "@zenstackhq/language": "npm:3.7.1"
-    "@zenstackhq/orm": "npm:3.7.1"
-    "@zenstackhq/schema": "npm:3.7.1"
-    "@zenstackhq/sdk": "npm:3.7.1"
-    "@zenstackhq/server": "npm:3.7.1"
+    "@zenstackhq/common-helpers": "npm:3.7.2"
+    "@zenstackhq/language": "npm:3.7.2"
+    "@zenstackhq/orm": "npm:3.7.2"
+    "@zenstackhq/schema": "npm:3.7.2"
+    "@zenstackhq/sdk": "npm:3.7.2"
+    "@zenstackhq/server": "npm:3.7.2"
     chokidar: "npm:^5.0.0"
     colors: "npm:1.4.0"
     commander: "npm:^8.3.0"
@@ -5988,38 +5988,38 @@ __metadata:
   bin:
     zen: bin/cli
     zenstack: bin/cli
-  checksum: 10c0/f7202172960ccdf80404e677e482fe4d35843da0474680304394e50fdb49d946c4c50d2e8c2c072c5f1741f0cb3cfa86df476eb21824e0915da64ef3ab5a7740
+  checksum: 10c0/90abdd831c973901049cd26bad3c7764a50de17609d63e99469784af32ae4b3879dd539ccb9a7f5b70a35badccd58effcad6c6dd6d33b7b6545ed7f8094665d6
   languageName: node
   linkType: hard
 
-"@zenstackhq/common-helpers@npm:3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/common-helpers@npm:3.7.1"
-  checksum: 10c0/6792b7cc9acf0f86f37a1428dab4948c5bf6c26a79da0df267040da2a0d97630070876ab30cca2ab029e98d7edc95ae8959744b4ae1c66cf3c0d47f02a47f9e8
+"@zenstackhq/common-helpers@npm:3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/common-helpers@npm:3.7.2"
+  checksum: 10c0/4143dfa794355663c7a9ba9276a6c460ba0b961e53769bd8af18c844c8c1f51c4c9766f5c96ed0018fa41245b1f883e199d6085b45667234217f7ac07b597788
   languageName: node
   linkType: hard
 
-"@zenstackhq/language@npm:3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/language@npm:3.7.1"
+"@zenstackhq/language@npm:3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/language@npm:3.7.2"
   dependencies:
-    "@zenstackhq/common-helpers": "npm:3.7.1"
+    "@zenstackhq/common-helpers": "npm:3.7.2"
     langium: "npm:3.5.0"
     pluralize: "npm:^8.0.0"
     ts-pattern: "npm:^5.7.1"
     vscode-languageserver: "npm:^9.0.1"
-  checksum: 10c0/133749363c9b1ed604e01ec6755e2f649c33a5e47dc02856af48404e0592fe8aee73ef7d8a8181c0943fb33ffa3e16cfa00b54ac4260de6d8c45798553ddeae2
+  checksum: 10c0/44aa31fa68f6817cd21c847c0b492ab81add3bd4ad682ffc6984d7d37cbbf3f984ba19f350a9ca7a690c9cb9a36c8236046fdb92a155707e3f5b1e251c41ed08
   languageName: node
   linkType: hard
 
-"@zenstackhq/orm@npm:3.7.1, @zenstackhq/orm@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/orm@npm:3.7.1"
+"@zenstackhq/orm@npm:3.7.2, @zenstackhq/orm@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/orm@npm:3.7.2"
   dependencies:
     "@paralleldrive/cuid2": "npm:^2.2.2"
-    "@zenstackhq/common-helpers": "npm:3.7.1"
-    "@zenstackhq/schema": "npm:3.7.1"
-    "@zenstackhq/zod": "npm:3.7.1"
+    "@zenstackhq/common-helpers": "npm:3.7.2"
+    "@zenstackhq/schema": "npm:3.7.2"
+    "@zenstackhq/zod": "npm:3.7.2"
     cuid: "npm:^3.0.0"
     decimal.js: "npm:^10.4.3"
     json-stable-stringify: "npm:^1.3.0"
@@ -6046,38 +6046,38 @@ __metadata:
       optional: true
     sql.js:
       optional: true
-  checksum: 10c0/7ef7911fc833391683e3a8bb3587a9b928ed9c893da26ff9d75d0ffcda4f90e7506fad52683a9f8cbca16c6920f1e1154e7b8133be531f8bf6ad452e5334083e
+  checksum: 10c0/c4b09cc76dd14686dffcd852fda2119df2a5ce1e576bec053956ec20cb051ba0931d0a6c61008b0b4adc2e971852eedeb4984a7dc17d4d9fa5acf690f82dad5e
   languageName: node
   linkType: hard
 
-"@zenstackhq/schema@npm:3.7.1, @zenstackhq/schema@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/schema@npm:3.7.1"
+"@zenstackhq/schema@npm:3.7.2, @zenstackhq/schema@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/schema@npm:3.7.2"
   dependencies:
     decimal.js: "npm:^10.4.3"
-  checksum: 10c0/7e8b11a3f44867d78e762c6d6dee15c0881d1d8e1e0efe8d174de6b86b42aed0a25333c4051e060fc56b02e5a18de552816b05647f4a8761d34069ba5a0857f5
+  checksum: 10c0/99fc001c76f40043f6e13743e2d05c62e12cd1a7b1980c7ecd90a964c8aff726032088543009b5405822427da922c4bcc3753d16d2470443abcae63eeabc362e
   languageName: node
   linkType: hard
 
-"@zenstackhq/sdk@npm:3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/sdk@npm:3.7.1"
+"@zenstackhq/sdk@npm:3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/sdk@npm:3.7.2"
   dependencies:
-    "@zenstackhq/common-helpers": "npm:3.7.1"
-    "@zenstackhq/language": "npm:3.7.1"
+    "@zenstackhq/common-helpers": "npm:3.7.2"
+    "@zenstackhq/language": "npm:3.7.2"
     langium: "npm:3.5.0"
     ts-pattern: "npm:^5.7.1"
     typescript: "npm:^6.0.3"
-  checksum: 10c0/3cf56565b0f4e44a48bb4ae66f01799b9833a47a113b7cad922f810f6043956fbf99014be1d86846378258cb4dda38fac831aa3aa3bb5c2697d8abd4255d71b9
+  checksum: 10c0/54d21789b711d86bf3b2428038fda00670744229abf9fa61b68657c2585aa9080e256f505f460793831af0ecf11d7e621e81c5ef5069f4bdd294388d53071b89
   languageName: node
   linkType: hard
 
-"@zenstackhq/server@npm:3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/server@npm:3.7.1"
+"@zenstackhq/server@npm:3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/server@npm:3.7.2"
   dependencies:
-    "@zenstackhq/common-helpers": "npm:3.7.1"
-    "@zenstackhq/orm": "npm:3.7.1"
+    "@zenstackhq/common-helpers": "npm:3.7.2"
+    "@zenstackhq/orm": "npm:3.7.2"
     decimal.js: "npm:^10.4.3"
     openapi-types: "npm:^12.1.3"
     superjson: "npm:^2.2.3"
@@ -6115,19 +6115,19 @@ __metadata:
       optional: true
     nuxt:
       optional: true
-  checksum: 10c0/446f0c3d42f8241138bbee6dcf2a88456da23b6dcbf31126f261c6121c3f9b7373b4f5c47f7e238c53c1a2cfb20210e953cc1e3ed7dddef7d26f1b54d327eec3
+  checksum: 10c0/95813d04e790ed3221b17f1f3fefca915aeccdcca859d845cc7225138ba78c93eab7ef5c51fd6a7dd8b8937716b8ad088882e885b948a4dbf4dc2901e31f99ac
   languageName: node
   linkType: hard
 
-"@zenstackhq/zod@npm:3.7.1":
-  version: 3.7.1
-  resolution: "@zenstackhq/zod@npm:3.7.1"
+"@zenstackhq/zod@npm:3.7.2":
+  version: 3.7.2
+  resolution: "@zenstackhq/zod@npm:3.7.2"
   dependencies:
-    "@zenstackhq/schema": "npm:3.7.1"
+    "@zenstackhq/schema": "npm:3.7.2"
     decimal.js: "npm:^10.4.3"
   peerDependencies:
     zod: ^4.0.0
-  checksum: 10c0/7ae58ae213b7314f4b17512f940293c5ca8ba26bbf37d14734353e5aefa60278b9e2ae1cba7523634a7f173ad6819c19cc0c4d8707d01e835e12187178a79db5
+  checksum: 10c0/69ce56bfead22888a5a2a0b6b14b9cd79d3dedf7d80fe0e14e3a318c8988d9217d583a2bf6136235d881225c9609ee8448fa9ad35e564c5960f396419df69d2d
   languageName: node
   linkType: hard
 
@@ -7002,9 +7002,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "chromatic@npm:17.0.0"
+"chromatic@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "chromatic@npm:17.1.0"
   dependencies:
     semver: "npm:^7.3.5"
   peerDependencies:
@@ -7022,7 +7022,7 @@ __metadata:
     chroma: dist/bin.cjs
     chromatic: dist/bin.cjs
     chromatic-cli: dist/bin.cjs
-  checksum: 10c0/962c86feec17b12757fa3327b7e98abff272a048c03227bb21ecb51c7f1d7ec3589386611ece8e2c413ac4049f26d71e9c9226a5fb7628fdcbb47e87905863a0
+  checksum: 10c0/2aa6f22a444868cfaf580b54648d0397248603d0cbb35d6ac850f93400666f1d6d28fdd2a20e13865049b30d00c741b4f00c7cae7f3ca660fe43470ea3bb6a0f
   languageName: node
   linkType: hard
 
@@ -10261,21 +10261,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^17.0.5":
-  version: 17.0.5
-  resolution: "lint-staged@npm:17.0.5"
+"lint-staged@npm:^17.0.7":
+  version: 17.0.7
+  resolution: "lint-staged@npm:17.0.7"
   dependencies:
     listr2: "npm:^10.2.1"
     picomatch: "npm:^4.0.4"
     string-argv: "npm:^0.3.2"
-    tinyexec: "npm:^1.1.2"
-    yaml: "npm:^2.8.4"
+    tinyexec: "npm:^1.2.4"
+    yaml: "npm:^2.9.0"
   dependenciesMeta:
     yaml:
       optional: true
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 10c0/6ecf2024744147ea768dbd550c0c47f04b295f07d30e5ecb5e375c18d8fc24d4bfa897042f4aabd7c3510054ad5bbbb51fa36e60e8dca853e31f9876ef9a3726
+  checksum: 10c0/c4e7100becb327d817999a231b8d345e6be389c555d9cd8d668797d2670832ad15c4e5085b61895e3fbf937f0fbd6be5c78ca76a4599ed332227f37270ebe8eb
   languageName: node
   linkType: hard
 
@@ -10466,12 +10466,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^1.16.0":
-  version: 1.16.0
-  resolution: "lucide-react@npm:1.16.0"
+"lucide-react@npm:^1.17.0":
+  version: 1.17.0
+  resolution: "lucide-react@npm:1.17.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/d1c4b7f1abdc8b5c729a5bd74d875f0b0db732b2e8d0cc8c76f9e167818b81a6b246a64986ab2fc1ae74cf9f8d16ce2cefe98fe5a6420b31f4fd6742b3181d5a
+  checksum: 10c0/a600d882afceffa5d3479666549e801e201ff5a95c19961648e45fc288cf3d2248a345e563cd3891f3ff3dbc052730121feeb54aa75628b663810159246b9468
   languageName: node
   linkType: hard
 
@@ -12444,12 +12444,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.76.1":
-  version: 7.76.1
-  resolution: "react-hook-form@npm:7.76.1"
+"react-hook-form@npm:^7.77.0":
+  version: 7.77.0
+  resolution: "react-hook-form@npm:7.77.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/77b502ffc76a99527093cc67205baf3462ac4b4d8699ba3f45f2efa53f0678dfe8c19aea284a6bdb25f4c598464615e6b9567fc8c194e220313aa9f3e48c6da7
+  checksum: 10c0/b61c9d739cf0fb4fde235cf1e36ae7bb69a583acbf144c9a1e403b47a0406bef5418cc0deb432b0b7e3e50738a998c5c44fad50aa881d85e5233b66c7a67d868
   languageName: node
   linkType: hard
 
@@ -12877,7 +12877,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ridar-gallery@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:^2.4.15"
+    "@biomejs/biome": "npm:^2.4.16"
     "@eslint/eslintrc": "npm:^3.3.5"
     "@google/model-viewer": "npm:^4.2.0"
     "@hookform/resolvers": "npm:^5.4.0"
@@ -12927,10 +12927,10 @@ __metadata:
     "@vercel/blob": "npm:^2.4.0"
     "@vitejs/plugin-react": "npm:^6.0.2"
     "@vitest/coverage-v8": "npm:^4.1.7"
-    "@zenstackhq/cli": "npm:^3.7.1"
-    "@zenstackhq/orm": "npm:^3.7.1"
-    "@zenstackhq/schema": "npm:^3.7.1"
-    chromatic: "npm:^17.0.0"
+    "@zenstackhq/cli": "npm:^3.7.2"
+    "@zenstackhq/orm": "npm:^3.7.2"
+    "@zenstackhq/schema": "npm:^3.7.2"
+    chromatic: "npm:^17.1.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"
@@ -12938,8 +12938,8 @@ __metadata:
     husky: "npm:^9.1.7"
     input-otp: "npm:^1.4.2"
     jsdom: "npm:^29.1.1"
-    lint-staged: "npm:^17.0.5"
-    lucide-react: "npm:^1.16.0"
+    lint-staged: "npm:^17.0.7"
+    lucide-react: "npm:^1.17.0"
     next: "npm:^16.2.6"
     next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"
@@ -12948,10 +12948,10 @@ __metadata:
     react: "npm:^19.2.6"
     react-day-picker: "npm:^10.0.1"
     react-dom: "npm:^19.2.6"
-    react-hook-form: "npm:^7.76.1"
+    react-hook-form: "npm:^7.77.0"
     react-resizable-panels: "npm:^4.11.2"
     recharts: "npm:^3.8.1"
-    shadcn: "npm:^4.8.0"
+    shadcn: "npm:^4.9.0"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.4.1"
     tailwind-merge: "npm:^3.6.0"
@@ -13336,9 +13336,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shadcn@npm:^4.8.0":
-  version: 4.8.0
-  resolution: "shadcn@npm:4.8.0"
+"shadcn@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "shadcn@npm:4.9.0"
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/parser": "npm:^7.28.0"
@@ -13376,7 +13376,7 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.6"
   bin:
     shadcn: dist/index.js
-  checksum: 10c0/f93f63da6a69f8f6b439a345a4186f4badcf497ad0d34dad06789520165cd6b975670f7b11717b9633ccf355ab479e9984099d150543072bc9380c71f8586ca9
+  checksum: 10c0/1cb36db8ed85e7b91aa303cae93b9274bee230b0cbfe96bd3c91868c2a07eb01096fc20c3ba4f22ca293731e1c2dca9306b7303c9e0b89b3714639ffe8c94923
   languageName: node
   linkType: hard
 
@@ -14212,10 +14212,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyexec@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "tinyexec@npm:1.1.2"
-  checksum: 10c0/9e0ef6c001ce54688cf16833a02f70a339276219ca947b88930b124267de2cffc764ff44e87e7369384b1d75ab63491465412cbbdf06f2437956b9ab66ab4491
+"tinyexec@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "tinyexec@npm:1.2.4"
+  checksum: 10c0/153b8db6b080194b558ff145b9cffc36b80a6e07babd644dcfbe49c807eee668c876049d28bdee90b96304476f883352f2dad91b3f86bc23832532f4363e66ff
   languageName: node
   linkType: hard
 
@@ -15348,12 +15348,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.8.4":
-  version: 2.8.4
-  resolution: "yaml@npm:2.8.4"
+"yaml@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "yaml@npm:2.9.0"
   bin:
     yaml: bin.mjs
-  checksum: 10c0/0a33a1fa28d4bc79f61a12ec7ef7a2bce0ce5f8e80c6eaecfb4a0c88c08767dd1ede372b6a3bcd70891213b8c9f3169b355c97e77026d3b3459e10d2cccaef1e
+  checksum: 10c0/f340718df45e97a9551b9bf9dac61c80050bc464513b710debfb5067c380c8472e3b67809cffacb4ab5ffb5e66ef9310816c88b05f371cec60abfedd8c88e0a2
   languageName: node
   linkType: hard
 

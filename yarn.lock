@@ -5762,9 +5762,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/blob@npm:^2.4.1":
-  version: 2.4.1
-  resolution: "@vercel/blob@npm:2.4.1"
+"@vercel/blob@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "@vercel/blob@npm:2.5.0"
   dependencies:
     "@vercel/oidc": "npm:^3.6.1"
     async-retry: "npm:^1.3.3"
@@ -5772,7 +5772,7 @@ __metadata:
     is-node-process: "npm:^1.2.0"
     throttleit: "npm:^2.1.0"
     undici: "npm:^6.23.0"
-  checksum: 10c0/2d3798b927e1eb605bfe2f99edf1ba673ea75b9eb38cc31ae02a8926b4dd797bb0f6b85aa6434a4509c06726893ca0f0d8bc73557cf75c1b47f69da051546443
+  checksum: 10c0/d07ce716502c3938e608835a2a6e9f2fa70ae19677b7ecc7d1d8e58373c9feb0f8656db330bf8213ac1e620e62d6fededd9a5c5634ef6800f3f2e47d690dcf96
   languageName: node
   linkType: hard
 
@@ -13048,7 +13048,7 @@ __metadata:
     "@types/react": "npm:^19.2.17"
     "@types/react-dom": "npm:^19.2.3"
     "@vercel/analytics": "npm:^2.0.1"
-    "@vercel/blob": "npm:^2.4.1"
+    "@vercel/blob": "npm:^2.5.0"
     "@vitejs/plugin-react": "npm:^6.0.2"
     "@vitest/coverage-v8": "npm:^4.1.9"
     "@zenstackhq/cli": "npm:^3.8.1"

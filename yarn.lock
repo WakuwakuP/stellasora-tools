@@ -7246,9 +7246,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^17.7.2":
-  version: 17.7.2
-  resolution: "chromatic@npm:17.7.2"
+"chromatic@npm:^18.0.1":
+  version: 18.0.1
+  resolution: "chromatic@npm:18.0.1"
   dependencies:
     semver: "npm:^7.3.5"
   peerDependencies:
@@ -7266,7 +7266,7 @@ __metadata:
     chroma: dist/bin.cjs
     chromatic: dist/bin.cjs
     chromatic-cli: dist/bin.cjs
-  checksum: 10c0/6fcbb27833a2abd775658e6f59d6325adb6b20baf8c108e961b39c81da222964fc1568d86d9eec8d703319e0eb9b0254b2cb815d8629410c147b1c6ff9b89351
+  checksum: 10c0/0a6adc1ec8b94eda3b8b1a71598f763bb1fa63591de8fe835171fef6e72171071570724bc3f536b571315c43192daab65ea7d13df12007c7a5c4671070ea0811
   languageName: node
   linkType: hard
 
@@ -13062,7 +13062,7 @@ __metadata:
     "@zenstackhq/cli": "npm:^3.8.3"
     "@zenstackhq/orm": "npm:^3.8.3"
     "@zenstackhq/schema": "npm:^3.8.3"
-    chromatic: "npm:^17.7.2"
+    chromatic: "npm:^18.0.1"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"

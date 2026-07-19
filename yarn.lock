@@ -4938,17 +4938,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@standard-schema/spec@npm:1.0.0, @standard-schema/spec@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@standard-schema/spec@npm:1.0.0"
-  checksum: 10c0/a1ab9a8bdc09b5b47aa8365d0e0ec40cc2df6437be02853696a0e377321653b0d3ac6f079a8c67d5ddbe9821025584b1fb71d9cc041a6666a96f1fadf2ece15f
-  languageName: node
-  linkType: hard
-
-"@standard-schema/spec@npm:^1.1.0":
+"@standard-schema/spec@npm:1.1.0, @standard-schema/spec@npm:^1.1.0":
   version: 1.1.0
   resolution: "@standard-schema/spec@npm:1.1.0"
   checksum: 10c0/d90f55acde4b2deb983529c87e8025fa693de1a5e8b49ecc6eb84d1fd96328add0e03d7d551442156c7432fd78165b2c26ff561b970a9a881f046abb78d6a526
+  languageName: node
+  linkType: hard
+
+"@standard-schema/spec@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@standard-schema/spec@npm:1.0.0"
+  checksum: 10c0/a1ab9a8bdc09b5b47aa8365d0e0ec40cc2df6437be02853696a0e377321653b0d3ac6f079a8c67d5ddbe9821025584b1fb71d9cc041a6666a96f1fadf2ece15f
   languageName: node
   linkType: hard
 
@@ -10998,6 +10998,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^3.3.16":
+  version: 3.3.16
+  resolution: "nanoid@npm:3.3.16"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 10c0/bbf2dcffe22d2b62d16de2711752070b539c0f644c7916f823ad6521986b2078cbe524f2d6240f58c46e9141ea0c7b87a029e100c0f7f175228cacaf30e41bba
+  languageName: node
+  linkType: hard
+
 "nanoid@npm:^5.0.9":
   version: 5.1.7
   resolution: "nanoid@npm:5.1.7"
@@ -11226,11 +11235,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nuqs@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "nuqs@npm:2.9.0"
+"nuqs@npm:^2.9.1":
+  version: 2.9.1
+  resolution: "nuqs@npm:2.9.1"
   dependencies:
-    "@standard-schema/spec": "npm:1.0.0"
+    "@standard-schema/spec": "npm:1.1.0"
   peerDependencies:
     "@remix-run/react": ">=2"
     "@tanstack/react-router": ^1
@@ -11249,7 +11258,7 @@ __metadata:
       optional: true
     react-router-dom:
       optional: true
-  checksum: 10c0/a2f60cf57dbfdff68e9313876ac42ce3ba6240e72a79b3d5baf4fa1c84f2bb61945c937f66128555f6da45c7947dc5bfe6c62bf8ecd35159bb96b5c0edeea984
+  checksum: 10c0/338b71bf6b19a64f52f27dd6f0e369cc81bc186da24807e8507f12997a9f6202472a5fcf389f78b8592ae22ac4837047cbe4fb16b9a0ae31e08955973798d206
   languageName: node
   linkType: hard
 
@@ -12148,6 +12157,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss@npm:^8.5.17":
+  version: 8.5.20
+  resolution: "postcss@npm:8.5.20"
+  dependencies:
+    nanoid: "npm:^3.3.16"
+    picocolors: "npm:^1.1.1"
+    source-map-js: "npm:^1.2.1"
+  checksum: 10c0/9c7a0e32c77ac54c5613f974e6ccc97d4a70fdb3bf242617f3fb4d652e5c62a37c86c589e6e7a2d1e7120f80bc169cdf673482b88bd75020d2a44899fa569c13
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^8.5.8":
   version: 8.5.8
   resolution: "postcss@npm:8.5.8"
@@ -12503,12 +12523,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.81.0":
-  version: 7.81.0
-  resolution: "react-hook-form@npm:7.81.0"
+"react-hook-form@npm:^7.82.0":
+  version: 7.82.0
+  resolution: "react-hook-form@npm:7.82.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/bdb5b0bb44050ffa54425dbbea855e55696847ae8ff87f77fe43bc85d830d67735ecdeaaf188ba30d9567fad8b0c47a5f42a9a522ed9411222773512e0e7f37b
+  checksum: 10c0/89a3f775a9f2503a2ba4586e6080ddcb435331ef2fcf8cb3d2b29e69386fe21c387b94d8b7000d968357c354dcbf38f650bedeec319971d99c67249a6eec9137
   languageName: node
   linkType: hard
 
@@ -13007,15 +13027,15 @@ __metadata:
     next: "npm:^16.2.10"
     next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"
-    nuqs: "npm:^2.9.0"
+    nuqs: "npm:^2.9.1"
     pg: "npm:^8.22.0"
     react: "npm:^19.2.7"
     react-day-picker: "npm:^10.0.1"
     react-dom: "npm:^19.2.7"
-    react-hook-form: "npm:^7.81.0"
+    react-hook-form: "npm:^7.82.0"
     react-resizable-panels: "npm:^4.12.2"
     recharts: "npm:^3.9.2"
-    shadcn: "npm:^4.13.0"
+    shadcn: "npm:^4.13.1"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.5.2"
     tailwind-merge: "npm:^3.6.0"
@@ -13023,7 +13043,7 @@ __metadata:
     tailwindcss-animate: "npm:^1.0.7"
     typescript: "npm:^6.0.3"
     vaul: "npm:^1.1.2"
-    vite: "npm:^8.1.4"
+    vite: "npm:^8.1.5"
     vitest: "npm:^4.1.10"
     zod: "npm:^4.4.3"
   languageName: unknown
@@ -13108,7 +13128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rolldown@npm:~1.1.4":
+"rolldown@npm:~1.1.5":
   version: 1.1.5
   resolution: "rolldown@npm:1.1.5"
   dependencies:
@@ -13400,9 +13420,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shadcn@npm:^4.13.0":
-  version: 4.13.0
-  resolution: "shadcn@npm:4.13.0"
+"shadcn@npm:^4.13.1":
+  version: 4.13.1
+  resolution: "shadcn@npm:4.13.1"
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/parser": "npm:^7.28.0"
@@ -13438,7 +13458,7 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.6"
   bin:
     shadcn: dist/index.js
-  checksum: 10c0/f57682a3117e730dcacda737525162a0d7afbfd14f524b9fb253f8288f828ca17d74978cac3edf14744344a8991f94ac5e21c70ee889bc2d37dc010f7c9b13fc
+  checksum: 10c0/132abf73c615146f72e9a42742d85963c190cee688768b4ecebb6fa12c4ce553d3a6368e27f18ba4147dedf5ca1cf64199c2ac5ba1510a9543eca7b042461334
   languageName: node
   linkType: hard
 
@@ -14812,15 +14832,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^8.1.4":
-  version: 8.1.4
-  resolution: "vite@npm:8.1.4"
+"vite@npm:^8.1.5":
+  version: 8.1.5
+  resolution: "vite@npm:8.1.5"
   dependencies:
     fsevents: "npm:~2.3.3"
     lightningcss: "npm:^1.32.0"
     picomatch: "npm:^4.0.5"
-    postcss: "npm:^8.5.16"
-    rolldown: "npm:~1.1.4"
+    postcss: "npm:^8.5.17"
+    rolldown: "npm:~1.1.5"
     tinyglobby: "npm:^0.2.17"
   peerDependencies:
     "@types/node": ^20.19.0 || >=22.12.0
@@ -14865,7 +14885,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/4262cdd0dd00ca99b00a8aef91fc00e58b66e80b54adbef49353bfbbae7342c2d6ddf1180351956086ff53ad186bec03784f57b96e36ab4dad1246547236d79b
+  checksum: 10c0/3231e24dd4394d0bc8b4f0f5d6d6a2eda8737e5053042892b4163564456a03d67f953c4c7498621f9517eebc30a492ea136c728a767a122eb84bf6d7cf60e1e6
   languageName: node
   linkType: hard
 

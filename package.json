@@ -79,7 +79,7 @@
     "@zenstackhq/schema": "^3.8.3",
     "chromatic": "^18.1.0",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "lint-staged": "^17.3.0",
     "next-router-mock": "^1.0.5",
     "storybook": "^10.5.5",

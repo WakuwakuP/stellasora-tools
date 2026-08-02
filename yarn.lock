@@ -10831,9 +10831,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "lint-staged@npm:17.2.0"
+"lint-staged@npm:^17.3.0":
+  version: 17.3.0
+  resolution: "lint-staged@npm:17.3.0"
   dependencies:
     picomatch: "npm:^4.0.5"
     string-argv: "npm:^0.3.2"
@@ -10844,7 +10844,7 @@ __metadata:
       optional: true
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 10c0/47eb70637304faa5c723a7adee4f7699a78f928b710b09f167240642285656cf0987b316e3ad4ca34bda10466fbad7a1cb4922cfbf470e5ad0d836eb384f2809
+  checksum: 10c0/48703bf88fd834a5575b4f7fc77aadc7be21017ca66db4255b8962515f7b3df523ec23a1f198fb89eddc838268f2472a613723a7b058ad9260367a1698ce76e1
   languageName: node
   linkType: hard
 
@@ -10995,12 +10995,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^1.27.0":
-  version: 1.27.0
-  resolution: "lucide-react@npm:1.27.0"
+"lucide-react@npm:^1.28.0":
+  version: 1.28.0
+  resolution: "lucide-react@npm:1.28.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/18b078fed81124ee3535350c8aa1718945c94fe87d7f76c815cb49bdf39ed49f6fa53fb9b3aa56653dc8ca3523ea91c76cf3040dfb8b3497b1e6356b29f3e5c9
+  checksum: 10c0/7a18911a68d6227865ca03120e3423665478131648ffbd47d62b242ef25a5982c6312ca7041b5a4d60cf0d8ea66d0f97f50dbe848ae60ab0143471da41ef057e
   languageName: node
   linkType: hard
 
@@ -11655,9 +11655,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nuqs@npm:^2.9.2":
-  version: 2.9.2
-  resolution: "nuqs@npm:2.9.2"
+"nuqs@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "nuqs@npm:2.9.4"
   dependencies:
     "@standard-schema/spec": "npm:1.1.0"
   peerDependencies:
@@ -11678,7 +11678,7 @@ __metadata:
       optional: true
     react-router-dom:
       optional: true
-  checksum: 10c0/8efecd3c865042ec16d26ac2cf087ace01b21ea65f740a13e0ce468a2565f777f30a9fa40f9b0674ba50ea011c0c819f3ce6616a48c3feb4ae1df07dd5e0be2f
+  checksum: 10c0/555a720c496a0cbd6bc50826afdd072bd5cddb9238d44e9ade12855c4f3e6f54b15fa708991542e59a62c204885cfac814a85f3c9ac96155e73f077ff41491fa
   languageName: node
   linkType: hard
 
@@ -13420,12 +13420,12 @@ __metadata:
     husky: "npm:^9.1.7"
     input-otp: "npm:^1.4.2"
     jsdom: "npm:^29.1.1"
-    lint-staged: "npm:^17.2.0"
-    lucide-react: "npm:^1.27.0"
+    lint-staged: "npm:^17.3.0"
+    lucide-react: "npm:^1.28.0"
     next: "npm:^16.2.12"
     next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"
-    nuqs: "npm:^2.9.2"
+    nuqs: "npm:^2.9.4"
     pg: "npm:^8.22.0"
     react: "npm:^19.2.8"
     react-day-picker: "npm:^10.0.1"
@@ -13433,7 +13433,7 @@ __metadata:
     react-hook-form: "npm:^7.84.0"
     react-resizable-panels: "npm:^4.12.2"
     recharts: "npm:^3.10.1"
-    shadcn: "npm:^4.15.0"
+    shadcn: "npm:^4.16.1"
     sonner: "npm:^2.0.7"
     storybook: "npm:^10.5.5"
     tailwind-merge: "npm:^3.6.0"
@@ -13809,9 +13809,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shadcn@npm:^4.15.0":
-  version: 4.15.0
-  resolution: "shadcn@npm:4.15.0"
+"shadcn@npm:^4.16.1":
+  version: 4.16.1
+  resolution: "shadcn@npm:4.16.1"
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/parser": "npm:^7.28.0"
@@ -13847,7 +13847,7 @@ __metadata:
     zod-to-json-schema: "npm:^3.24.6"
   bin:
     shadcn: dist/index.js
-  checksum: 10c0/08115f8b87ac182cbf754f9d124d2343a285c09f00b4d800f377b79f722f2577e8bec1670540c796600831585a2f30dcc36f1ff4bc1cd9082aecf844302ff23c
+  checksum: 10c0/58d35a6e1929c203e6c8979a4e5cd09b776438c4f3dccb876877a6f805c3a10ed953eedc031bad689dc5295d28411724c5e4d5fd5eecfea92e9e4e87273f6349
   languageName: node
   linkType: hard
 

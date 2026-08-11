@@ -16,12 +16,19 @@ describe('useShare', () => {
 
   beforeEach(() => {
     // window.location をモック
-    delete (window as Partial<Window>).location
-    window.location = { ...originalLocation, origin: mockOrigin } as Location
+    Object.defineProperty(window, 'location', {
+      value: { ...originalLocation, origin: mockOrigin },
+      writable: true,
+      configurable: true,
+    })
   })
 
   afterEach(() => {
-    window.location = originalLocation
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+      writable: true,
+      configurable: true,
+    })
     vi.clearAllMocks()
   })
 

@@ -77,7 +77,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "@zenstackhq/cli": "^3.9.1",
     "@zenstackhq/schema": "^3.9.1",
-    "chromatic": "^18.1.0",
+    "chromatic": "^18.2.0",
     "husky": "^9.1.7",
     "jsdom": "^30.0.1",
     "lint-staged": "^17.3.0",

@@ -7482,9 +7482,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "chromatic@npm:18.2.0"
+"chromatic@npm:^18.5.0":
+  version: 18.5.0
+  resolution: "chromatic@npm:18.5.0"
   dependencies:
     semver: "npm:^7.3.5"
   peerDependencies:
@@ -7507,7 +7507,7 @@ __metadata:
     chroma: dist/bin.cjs
     chromatic: dist/bin.cjs
     chromatic-cli: dist/bin.cjs
-  checksum: 10c0/c530eb88761af134b8c15fae397729395db94c0e2c913267f0dbdb8553619cfbb38a12157bbd06386bfa6924deb64c074ad8979194e4e9d908ef47ae9dff93a7
+  checksum: 10c0/0da2d7c7928d24b7c8b4b7a230cd67ccbf8146bd776ce8001aff6ff43c14014e2bab0b69f5c0439f46c7db43ee9f9f30ab897b65320997d17a196b27fd9b822b
   languageName: node
   linkType: hard
 
@@ -9969,13 +9969,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"input-otp@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "input-otp@npm:1.4.2"
+"input-otp@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "input-otp@npm:1.5.0"
   peerDependencies:
     react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
     react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
-  checksum: 10c0/d3a3216a75ed832993f3f2852edd7a85c5bae30ea6d251182119120488bbf9fed7cfdd91819bcee6daff57b3cfcbca94fd16d6a7c92cee4d806c0d4fa6ff1128
+  checksum: 10c0/08e43da5f654a5b93051c92c83a9af6aed8313b218488de41ddb099947e2c9cf6c42e295beb9ad05473e8d1713af64f85fae9185ee0139368702f8a5527b8334
   languageName: node
   linkType: hard
 
@@ -10993,12 +10993,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^1.31.0":
-  version: 1.31.0
-  resolution: "lucide-react@npm:1.31.0"
+"lucide-react@npm:^1.33.0":
+  version: 1.33.0
+  resolution: "lucide-react@npm:1.33.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/c49e451279b46250e117ebe112c7b0b60712912571b7139ce9ea004e7d9125a2684d545a16e62706b2bc5e074cf557c9cc0471b437e0c868f59369324f9a6d5e
+  checksum: 10c0/b0aae7a46611211251748da141cc0cd8c3107e49e1c26833962d54779b60e0c8f97e21a6a71e658aadc5131551d9c08f7721dc22d7abee779d057e794d277451
   languageName: node
   linkType: hard
 
@@ -13416,16 +13416,16 @@ __metadata:
     "@zenstackhq/cli": "npm:^3.9.2"
     "@zenstackhq/orm": "npm:^3.9.2"
     "@zenstackhq/schema": "npm:^3.9.2"
-    chromatic: "npm:^18.2.0"
+    chromatic: "npm:^18.5.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"
     embla-carousel-react: "npm:^8.6.0"
     husky: "npm:^9.1.7"
-    input-otp: "npm:^1.4.2"
+    input-otp: "npm:^1.5.0"
     jsdom: "npm:^30.0.1"
     lint-staged: "npm:^17.3.0"
-    lucide-react: "npm:^1.31.0"
+    lucide-react: "npm:^1.33.0"
     next: "npm:^16.3.2"
     next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"

@@ -11669,9 +11669,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nuqs@npm:^2.10.0":
-  version: 2.10.0
-  resolution: "nuqs@npm:2.10.0"
+"nuqs@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "nuqs@npm:2.10.1"
   dependencies:
     "@standard-schema/spec": "npm:1.1.0"
   peerDependencies:
@@ -11692,7 +11692,7 @@ __metadata:
       optional: true
     react-router-dom:
       optional: true
-  checksum: 10c0/9a64f83eb9357a9f392be46dcac141cfb5c7241dab3f82e12888bcc586423eb7a0716b4709951572c417b811d4cd9ceff390e6c75624b788a1601df8d5dd67c2
+  checksum: 10c0/e1f59c87b9d59daedeb9bf39c00c7e7d6d614ea53d441a139b3be279bd10b6215941b02f3ac7e7ff6bcdf1532cda797745781b451c0ae1cf849a064d52d32bfa
   languageName: node
   linkType: hard
 
@@ -13443,7 +13443,7 @@ __metadata:
     next: "npm:^16.3.3"
     next-router-mock: "npm:^1.0.5"
     next-themes: "npm:^0.4.6"
-    nuqs: "npm:^2.10.0"
+    nuqs: "npm:^2.10.1"
     pg: "npm:^8.23.0"
     react: "npm:^19.2.8"
     react-day-picker: "npm:^10.0.1"

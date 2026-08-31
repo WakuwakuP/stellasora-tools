@@ -5,7 +5,7 @@ successful changes in the working tree. Read `AGENTS.md` (if present),
 `package.json`, the Yarn configuration, and relevant implementation before
 editing.
 
-Use `yarn npm outdated || true` to inspect available updates. Upgrade packages one
+Use `yarn outdated || true` to inspect available updates. Upgrade packages one
 at a time or in tightly related groups, and keep only upgrades that can be made
 compatible with the application. Pair packages with their `@types/*` counterparts, and upgrade these ecosystems together when applicable:
 

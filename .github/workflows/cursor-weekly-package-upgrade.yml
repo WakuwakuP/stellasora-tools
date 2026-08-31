@@ -77,6 +77,13 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [[ -d .yarn/releases ]]; then
+            git checkout -- .yarn/releases
+          fi
+          if [[ -d .yarn/plugins ]]; then
+            git checkout -- .yarn/plugins
+          fi
+
           automation_changes="$(git status --porcelain --untracked-files=all -- \
             .agents \
             .github \

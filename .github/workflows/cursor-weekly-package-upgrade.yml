@@ -1,0 +1,381 @@
+name: Cursor Weekly Package Upgrade
+
+on:
+  schedule:
+    - cron: "41 22 * * 0"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: cursor-weekly-package-upgrade
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    name: Upgrade packages with Cursor
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    outputs:
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+
+    steps:
+      - name: Validate Cursor secret
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$CURSOR_API_KEY" ]]; then
+            echo "::error::Repository secret CURSOR_API_KEY is not configured"
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "24"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        env:
+          HUSKY: "0"
+        run: yarn install --immutable
+
+      - name: Upgrade packages with Cursor
+        id: upgrade
+        uses: ./.github/actions/run-cursor
+        with:
+          prompt-file: .github/cursor/prompts/weekly-package-upgrade.md
+          mode: maintenance
+          output-file: .cursor-output/weekly-package-upgrade.txt
+          model: ${{ vars.CURSOR_AGENT_MODEL }}
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+
+      - name: Preserve Cursor output
+        if: ${{ always() && steps.upgrade.outcome != 'skipped' }}
+        run: |
+          set -euo pipefail
+
+          if [[ -f .cursor-output/weekly-package-upgrade.txt ]]; then
+            cp -- .cursor-output/weekly-package-upgrade.txt \
+              "$RUNNER_TEMP/weekly-package-upgrade.txt"
+          fi
+
+      - name: Validate Cursor changes
+        id: changes
+        run: |
+          set -euo pipefail
+
+          automation_changes="$(git status --porcelain --untracked-files=all -- \
+            .agents \
+            .github \
+            .claude \
+            .cursor \
+            .cursorignore \
+            .cursorrules \
+            .codex \
+            .husky \
+            .yarnrc.yml \
+            .npmrc \
+            .yarn/releases \
+            .yarn/plugins \
+            AGENTS.md \
+            ':(glob)**/AGENTS.md' \
+            CLAUDE.md \
+            ':(glob)**/CLAUDE.md' \
+            src/zenstack \
+            scripts)"
+          if [[ -n "$automation_changes" ]]; then
+            echo "::error::Cursor modified protected automation files"
+            printf '%s\n' "$automation_changes"
+            exit 1
+          fi
+
+          rm -rf -- .cursor-output
+          if [[ -z "$(git status --porcelain --untracked-files=all)" ]]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "All packages are already up to date; no pull request was created." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            git add --all
+            git diff --cached --binary > "$RUNNER_TEMP/weekly-upgrade.patch"
+            test -s "$RUNNER_TEMP/weekly-upgrade.patch"
+          fi
+
+      - name: Upload upgrade patch
+        if: ${{ steps.changes.outputs.has_changes == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: weekly-upgrade-patch
+          path: ${{ runner.temp }}/weekly-upgrade.patch
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Write run summary
+        if: ${{ always() }}
+        run: |
+          set -euo pipefail
+
+          {
+            echo "## Cursor Weekly Package Upgrade"
+            echo
+            echo "- Cursor step: \`${{ steps.upgrade.outcome }}\`"
+            echo "- Changes: \`${{ steps.changes.outputs.has_changes || 'unknown' }}\`"
+            echo
+            if [[ -f "$RUNNER_TEMP/weekly-package-upgrade.txt" ]]; then
+              echo "### Cursor output"
+              echo
+              echo '```text'
+              cat -- "$RUNNER_TEMP/weekly-package-upgrade.txt"
+              echo
+              echo '```'
+              echo
+            fi
+            if [[ "${{ job.status }}" != "success" ]]; then
+              echo "### Working tree after failure"
+              echo
+              echo '```text'
+              git status --porcelain --untracked-files=all || true
+              git diff --stat || true
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  verify:
+    name: Reinstall and verify upgrades
+    needs: upgrade
+    if: ${{ needs.upgrade.outputs.has_changes == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    env:
+      CURSOR_API_KEY: ""
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Download upgrade patch
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: weekly-upgrade-patch
+          path: ${{ runner.temp }}/weekly-upgrade-patch
+
+      - name: Apply upgrade patch
+        run: |
+          set -euo pipefail
+          git apply --index --binary --whitespace=nowarn \
+            "$RUNNER_TEMP/weekly-upgrade-patch/weekly-upgrade.patch"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "24"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Reinstall dependencies
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+          GH_AW_GITHUB_TOKEN: ""
+          HUSKY: "0"
+        run: yarn install --immutable
+
+      - name: Run formatter and linter check
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+          GH_AW_GITHUB_TOKEN: ""
+          CURSOR_API_KEY: ""
+        run: yarn check
+
+      - name: Run tests
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+          GH_AW_GITHUB_TOKEN: ""
+          CURSOR_API_KEY: ""
+        run: yarn test:run
+
+      - name: Run production build
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+          GH_AW_GITHUB_TOKEN: ""
+          CURSOR_API_KEY: ""
+        run: yarn build
+
+      - name: Restore generated ZenStack files
+        run: |
+          set -euo pipefail
+          if [[ -d src/zenstack ]]; then
+            git checkout -- src/zenstack
+          fi
+
+      - name: Recheck protected files after verification
+        run: |
+          set -euo pipefail
+
+          protected_changes="$(git status --porcelain --untracked-files=all -- \
+            .agents \
+            .github \
+            .claude \
+            .cursor \
+            .cursorignore \
+            .cursorrules \
+            .codex \
+            .husky \
+            .yarnrc.yml \
+            .npmrc \
+            .yarn/releases \
+            .yarn/plugins \
+            AGENTS.md \
+            ':(glob)**/AGENTS.md' \
+            CLAUDE.md \
+            ':(glob)**/CLAUDE.md' \
+            src/zenstack \
+            scripts)"
+          if [[ -n "$protected_changes" ]]; then
+            echo "::error::Verification modified protected files"
+            printf '%s\n' "$protected_changes"
+            exit 1
+          fi
+
+          git add --all
+          git diff --cached --binary > "$RUNNER_TEMP/weekly-verified.patch"
+          test -s "$RUNNER_TEMP/weekly-verified.patch"
+
+      - name: Upload verified patch
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: weekly-verified-patch
+          path: ${{ runner.temp }}/weekly-verified.patch
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Publish package upgrade pull request
+    needs: [upgrade, verify]
+    if: ${{ success() && needs.upgrade.outputs.has_changes == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Download verified patch
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: weekly-verified-patch
+          path: ${{ runner.temp }}/weekly-verified-patch
+
+      - name: Apply verified patch
+        run: |
+          set -euo pipefail
+          git apply --index --binary --whitespace=nowarn \
+            "$RUNNER_TEMP/weekly-verified-patch/weekly-verified.patch"
+
+      - name: Publish package upgrade pull request
+        env:
+          GH_TOKEN: ${{ secrets.GH_AW_GITHUB_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          upgrade_date="$(date -u +%F)"
+          branch_name="cursor/weekly-package-upgrade-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          pr_body="$RUNNER_TEMP/cursor-package-upgrade-pr.md"
+          run_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          diff_stat="$(git diff --cached --stat)"
+          old_dir="$RUNNER_TEMP/weekly-upgrade-old"
+          mkdir -p "$old_dir"
+          table_args=()
+
+          extract_old() {
+            local rel="$1"
+            if git cat-file -e "HEAD:$rel" 2>/dev/null; then
+              mkdir -p "$(dirname -- "$old_dir/$rel")"
+              git show "HEAD:$rel" > "$old_dir/$rel"
+              return 0
+            fi
+            return 1
+          }
+
+          if extract_old package.json; then
+            table_args+=(
+              --old-package "$old_dir/package.json"
+              --new-package package.json
+            )
+            if extract_old yarn.lock; then
+              table_args+=(--old-lock "$old_dir/yarn.lock" --new-lock yarn.lock)
+            elif extract_old package-lock.json; then
+              table_args+=(
+                --old-lock "$old_dir/package-lock.json"
+                --new-lock package-lock.json
+              )
+            elif extract_old pnpm-lock.yaml; then
+              table_args+=(
+                --old-lock "$old_dir/pnpm-lock.yaml"
+                --new-lock pnpm-lock.yaml
+              )
+            fi
+          fi
+
+          printf '%s\n\n' "Cursor Agent が依存パッケージを更新しました。" > "$pr_body"
+          if ((${#table_args[@]})); then
+            node .github/cursor/render-package-upgrade-table.mjs \
+              "${table_args[@]}" >> "$pr_body"
+          else
+            printf '%s\n\n' "## 更新パッケージ" >> "$pr_body"
+            printf '%s\n\n' "直接依存のバージョンに変更はありません。" >> "$pr_body"
+          fi
+          printf '%s\n\n' "## 変更ファイル" >> "$pr_body"
+          printf '%s\n%s\n%s\n\n' '```text' "$diff_stat" '```' >> "$pr_body"
+          printf '%s\n' "検証: \`yarn check\`, \`yarn test:run\`, \`yarn build\`" >> "$pr_body"
+          printf '%s\n' "Workflow: ${run_url}" >> "$pr_body"
+
+          if git diff --cached --quiet; then
+            echo "::error::No package changes remain to publish"
+            exit 1
+          fi
+
+          git switch -c "$branch_name"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -c core.hooksPath=/dev/null commit -m "chore: weekly package upgrade ${upgrade_date}"
+          gh auth setup-git
+          git -c core.hooksPath=/dev/null push --set-upstream origin "$branch_name"
+
+          base_branch="$(gh repo view "$GITHUB_REPOSITORY" --json defaultBranchRef --jq '.defaultBranchRef.name')"
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base "$base_branch" \
+            --head "$branch_name" \
+            --title "📦 Weekly Package Upgrade (${upgrade_date})" \
+            --body-file "$pr_body" \
+            --label dependencies \
+            --label maintenance \
+            --label automated \
+            >/dev/null

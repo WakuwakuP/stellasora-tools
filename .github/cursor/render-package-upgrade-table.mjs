@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Render a markdown table of direct-dependency upgrades for weekly PRs.
-// Supports package.json (Yarn / npm lockfiles) and Cargo.toml / Cargo.lock.
+// Supports package.json (Yarn / npm / pnpm lockfiles) and Cargo.toml / Cargo.lock.
 
 import { readFileSync } from "node:fs";
 
@@ -113,6 +113,87 @@ function parseNpmLock(text) {
   return versions;
 }
 
+function pnpmResolvedVersion(raw) {
+  if (!raw || raw.startsWith("link:") || raw.startsWith("file:")) {
+    return "";
+  }
+  const paren = raw.indexOf("(");
+  return paren === -1 ? raw : raw.slice(0, paren);
+}
+
+function parsePnpmLock(text) {
+  const versions = new Map();
+  const importerSections = new Set([
+    "dependencies",
+    "devDependencies",
+    "optionalDependencies",
+  ]);
+  let inImporters = false;
+  let importer = "";
+  let section = "";
+  let depName = "";
+  let specifier = "";
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.replaceAll("\t", "  ");
+    if (!inImporters) {
+      if (line === "importers:") {
+        inImporters = true;
+      }
+      continue;
+    }
+    if (line.length > 0 && !line.startsWith(" ") && !line.startsWith("#")) {
+      break;
+    }
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) {
+      continue;
+    }
+
+    const indent = line.match(/^ */)[0].length;
+    if (indent === 2 && trimmed.endsWith(":")) {
+      importer = unquote(trimmed.slice(0, -1));
+      section = "";
+      depName = "";
+      specifier = "";
+      continue;
+    }
+    if (indent === 4 && trimmed.endsWith(":")) {
+      const key = trimmed.slice(0, -1);
+      section = importerSections.has(key) ? key : "";
+      depName = "";
+      specifier = "";
+      continue;
+    }
+    if (indent === 6 && trimmed.endsWith(":") && section && importer) {
+      depName = unquote(trimmed.slice(0, -1));
+      specifier = "";
+      continue;
+    }
+    if (indent !== 8 || !depName || !importer) {
+      continue;
+    }
+
+    const specMatch = trimmed.match(/^specifier:\s*(.*)$/);
+    if (specMatch) {
+      specifier = unquote(specMatch[1].trim());
+      continue;
+    }
+    const verMatch = trimmed.match(/^version:\s*(.*)$/);
+    if (!verMatch) {
+      continue;
+    }
+    const resolved = pnpmResolvedVersion(unquote(verMatch[1].trim()));
+    if (!resolved) {
+      continue;
+    }
+    versions.set(`${importer}\t${depName}\tnpm\t${specifier}`, resolved);
+    versions.set(`${importer}\t${depName}\tnpm\t`, resolved);
+  }
+
+  return versions;
+}
+
 function readNodeLock(path) {
   if (!path) {
     return new Map();
@@ -123,14 +204,34 @@ function readNodeLock(path) {
     return parseNpmLock(text);
   }
   if (/^lockfileVersion:/m.test(text)) {
-    return new Map();
+    return parsePnpmLock(text);
   }
   return parseYarnLock(text);
 }
 
-function nodeLockVersion(lock, name, spec) {
+function lockImporterFromPackagePath(packagePath) {
+  if (!packagePath) {
+    return ".";
+  }
+  const normalized = packagePath.replaceAll("\\", "/");
+  if (!normalized.endsWith("package.json")) {
+    return ".";
+  }
+  const dir = normalized.slice(0, -"package.json".length).replace(/\/$/, "");
+  return dir && dir !== "." ? dir : ".";
+}
+
+function nodeLockVersion(lock, name, spec, importer) {
   if (!spec || spec.startsWith("workspace:")) {
     return "";
+  }
+  if (importer) {
+    const scoped =
+      lock.get(`${importer}\t${name}\tnpm\t${spec}`) ??
+      lock.get(`${importer}\t${name}\tnpm\t`);
+    if (scoped) {
+      return scoped;
+    }
   }
   return (
     lock.get(`${name}\tnpm\t${spec}`) ??
@@ -330,13 +431,14 @@ function collectNodeRows(args) {
     return [];
   }
   const kindOrder = new Map(NODE_SECTIONS.map(([field], index) => [field, index]));
+  const importer = lockImporterFromPackagePath(args["new-package"]);
   const oldLock = readNodeLock(args["old-lock"]);
   const newLock = readNodeLock(args["new-lock"]);
   return collectRowsFromSpecs(
     collectNodeSpecs(readJson(args["old-package"])),
     collectNodeSpecs(readJson(args["new-package"])),
-    (name, spec) => nodeLockVersion(oldLock, name, spec),
-    (name, spec) => nodeLockVersion(newLock, name, spec),
+    (name, spec) => nodeLockVersion(oldLock, name, spec, importer),
+    (name, spec) => nodeLockVersion(newLock, name, spec, importer),
     kindOrder,
   );
 }

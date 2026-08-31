@@ -109,7 +109,7 @@ jobs:
 
       - name: Upload upgrade patch
         if: ${{ steps.changes.outputs.has_changes == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f31937dec7 # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: weekly-upgrade-patch
           path: ${{ runner.temp }}/weekly-upgrade.patch
@@ -164,7 +164,7 @@ jobs:
           persist-credentials: false
 
       - name: Download upgrade patch
-        uses: actions/download-artifact@834a144ee995460f666f361ef6ad1b1c5ab2d7c8 # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: weekly-upgrade-patch
           path: ${{ runner.temp }}/weekly-upgrade-patch
@@ -244,7 +244,7 @@ jobs:
           test -s "$RUNNER_TEMP/weekly-verified.patch"
 
       - name: Upload verified patch
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f31937dec7 # v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: weekly-verified-patch
           path: ${{ runner.temp }}/weekly-verified.patch
@@ -269,7 +269,7 @@ jobs:
           persist-credentials: false
 
       - name: Download verified patch
-        uses: actions/download-artifact@834a144ee995460f666f361ef6ad1b1c5ab2d7c8 # v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: weekly-verified-patch
           path: ${{ runner.temp }}/weekly-verified-patch
@@ -315,6 +315,11 @@ jobs:
               table_args+=(
                 --old-lock "$old_dir/package-lock.json"
                 --new-lock package-lock.json
+              )
+            elif extract_old pnpm-lock.yaml; then
+              table_args+=(
+                --old-lock "$old_dir/pnpm-lock.yaml"
+                --new-lock pnpm-lock.yaml
               )
             fi
           fi

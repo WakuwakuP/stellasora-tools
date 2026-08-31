@@ -14,9 +14,11 @@ includes a `## 更新パッケージ` table from
 ## Repository configuration
 
 - Actions repository secret `CURSOR_API_KEY` (required)
-- Actions repository variable `CURSOR_AGENT_MODEL` (optional Cursor model ID)
+- Actions repository variable `CURSOR_AGENT_MODEL` (optional Cursor model ID;
+  a variable, not a secret)
 - Existing `GH_AW_GITHUB_TOKEN` (optional; used so bot-created PRs can trigger
-  downstream workflows)
+  downstream workflows). Fine-grained PAT for this repo: Contents, Pull
+  requests, and Issues at read and write.
 - **Settings → Actions → General → Workflow permissions → Allow GitHub Actions
   to create and approve pull requests**
 
@@ -27,9 +29,11 @@ in non-interactive mode. It does not execute Cursor's mutable installer or add
 its install directory to `PATH`.
 
 Cursor never receives `GITHUB_TOKEN`, `GH_TOKEN`, or `GH_AW_GITHUB_TOKEN`, and
-every checkout uses `persist-credentials: false`. GitHub mutations are performed
-by later deterministic steps. Publication uses `GH_AW_GITHUB_TOKEN` when
-configured and otherwise falls back to the built-in token.
+every checkout uses `persist-credentials: false`. The action prepends PATH
+wrappers so package CLIs drop `CURSOR_API_KEY` before lifecycle scripts run,
+and uses a private `TMPDIR` instead of `$RUNNER_TEMP`. GitHub mutations are
+performed by later deterministic steps. Publication uses `GH_AW_GITHUB_TOKEN`
+when configured and otherwise falls back to the built-in token.
 
 The `maintenance` profile is reserved for the fixed, trusted weekly
 package-upgrade prompt, where the repository package CLI is required. That

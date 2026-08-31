@@ -217,6 +217,10 @@ runs:
       run: |
         set -euo pipefail
 
+        # Drop Actions tokens from this wrapper so children cannot read them
+        # via /proc/<wrapper-pid>/environ.
+        unset GITHUB_TOKEN GH_TOKEN GH_AW_GITHUB_TOKEN
+
         cleanup_cursor_credentials() {
           rm -f -- \
             "$CURSOR_AGENT_HOME/.config/cursor/auth.json" \
@@ -224,8 +228,16 @@ runs:
           if [[ -n "$output_tmp" ]]; then
             rm -f -- "$output_tmp"
           fi
+          if [[ -n "${cursor_cli_wrap_dir:-}" ]]; then
+            rm -rf -- "$cursor_cli_wrap_dir"
+          fi
+          if [[ -n "${cursor_tmp_dir:-}" ]]; then
+            rm -rf -- "$cursor_tmp_dir"
+          fi
         }
         output_tmp=""
+        cursor_cli_wrap_dir=""
+        cursor_tmp_dir=""
         trap cleanup_cursor_credentials EXIT
 
         test -x "$CURSOR_AGENT_BIN"
@@ -277,15 +289,33 @@ runs:
 
         # Do not inherit runner credentials (including Actions runtime tokens).
         # Cursor receives only its own key and the minimum process environment.
+        # Package CLIs inherit a PATH wrapper that unsets CURSOR_API_KEY so
+        # lifecycle scripts and package-CLI children cannot read it.
+        cursor_tmp_dir="$(mktemp -d "$CURSOR_AGENT_HOME/tmp.XXXXXX")"
+        cursor_cli_wrap_dir="$(mktemp -d "$CURSOR_AGENT_HOME/cli-wrap.XXXXXX")"
+        for cli_name in yarn npm npx pnpm cargo go moon uv poetry pip; do
+          real_cli="$(command -v "$cli_name" || true)"
+          if [[ -n "$real_cli" && -x "$real_cli" ]]; then
+            {
+              printf '%s\n' '#!/bin/bash'
+              printf '%s\n' 'unset CURSOR_API_KEY GITHUB_TOKEN GH_TOKEN GH_AW_GITHUB_TOKEN'
+              printf '%s\n' "exec $(printf '%q' "$real_cli") \"\$@\""
+            } > "$cursor_cli_wrap_dir/$cli_name"
+            chmod 755 "$cursor_cli_wrap_dir/$cli_name"
+          fi
+        done
+        agent_path="$cursor_cli_wrap_dir:$PATH"
+
         env -i \
           HOME="$CURSOR_AGENT_HOME" \
-          PATH="$PATH" \
+          PATH="$agent_path" \
           LANG="${LANG:-C.UTF-8}" \
           SHELL=/bin/bash \
-          TMPDIR="$RUNNER_TEMP" \
+          TMPDIR="$cursor_tmp_dir" \
           CI=true \
           CURSOR_API_KEY="$CURSOR_API_KEY" \
           "$CURSOR_AGENT_BIN" "${args[@]}" "$prompt" > "$raw_result"
+        unset CURSOR_API_KEY
 
         current_output_parent="$(realpath -e -- "$output_parent")"
         current_output_parent_identity="$(stat --format='%d:%i' -- "$output_parent")"

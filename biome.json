@@ -39,7 +39,8 @@
       "!**/*.test.tsx",
       "!**/素質カード抽出ツール.jsx",
       "!**/src/zenstack/*",
-      "!**/public/**/*.svg"
+      "!**/public/**/*.svg",
+      "!.github/cursor/render-package-upgrade-table.mjs"
     ]
   },
   "formatter": {

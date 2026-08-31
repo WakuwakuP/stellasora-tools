@@ -1,0 +1,311 @@
+name: Run Cursor Agent
+description: Run Cursor CLI with repository-specific CI permissions
+
+inputs:
+  prompt-file:
+    description: Prompt file path, relative to the repository root
+    required: true
+  mode:
+    description: maintenance (trusted scheduled package upgrades only)
+    required: true
+  output-file:
+    description: File directly under .cursor-output that receives the final Cursor response
+    required: true
+  model:
+    description: Optional Cursor model ID
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Validate Cursor inputs
+      shell: bash
+      env:
+        CURSOR_MODE: ${{ inputs.mode }}
+        CURSOR_OUTPUT_FILE: ${{ inputs.output-file }}
+        CURSOR_PROMPT_FILE: ${{ inputs.prompt-file }}
+      run: |
+        set -euo pipefail
+
+        if [[ "$CURSOR_MODE" != "maintenance" ]]; then
+          echo "::error::mode must be 'maintenance'"
+          exit 1
+        fi
+
+        for path in "$CURSOR_PROMPT_FILE" "$CURSOR_OUTPUT_FILE"; do
+          case "$path" in
+            ""|.|*/.|*/|/*|../*|*/../*|*/..)
+              echo "::error::Cursor paths must stay inside the repository: $path"
+              exit 1
+              ;;
+          esac
+        done
+
+        workspace_root="$(realpath -e -- "$GITHUB_WORKSPACE")"
+        prompt_source="$workspace_root/$CURSOR_PROMPT_FILE"
+        prompt_path="$(realpath -e -- "$prompt_source")" || {
+          echo "::error::Prompt file not found: $CURSOR_PROMPT_FILE"
+          exit 1
+        }
+        if [[ -L "$prompt_source" || ! -f "$prompt_path" ]]; then
+          echo "::error::Cursor prompt must be a regular file, not a symlink: $CURSOR_PROMPT_FILE"
+          exit 1
+        fi
+        case "$prompt_path" in
+          "$workspace_root"/*) ;;
+          *)
+            echo "::error::Cursor prompt resolves outside the repository: $CURSOR_PROMPT_FILE"
+            exit 1
+            ;;
+        esac
+
+        case "$CURSOR_OUTPUT_FILE" in
+          .cursor-output/*)
+            output_name="${CURSOR_OUTPUT_FILE#.cursor-output/}"
+            if [[ -z "$output_name" || "$output_name" == */* ]]; then
+              echo "::error::Cursor output must be a file directly under .cursor-output"
+              exit 1
+            fi
+            ;;
+          *)
+            echo "::error::Cursor output must be a file directly under .cursor-output"
+            exit 1
+            ;;
+        esac
+
+        if [[ "$CURSOR_PROMPT_FILE" != ".github/cursor/prompts/weekly-package-upgrade.md" ]]; then
+          echo "::error::this action is reserved for the trusted weekly package-upgrade prompt"
+          exit 1
+        fi
+
+        for unsafe_config in \
+          .cursor/cli.json \
+          .cursor/hooks.json \
+          .cursor/mcp.json; do
+          if [[ -f "$workspace_root/$unsafe_config" ]]; then
+            echo "::error::$unsafe_config is not allowed in Cursor CI workflows; review and remove it first"
+            exit 1
+          fi
+        done
+
+        for claude_config in \
+          .claude/settings.json \
+          .claude/settings.local.json; do
+          claude_config_path="$workspace_root/$claude_config"
+          [[ -f "$claude_config_path" ]] || continue
+          jq -e . "$claude_config_path" >/dev/null || {
+            echo "::error::$claude_config must contain valid JSON"
+            exit 1
+          }
+          if jq -e 'has("hooks") or has("permissions")' \
+            "$claude_config_path" >/dev/null; then
+            echo "::error::$claude_config must not define hooks or permissions for Cursor CI"
+            exit 1
+          fi
+        done
+
+        if [[ -z "${CURSOR_API_KEY:-}" ]]; then
+          echo "::error::Repository secret CURSOR_API_KEY is not configured"
+          exit 1
+        fi
+
+    - name: Install pinned Cursor CLI
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        cursor_version="2026.07.23-e383d2b"
+        cursor_sha256="702ad595213bee5df0268be9f80a19f29fcceaa2a42fc55e39f2b5199051f0c4"
+        cursor_url="https://downloads.cursor.com/lab/${cursor_version}/linux/x64/agent-cli-package.tar.gz"
+        cursor_archive="$(mktemp "$RUNNER_TEMP/cursor-agent-${cursor_version}.XXXXXX.tar.gz")"
+        cursor_dir="$(mktemp -d "$RUNNER_TEMP/cursor-agent-${cursor_version}.XXXXXX")"
+        cursor_home="$(mktemp -d "$RUNNER_TEMP/cursor-home.XXXXXX")"
+
+        env -i \
+          HOME="$cursor_home" \
+          PATH=/usr/bin:/bin \
+          LANG="${LANG:-C.UTF-8}" \
+          curl \
+          --disable \
+          --proto '=https' \
+          --tlsv1.2 \
+          --fail \
+          --location \
+          --proto-redir '=https' \
+          --silent \
+          --show-error \
+          --output "$cursor_archive" \
+          "$cursor_url"
+        printf '%s  %s\n' "$cursor_sha256" "$cursor_archive" \
+          | sha256sum --check --strict
+
+        top_levels="$(tar -tzf "$cursor_archive" | cut -d/ -f1 | sort -u)"
+        if [[ "$top_levels" != "dist-package" ]]; then
+          echo "::error::Pinned Cursor archive has an unexpected layout"
+          exit 1
+        fi
+
+        tar \
+          --extract \
+          --gzip \
+          --file "$cursor_archive" \
+          --directory "$cursor_dir" \
+          --strip-components=1 \
+          --no-same-owner
+
+        cursor_bin="$cursor_dir/cursor-agent"
+        test -x "$cursor_bin" || {
+          echo "::error::Pinned Cursor archive does not contain an executable cursor-agent"
+          exit 1
+        }
+        actual_version="$(
+          env -i \
+            HOME="$cursor_home" \
+            PATH=/usr/bin:/bin \
+            LANG="${LANG:-C.UTF-8}" \
+            CI=true \
+            "$cursor_bin" \
+            --disable-auto-update \
+            --disable-project-configs \
+            --version
+        )"
+        if [[ "$actual_version" != "$cursor_version" ]]; then
+          echo "::error::Expected Cursor CLI $cursor_version, got $actual_version"
+          exit 1
+        fi
+
+        echo "CURSOR_AGENT_BIN=$cursor_bin" >> "$GITHUB_ENV"
+        echo "CURSOR_AGENT_HOME=$cursor_home" >> "$GITHUB_ENV"
+        echo "CURSOR_AGENT_VERSION=$cursor_version" >> "$GITHUB_ENV"
+
+    - name: Configure Cursor permissions
+      shell: bash
+      env:
+        CURSOR_MODE: ${{ inputs.mode }}
+      run: |
+        set -euo pipefail
+
+        workspace_root="$(realpath -e -- "$GITHUB_WORKSPACE")"
+        mkdir -p "$CURSOR_AGENT_HOME/.cursor"
+        jq \
+          --arg workspace "$workspace_root" \
+          '
+            .permissions.allow |= map(
+              if . == "Read(**)" then "Read(\($workspace)/**)"
+              elif . == "Write(**)" then "Write(\($workspace)/**)"
+              elif . == "Read(.cursor-input/**)" or
+                . == "Read(**/.cursor-input/**)"
+              then "Read(\($workspace)/.cursor-input/**)"
+              elif . == "Read(.github/cursor/prompts/**)" or
+                . == "Read(**/.github/cursor/prompts/**)"
+              then "Read(\($workspace)/.github/cursor/prompts/**)"
+              else .
+              end
+            )
+          ' \
+          "$GITHUB_ACTION_PATH/config/$CURSOR_MODE.json" \
+          > "$CURSOR_AGENT_HOME/.cursor/cli-config.json"
+
+    - name: Run Cursor Agent
+      shell: bash
+      env:
+        CURSOR_MODE: ${{ inputs.mode }}
+        CURSOR_MODEL: ${{ inputs.model }}
+        CURSOR_OUTPUT_FILE: ${{ inputs.output-file }}
+        CURSOR_PROMPT_FILE: ${{ inputs.prompt-file }}
+      run: |
+        set -euo pipefail
+
+        cleanup_cursor_credentials() {
+          rm -f -- \
+            "$CURSOR_AGENT_HOME/.config/cursor/auth.json" \
+            "$CURSOR_AGENT_HOME/.cursor/auth.json"
+          if [[ -n "$output_tmp" ]]; then
+            rm -f -- "$output_tmp"
+          fi
+        }
+        output_tmp=""
+        trap cleanup_cursor_credentials EXIT
+
+        test -x "$CURSOR_AGENT_BIN"
+        env -i \
+          HOME="$CURSOR_AGENT_HOME" \
+          PATH=/usr/bin:/bin \
+          LANG="${LANG:-C.UTF-8}" \
+          CI=true \
+          "$CURSOR_AGENT_BIN" \
+          --disable-auto-update \
+          --disable-project-configs \
+          --version \
+          | grep --fixed-strings --line-regexp "$CURSOR_AGENT_VERSION" >/dev/null
+
+        workspace_root="$(realpath -e -- "$GITHUB_WORKSPACE")"
+        cd "$workspace_root"
+        output_name="${CURSOR_OUTPUT_FILE#.cursor-output/}"
+        output_parent="$workspace_root/.cursor-output"
+        if [[ -L "$output_parent" ]]; then
+          echo "::error::.cursor-output must be a real directory, not a symlink"
+          exit 1
+        fi
+        mkdir -p -- "$output_parent"
+        output_parent="$(realpath -e -- "$output_parent")"
+        if [[ "$output_parent" != "$workspace_root/.cursor-output" ]]; then
+          echo "::error::.cursor-output resolves outside its expected repository location"
+          exit 1
+        fi
+        output_parent_identity="$(stat --format='%d:%i' -- "$output_parent")"
+        output_path="$output_parent/$output_name"
+        if [[ -L "$output_path" || ( -e "$output_path" && ! -f "$output_path" ) ]]; then
+          echo "::error::Cursor output must be a regular file, not a symlink: $CURSOR_OUTPUT_FILE"
+          exit 1
+        fi
+
+        raw_result="$RUNNER_TEMP/cursor-result-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+        prompt="$(<"$workspace_root/$CURSOR_PROMPT_FILE")"
+
+        args=(
+          --print
+          --output-format json
+          --trust
+          --disable-auto-update
+          --disable-project-configs
+        )
+        if [[ -n "$CURSOR_MODEL" ]]; then
+          args+=(--model "$CURSOR_MODEL")
+        fi
+
+        # Do not inherit runner credentials (including Actions runtime tokens).
+        # Cursor receives only its own key and the minimum process environment.
+        env -i \
+          HOME="$CURSOR_AGENT_HOME" \
+          PATH="$PATH" \
+          LANG="${LANG:-C.UTF-8}" \
+          SHELL=/bin/bash \
+          TMPDIR="$RUNNER_TEMP" \
+          CI=true \
+          CURSOR_API_KEY="$CURSOR_API_KEY" \
+          "$CURSOR_AGENT_BIN" "${args[@]}" "$prompt" > "$raw_result"
+
+        current_output_parent="$(realpath -e -- "$output_parent")"
+        current_output_parent_identity="$(stat --format='%d:%i' -- "$output_parent")"
+        if [[ "$current_output_parent" != "$output_parent" \
+          || "$current_output_parent_identity" != "$output_parent_identity" ]]; then
+          echo "::error::Cursor output directory changed during agent execution"
+          exit 1
+        fi
+        if [[ -L "$output_path" || ( -e "$output_path" && ! -f "$output_path" ) ]]; then
+          echo "::error::Cursor replaced its output with a symlink or non-regular file"
+          exit 1
+        fi
+
+        jq -e '
+          .type == "result" and
+          .subtype == "success" and
+          .is_error == false and
+          (.result | type == "string")
+        ' "$raw_result" >/dev/null
+        output_tmp="$(mktemp "$output_parent/.cursor-result.XXXXXX")"
+        jq -r '.result' "$raw_result" > "$output_tmp"
+        mv --no-target-directory -- "$output_tmp" "$output_path"
+        output_tmp=""

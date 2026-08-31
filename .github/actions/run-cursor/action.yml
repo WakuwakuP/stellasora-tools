@@ -313,6 +313,7 @@ runs:
           SHELL=/bin/bash \
           TMPDIR="$cursor_tmp_dir" \
           CI=true \
+          HUSKY=0 \
           CURSOR_API_KEY="$CURSOR_API_KEY" \
           "$CURSOR_AGENT_BIN" "${args[@]}" "$prompt" > "$raw_result"
         unset CURSOR_API_KEY

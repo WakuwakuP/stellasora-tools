@@ -5,7 +5,7 @@ successful changes in the working tree. Read `AGENTS.md` (if present),
 `package.json`, the Yarn configuration, and relevant implementation before
 editing.
 
-Use `yarn outdated || true` to inspect available updates. Upgrade packages one
+Use `yarn npm outdated || true` to inspect available updates. Upgrade packages one
 at a time or in tightly related groups, and keep only upgrades that can be made
 compatible with the application. Pair packages with their `@types/*` counterparts, and upgrade these ecosystems together when applicable:
 
@@ -19,8 +19,9 @@ Do not force an incompatible major upgrade just because it is newer.
 
 `next-env.d.ts` may be gitignored. Do not commit `next-env.d.ts` or `.next/**`.
 Do not run `yarn db:generate` or rewrite generated `src/zenstack/**` files.
-After each package group, use `yarn check:fix` as needed and verify with this
-exact sequence:
+`yarn build` runs `zen generate`; if it rewrites `src/zenstack/**`, restore
+those files before finishing the group. After each package group, use
+`yarn check:fix` as needed and verify with this exact sequence:
 
 1. `yarn check`
 2. `yarn test:run`
@@ -37,7 +38,7 @@ Hard constraints:
   request. The workflow performs those operations after verification.
 - Do not read or write secrets, credentials, `.env*`, `.git/**`, or key files.
 - Do not edit `.agents/**`, `.github/**`, `.claude/**`, `.cursor/**`,
-  `.cursorignore`, `.cursorrules`, `.codex/**`, `.husky/**`, `AGENTS.md`,
+  `.cursorignore`, `.cursorrules`, `.codex/**`, `.husky/**`, `.yarnrc.yml`, `.npmrc`, `.yarn/releases/**`, `.yarn/plugins/**`, `AGENTS.md`,
   `CLAUDE.md`, `scripts/**`, or generated `src/zenstack/**` files.
 - Do not make product changes unrelated to compatibility with an upgrade.
 - Do not use npm, npx, pnpm, or another package manager.

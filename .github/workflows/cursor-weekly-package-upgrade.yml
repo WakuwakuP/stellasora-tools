@@ -47,6 +47,8 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
+        env:
+          HUSKY: "0"
         run: yarn install --immutable
 
       - name: Upgrade packages with Cursor
@@ -84,6 +86,10 @@ jobs:
             .cursorrules \
             .codex \
             .husky \
+            .yarnrc.yml \
+            .npmrc \
+            .yarn/releases \
+            .yarn/plugins \
             AGENTS.md \
             ':(glob)**/AGENTS.md' \
             CLAUDE.md \
@@ -188,6 +194,7 @@ jobs:
           GITHUB_TOKEN: ""
           GH_TOKEN: ""
           GH_AW_GITHUB_TOKEN: ""
+          HUSKY: "0"
         run: yarn install --immutable
 
       - name: Run formatter and linter check
@@ -214,6 +221,13 @@ jobs:
           CURSOR_API_KEY: ""
         run: yarn build
 
+      - name: Restore generated ZenStack files
+        run: |
+          set -euo pipefail
+          if [[ -d src/zenstack ]]; then
+            git checkout -- src/zenstack
+          fi
+
       - name: Recheck protected files after verification
         run: |
           set -euo pipefail
@@ -227,6 +241,10 @@ jobs:
             .cursorrules \
             .codex \
             .husky \
+            .yarnrc.yml \
+            .npmrc \
+            .yarn/releases \
+            .yarn/plugins \
             AGENTS.md \
             ':(glob)**/AGENTS.md' \
             CLAUDE.md \
@@ -297,7 +315,8 @@ jobs:
 
           extract_old() {
             local rel="$1"
-            if [[ -f "$rel" ]]; then
+            if git cat-file -e "HEAD:$rel" 2>/dev/null; then
+              mkdir -p "$(dirname -- "$old_dir/$rel")"
               git show "HEAD:$rel" > "$old_dir/$rel"
               return 0
             fi

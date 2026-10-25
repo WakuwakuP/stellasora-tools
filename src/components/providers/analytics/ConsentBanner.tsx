@@ -86,7 +86,7 @@ export default function ConsentBanner() {
 
   // TODO: 見た目を整える
   return (
-    <div className="fixed right-0 bottom-0 left-0 z-100 border-gray-200 border-t bg-white p-4">
+    <div className="fixed right-0 bottom-0 left-0 z-100 border-t border-gray-200 bg-white p-4">
       <div className="flex gap-2">
         <div>
           <p>

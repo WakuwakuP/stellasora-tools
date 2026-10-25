@@ -25,7 +25,7 @@ export default function RootLayout({
 }>): JSX.Element {
   return (
     <html lang="ja" suppressHydrationWarning={true}>
-      <body className="bg-background font-sans text-foreground antialiased">
+      <body className="bg-background text-foreground font-sans antialiased">
         <Providers>
           {children}
           <Toaster />
